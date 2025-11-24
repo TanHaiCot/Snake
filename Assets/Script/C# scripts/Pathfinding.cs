@@ -10,7 +10,7 @@ public class Pathfinding : MonoBehaviour
 
     [SerializeField] LayerMask wallLayer;
     [SerializeField] Snake snake;
-    [SerializeField] Snake opponentSnake;
+    [SerializeField] AI_Snake opponentSnake;
 
     private int minX, maxX, minY, maxY;
     private static readonly Vector2Int[] directions = new Vector2Int[]
@@ -37,7 +37,6 @@ public class Pathfinding : MonoBehaviour
         int y = Mathf.RoundToInt(worldPos.y);
         return new Vector2Int(x, y);
     }
-
 
     private bool IsWalkable(Vector2Int position)
     {

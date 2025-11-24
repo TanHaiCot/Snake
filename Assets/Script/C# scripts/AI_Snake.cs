@@ -5,13 +5,22 @@ using UnityEngine.SceneManagement;
 
 public class AI_Snake : MonoBehaviour
 {
+    [SerializeField] private Pathfinding pathfinding;
+    [SerializeField] private Transform foodTarget;
+
     private Vector2Int direction = Vector2Int.right;    //using Vector2Int for grid-based game
     private List<Transform> bodies = new List<Transform>();
 
     private float nextMoveTime;
     private float speed = 10f;
+    private int initialBodyPart = 4;
 
     [SerializeField] Transform bodyPrefab;
+
+    private void Start()
+    {
+        Restate();
+    }
 
     private void UpdateHeadRotation()
     {
@@ -29,6 +38,21 @@ public class AI_Snake : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
+    private void UpdateAIDirection()
+    {
+        Vector2Int startPos = pathfinding.WorldToGrid(this.transform.position);
+        Vector2Int targetPos = pathfinding.WorldToGrid(foodTarget.position);
+
+        List<Vector2Int> path = pathfinding.FindPath(startPos, targetPos);
+
+        // path[0] is our current position; path[1] is the next step
+        if (path != null && path.Count > 1)
+        {
+            Vector2Int nextStep = path[1]; 
+            Vector2Int newDirection = nextStep - startPos; //Calculate direction: right, left, up, down
+            direction = newDirection;
+        }
+    }
     private void FixedUpdate()
     {
         if (Time.time < nextMoveTime)
@@ -54,10 +78,37 @@ public class AI_Snake : MonoBehaviour
         transform.position = new Vector3(nextX, nextY, 0);
     }
 
-    private void UpdateAIDirection()
+    public void Restate()
     {
-        
+        direction = Vector2Int.right;
+        this.transform.position = Vector3.zero;
+
+        for (int i = 1; i < bodies.Count; i++)
+        {
+            Destroy(bodies[i].gameObject);
+        }
+        bodies.Clear();
+        bodies.Add(this.transform);
+
+        for (int i = 0; i < initialBodyPart - 1; i++)   //not count the Head 
+        {
+            Grow();
+        }
     }
+
+    public bool SpotOccupied(int x, int y)
+    {
+        foreach (Transform body in bodies)
+        {
+            if (Mathf.RoundToInt(body.position.x) == x &&
+                Mathf.RoundToInt(body.position.y) == y)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private void Grow()
     {
@@ -70,6 +121,7 @@ public class AI_Snake : MonoBehaviour
     {
         if (collision.CompareTag("Food"))
         {
+            Debug.Log("AI Snake ate food");
             Grow();
         }
     }
