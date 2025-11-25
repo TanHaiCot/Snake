@@ -59,7 +59,7 @@ public class Pathfinding : MonoBehaviour
     public List<Vector2Int> FindPath(Vector2Int startPos, Vector2Int targetPos)
     {
         Node startNode = new Node(startPos);
-        Node targetNode = new Node(targetPos);
+        //Node targetNode = new Node(targetPos);
 
         List<Node> openList = new List<Node>();
         HashSet<Vector2Int> closedSet = new HashSet<Vector2Int>();  
@@ -79,7 +79,7 @@ public class Pathfinding : MonoBehaviour
             openList.Remove(currentNode);
             closedSet.Add(currentNode.position);
 
-            if(currentNode.position == targetNode.position)
+            if(currentNode.position == targetPos)
             {
                 return RetracePath(startNode, currentNode); 
             }
@@ -96,7 +96,7 @@ public class Pathfinding : MonoBehaviour
                 if (movementCostToNeighbour < neighbourNode.gCost || !openList.Contains(neighbourNode))
                 {
                     neighbourNode.gCost = movementCostToNeighbour;
-                    neighbourNode.hCost = Mathf.Abs(neighbourPos.x - targetNode.position.x) + Mathf.Abs(neighbourPos.y - targetNode.position.y);
+                    neighbourNode.hCost = Mathf.Abs(neighbourPos.x - targetPos.x) + Mathf.Abs(neighbourPos.y - targetPos.y);
                     neighbourNode.parent = currentNode;
                     openList.Add(neighbourNode);
                 }

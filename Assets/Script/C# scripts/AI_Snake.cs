@@ -12,7 +12,7 @@ public class AI_Snake : MonoBehaviour
     private List<Transform> bodies = new List<Transform>();
 
     private float nextMoveTime;
-    private float speed = 10f;
+    private float speed = 1f;
     private int initialBodyPart = 4;
 
     [SerializeField] Transform bodyPrefab;
@@ -45,11 +45,11 @@ public class AI_Snake : MonoBehaviour
 
         List<Vector2Int> path = pathfinding.FindPath(startPos, targetPos);
 
-        // path[0] is our current position; path[1] is the next step
-        if (path != null && path.Count > 1)
+        // path[0] is tile next to Start; path[1] is one step after that, and so on.
+        if (path != null)
         {
-            Vector2Int nextStep = path[1]; 
-            Vector2Int newDirection = nextStep - startPos; //Calculate direction: right, left, up, down
+            Vector2Int firstStep = path[0]; //in Pathfinding, we dont count the start position, so the first step is path[0] 
+            Vector2Int newDirection = firstStep - startPos; //Calculate direction: right, left, up, down
             direction = newDirection;
         }
     }
