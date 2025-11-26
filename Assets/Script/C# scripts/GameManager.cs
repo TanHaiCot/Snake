@@ -11,7 +11,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] Snake snake;
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] Timer timer;
-    [SerializeField] DoorController door; 
+    [SerializeField] DoorController door;
+    [SerializeField] Food food;
+    [SerializeField] AI_Snake ai_Snake;
 
     [Header("Game State")]
     private bool isLost; 
@@ -116,6 +118,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         snake.Restate();
+        food.RandomizedSpawn();
+        ai_Snake.Restate();
 
         isPaused = false;
         isLost = false; 

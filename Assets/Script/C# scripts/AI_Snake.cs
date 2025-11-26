@@ -12,7 +12,7 @@ public class AI_Snake : MonoBehaviour
     private List<Transform> bodies = new List<Transform>();
 
     private float nextMoveTime;
-    private float speed = 1f;
+    private float speed = 10f;
     private int initialBodyPart = 4;
 
     [SerializeField] Transform bodyPrefab;

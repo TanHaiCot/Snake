@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,12 +20,17 @@ public class Snake : MonoBehaviour
 
     private bool isInputLockOpened;  //work as a lock to prevent multiple direction change in one tick
 
-    private void Start()
+    private void Awake()
     {
         Restate();
     }
 
     private void Update()
+    {
+        UpdateSnakeMovement();  
+    }
+
+    private void UpdateSnakeMovement()
     {
         if (isInputLockOpened)
             return;
@@ -51,31 +57,15 @@ public class Snake : MonoBehaviour
             {
                 direction = Vector2Int.right;
                 isInputLockOpened = true;
-                return; 
+                return;
             }
             else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 direction = Vector2Int.left;
                 isInputLockOpened = true;
-                return; 
+                return;
             }
         }
-    }
-
-    private void UpdateHeadRotation()
-    {
-        float angle = 0f;
-
-        if (direction == Vector2Int.up)
-            angle = 90f;
-        else if (direction == Vector2Int.down)
-            angle = -90f;
-        else if (direction == Vector2Int.left)
-            angle = 180f;
-        else if (direction == Vector2Int.right)
-            angle = 0f;
-
-        transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     private void FixedUpdate()
@@ -104,9 +94,9 @@ public class Snake : MonoBehaviour
         {
             if (hit != null && hit.gameObject != this.gameObject)
             {
-                if (hit.CompareTag("Wall") || hit.CompareTag("Door"))
+                if (hit.CompareTag("Wall") || hit.CompareTag("Door") || hit.CompareTag("Opponent Snake"))
                 {
-                    Debug.Log("Hit wall or door");
+                    Debug.Log("Hit snake");
                     gameManager.GameOver();
                     return;
                 }
@@ -121,6 +111,21 @@ public class Snake : MonoBehaviour
         transform.position = new Vector3(nextX, nextY, 0);
 
         isInputLockOpened = false; 
+    }
+    private void UpdateHeadRotation()
+    {
+        float angle = 0f;
+
+        if (direction == Vector2Int.up)
+            angle = 90f;
+        else if (direction == Vector2Int.down)
+            angle = -90f;
+        else if (direction == Vector2Int.left)
+            angle = 180f;
+        else if (direction == Vector2Int.right)
+            angle = 0f;
+
+        transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     public void Grow()

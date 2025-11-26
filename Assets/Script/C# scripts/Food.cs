@@ -15,7 +15,7 @@ public class Food : MonoBehaviour
         RandomizedSpawn(); 
     }
 
-    private void RandomizedSpawn()
+    public void RandomizedSpawn()
     {
         Bounds bounds = this.gridArea.bounds;
 
