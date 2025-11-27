@@ -74,7 +74,7 @@ public class Snake : MonoBehaviour
             return;
         
         nextMoveTime = Time.time + (1.0f / speed);
-
+        Debug.Log("next time move of Player: " + nextMoveTime);
         UpdateHeadRotation();
 
         // next position of the snake head the same tick
@@ -112,6 +112,7 @@ public class Snake : MonoBehaviour
 
         isInputLockOpened = false; 
     }
+
     private void UpdateHeadRotation()
     {
         float angle = 0f;

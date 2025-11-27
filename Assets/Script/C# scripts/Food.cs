@@ -7,6 +7,7 @@ public class Food : MonoBehaviour
     [SerializeField] BoxCollider2D gridArea;
    
     [SerializeField] Snake snake;
+    [SerializeField] AI_Snake opponentSnake;
 
     [SerializeField] LayerMask wallLayer; 
 
@@ -29,7 +30,7 @@ public class Food : MonoBehaviour
         {
             for (int x = minX; x < maxX; x++)
             {
-                if (!snake.SpotOccupied(x, y) && !IsWall(x, y))
+                if (!snake.SpotOccupied(x, y) && !opponentSnake.SpotOccupied(x, y) && !IsWall(x, y))
                 {
                     freeSpots.Add(new Vector2Int(x, y));
                 }

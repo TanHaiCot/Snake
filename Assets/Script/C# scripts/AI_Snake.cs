@@ -59,7 +59,7 @@ public class AI_Snake : MonoBehaviour
             return;
 
         nextMoveTime = Time.time + (1.0f / speed);
-
+        Debug.Log("next time move of AI" + nextMoveTime);
         UpdateHeadRotation();
         UpdateAIDirection(); 
 
