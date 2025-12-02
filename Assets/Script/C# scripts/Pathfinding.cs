@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Runtime.CompilerServices;
 
 
 public class Pathfinding : MonoBehaviour
@@ -58,8 +59,9 @@ public class Pathfinding : MonoBehaviour
 
     public List<Vector2Int> FindPath(Vector2Int startPos, Vector2Int targetPos)
     {
-        Node startNode = new Node(startPos);
-        //Node targetNode = new Node(targetPos);
+        Dictionary<Vector2Int, Node> nodes = new Dictionary<Vector2Int, Node>();
+
+        Node startNode = GetNode(nodes, startPos); 
 
         List<Node> openList = new List<Node>();
         HashSet<Vector2Int> closedSet = new HashSet<Vector2Int>();  
@@ -91,12 +93,13 @@ public class Pathfinding : MonoBehaviour
                 if(closedSet.Contains(neighbourPos) || !IsWalkable(neighbourPos))
                     continue;
 
-                int movementCostToNeighbour = currentNode.gCost + 1; 
-                Node neighbourNode = new Node(neighbourPos);
-                if (movementCostToNeighbour < neighbourNode.gCost || !openList.Contains(neighbourNode))
+                Node neighbourNode = GetNode(nodes, neighbourPos);
+                int gCostToNeighbour = currentNode.gCost + 1; 
+              
+                if (gCostToNeighbour < neighbourNode.gCost || !openList.Contains(neighbourNode))
                 {
-                    neighbourNode.gCost = movementCostToNeighbour;
-                    neighbourNode.hCost = Mathf.Abs(neighbourPos.x - targetPos.x) + Mathf.Abs(neighbourPos.y - targetPos.y);
+                    neighbourNode.gCost = gCostToNeighbour;
+                    neighbourNode.hCost = hCostCalculation(neighbourPos, targetPos);
                     neighbourNode.parent = currentNode;
                     openList.Add(neighbourNode);
                 }
@@ -118,8 +121,25 @@ public class Pathfinding : MonoBehaviour
         path.Reverse();
         return path;
     }
-}
 
+    private Node GetNode(Dictionary<Vector2Int, Node> nodes, Vector2Int position)
+    {
+        if(!nodes.TryGetValue(position, out Node nodeFound))
+        {
+            nodeFound = new Node(position);
+            nodes[position] = nodeFound;
+        }
+        return nodeFound; 
+    }
+
+    private int hCostCalculation(Vector2Int a, Vector2Int b)
+    {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+    }  
+
+
+    
+}
 
 
 
@@ -136,5 +156,6 @@ public class Node
     {
         position = pos;
     }
+
 }
 #endregion

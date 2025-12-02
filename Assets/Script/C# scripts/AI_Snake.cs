@@ -40,15 +40,21 @@ public class AI_Snake : MonoBehaviour
 
     private void UpdateAIDirection()
     {
+        if(pathfinding == null || foodTarget == null)
+        {
+            Debug.Log("Pathfinding or FoodTarget is not assigned in AI_Snake");
+            return;
+        }
         Vector2Int startPos = pathfinding.WorldToGrid(this.transform.position);
         Vector2Int targetPos = pathfinding.WorldToGrid(foodTarget.position);
 
         List<Vector2Int> path = pathfinding.FindPath(startPos, targetPos);
 
-        // path[0] is tile next to Start; path[1] is one step after that, and so on.
-        if (path != null)
+        // path[0] is tile next to Start; path[1] is one step after that, and so on
+        // path.Count can be 0 if the snake is already on the food -> make sure path.Count > 0 to avoid error when accessing path[0] 
+        if (path != null && path.Count > 0) 
         {
-            Vector2Int firstStep = path[0]; //in Pathfinding, we dont count the start position, so the first step is path[0] 
+            Vector2Int firstStep = path[0]; //in Pathfinding, we dont count from the start position, so the first step is path[0] 
             Vector2Int newDirection = firstStep - startPos; //Calculate direction: right, left, up, down
             direction = newDirection;
         }
@@ -59,7 +65,7 @@ public class AI_Snake : MonoBehaviour
             return;
 
         nextMoveTime = Time.time + (1.0f / speed);
-        Debug.Log("next time move of AI" + nextMoveTime);
+        //Debug.Log("next time move of AI" + nextMoveTime);
         UpdateHeadRotation();
         UpdateAIDirection(); 
 

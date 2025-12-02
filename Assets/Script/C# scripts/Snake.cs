@@ -74,7 +74,7 @@ public class Snake : MonoBehaviour
             return;
         
         nextMoveTime = Time.time + (1.0f / speed);
-        Debug.Log("next time move of Player: " + nextMoveTime);
+        //Debug.Log("next time move of Player: " + nextMoveTime);
         UpdateHeadRotation();
 
         // next position of the snake head the same tick
@@ -97,8 +97,8 @@ public class Snake : MonoBehaviour
                 if (hit.CompareTag("Wall") || hit.CompareTag("Door") || hit.CompareTag("Opponent Snake"))
                 {
                     Debug.Log("Hit snake");
-                    gameManager.GameOver();
-                    return;
+                    //gameManager.GameOver();
+                    //return;
                 }
             }
         }
