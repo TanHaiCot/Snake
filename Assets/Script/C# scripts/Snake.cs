@@ -94,10 +94,10 @@ public class Snake : MonoBehaviour
         {
             if (hit != null && hit.gameObject != this.gameObject)
             {
-                if (hit.CompareTag("Wall") || hit.CompareTag("Door") || hit.CompareTag("Opponent Snake"))
+                if (/*hit.CompareTag("Wall") || hit.CompareTag("Door") ||*/ hit.CompareTag("Opponent Snake"))
                 {
                     Debug.Log("Hit snake");
-                    //gameManager.GameOver();
+                    gameManager.GameOver();
                     //return;
                 }
             }
