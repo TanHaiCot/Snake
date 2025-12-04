@@ -35,37 +35,76 @@ public class Snake : MonoBehaviour
         if (isInputLockOpened)
             return;
 
-        if (direction.x != 0)
+        if (SceneManager.GetActiveScene().name != "GamePlay5")
         {
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            if (direction.x != 0)
             {
-                direction = Vector2Int.up;
-                isInputLockOpened = true;
-                return; //exit the function after direction change, avoid multiple changes in one frame
+                if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    direction = Vector2Int.up;
+                    isInputLockOpened = true;
+                    return; //exit the function after direction change, avoid multiple changes in one frame
+                }
+                else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    direction = Vector2Int.down;
+                    isInputLockOpened = true;
+                    return;
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            
+            if (direction.y != 0)
             {
-                direction = Vector2Int.down;
-                isInputLockOpened = true;
-                return;
+                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    direction = Vector2Int.right;
+                    isInputLockOpened = true;
+                    return;
+                }
+                else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    direction = Vector2Int.left;
+                    isInputLockOpened = true;
+                    return;
+                }
             }
         }
 
-        if (direction.y != 0)
+        else
         {
-            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            if (direction.x != 0)
             {
-                direction = Vector2Int.right;
-                isInputLockOpened = true;
-                return;
+                if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    direction = Vector2Int.down;
+                    isInputLockOpened = true;
+                    return; //exit the function after direction change, avoid multiple changes in one frame
+                }
+                else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    direction = Vector2Int.up;
+                    isInputLockOpened = true;
+                    return;
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+
+            if (direction.y != 0)
             {
-                direction = Vector2Int.left;
-                isInputLockOpened = true;
-                return;
+                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    direction = Vector2Int.left;
+                    isInputLockOpened = true;
+                    return;
+                }
+                else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    direction = Vector2Int.right;
+                    isInputLockOpened = true;
+                    return;
+                }
             }
-        }
+        }    
+
     }
 
     private void FixedUpdate()
