@@ -129,15 +129,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalScale.x
-      value: 16
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -17.5
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.z
@@ -145,7 +145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalRotation.x
@@ -157,7 +157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -169,7 +169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5577718375387289764, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_Name
@@ -326,7 +326,7 @@ GameObject:
   - component: {fileID: 95846450}
   - component: {fileID: 95846454}
   m_Layer: 0
-  m_Name: Opponent Snake Head
+  m_Name: Second Snake Head
   m_TagString: Opponent Snake
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -485,12 +485,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 95846448}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44dc4b56f733e64489c06fa783bd2344, type: 3}
+  m_Script: {fileID: 11500000, guid: f1e518fbcb93ae942bd29acaec837188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathfinding: {fileID: 781086730}
-  foodTarget: {fileID: 620879145}
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
+  gameManager: {fileID: 1741257627}
+  scoreManager: {fileID: 616454441}
+  keyType: 1
+  reverseMovement: 0
 --- !u!1001 &121628289
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1241,15 +1243,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalScale.x
-      value: 18
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.5
+      value: -16
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1539,15 +1545,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.5
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1812,7 +1818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridArea: {fileID: 1242246800}
   snake: {fileID: 624845952}
-  opponentSnake: {fileID: 95846454}
+  opponentSnake: {fileID: 0}
   wallLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1830,7 +1836,7 @@ GameObject:
   - component: {fileID: 624845948}
   - component: {fileID: 624845952}
   m_Layer: 0
-  m_Name: 'Snake Head '
+  m_Name: Main Snake Head
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1995,6 +2001,8 @@ MonoBehaviour:
   bodyPrefab: {fileID: 6874129864492939515, guid: 6a7fe4e399aea6349aa76cc1567a9428, type: 3}
   gameManager: {fileID: 1741257627}
   scoreManager: {fileID: 616454441}
+  keyType: 0
+  reverseMovement: 0
 --- !u!1 &631863847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2571,7 +2579,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   snake: {fileID: 624845952}
-  opponentSnake: {fileID: 95846454}
+  opponentSnake: {fileID: 0}
 --- !u!4 &781086731
 Transform:
   m_ObjectHideFlags: 0
@@ -4096,7 +4104,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4104,7 +4112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4207,7 +4215,7 @@ MonoBehaviour:
   timer: {fileID: 1390239444}
   door: {fileID: 1602164144}
   food: {fileID: 620879146}
-  ai_Snake: {fileID: 95846454}
+  ai_Snake: {fileID: 0}
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
 --- !u!1 &1745688539
 GameObject:

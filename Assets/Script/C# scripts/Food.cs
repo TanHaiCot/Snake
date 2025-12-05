@@ -30,7 +30,10 @@ public class Food : MonoBehaviour
         {
             for (int x = minX; x < maxX; x++)
             {
-                if (!snake.SpotOccupied(x, y) && !opponentSnake.SpotOccupied(x, y) && !IsWall(x, y))
+                bool occupiedByPlayer = snake.SpotOccupied(x, y);
+                bool occupiedByOpponent = (opponentSnake != null && opponentSnake.SpotOccupied(x, y));
+
+                if (!occupiedByPlayer && !occupiedByOpponent && !IsWall(x, y))
                 {
                     freeSpots.Add(new Vector2Int(x, y));
                 }

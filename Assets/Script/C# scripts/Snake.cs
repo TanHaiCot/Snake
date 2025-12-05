@@ -20,6 +20,15 @@ public class Snake : MonoBehaviour
 
     private bool isInputLockOpened;  //work as a lock to prevent multiple direction change in one tick
 
+    public enum KeyType
+    {
+        WASD,
+        Arrows
+    }
+
+    [SerializeField] private KeyType keyType = KeyType.WASD;
+    [SerializeField] private bool reverseMovement = false;
+
     private void Awake()
     {
         Restate();
@@ -35,76 +44,69 @@ public class Snake : MonoBehaviour
         if (isInputLockOpened)
             return;
 
-        if (SceneManager.GetActiveScene().name != "GamePlay5")
-        {
-            if (direction.x != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    direction = Vector2Int.up;
-                    isInputLockOpened = true;
-                    return; //exit the function after direction change, avoid multiple changes in one frame
-                }
-                else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    direction = Vector2Int.down;
-                    isInputLockOpened = true;
-                    return;
-                }
-            }
-            
-            if (direction.y != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    direction = Vector2Int.right;
-                    isInputLockOpened = true;
-                    return;
-                }
-                else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    direction = Vector2Int.left;
-                    isInputLockOpened = true;
-                    return;
-                }
-            }
-        }
+        KeyCode upKey;
+        KeyCode downKey;
+        KeyCode leftKey;
+        KeyCode rightKey;
 
+        if(keyType == KeyType.WASD)
+        {
+            upKey = KeyCode.W;
+            downKey = KeyCode.S;
+            leftKey = KeyCode.A;
+            rightKey = KeyCode.D;
+        }
         else
         {
-            if (direction.x != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    direction = Vector2Int.down;
-                    isInputLockOpened = true;
-                    return; //exit the function after direction change, avoid multiple changes in one frame
-                }
-                else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    direction = Vector2Int.up;
-                    isInputLockOpened = true;
-                    return;
-                }
-            }
+            upKey = KeyCode.UpArrow;
+            downKey = KeyCode.DownArrow;
+            leftKey = KeyCode.LeftArrow;
+            rightKey = KeyCode.RightArrow;
+        }
 
-            if (direction.y != 0)
-            {
-                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    direction = Vector2Int.left;
-                    isInputLockOpened = true;
-                    return;
-                }
-                else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    direction = Vector2Int.right;
-                    isInputLockOpened = true;
-                    return;
-                }
-            }
-        }    
+        if(reverseMovement)
+        {
+            // Swap the key assignments for reverse movement
+            KeyCode temp = upKey;
+            upKey = downKey;
+            downKey = temp;
 
+            temp = leftKey;
+            leftKey = rightKey;
+            rightKey = temp;
+        }
+
+        if (direction.x != 0)
+        {
+            if (Input.GetKeyDown(upKey))
+            {
+                direction = Vector2Int.up;
+                isInputLockOpened = true;
+                return; //exit the function after direction change, avoid multiple changes in one frame
+            }
+            else if (Input.GetKeyDown(downKey))
+            {
+                direction = Vector2Int.down;
+                isInputLockOpened = true;
+                return;
+            }
+        }
+        
+        if (direction.y != 0)
+        {
+            if (Input.GetKeyDown(rightKey))
+            {
+                direction = Vector2Int.right;
+                isInputLockOpened = true;
+                return;
+            }
+            else if (Input.GetKeyDown(leftKey))
+            {
+                direction = Vector2Int.left;
+                isInputLockOpened = true;
+                return;
+            }
+        }
     }
 
     private void FixedUpdate()
