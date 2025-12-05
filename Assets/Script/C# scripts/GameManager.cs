@@ -119,7 +119,8 @@ public class GameManager : MonoBehaviour
 
         snake.Restate();
         food.RandomizedSpawn();
-        ai_Snake.Restate();
+        if (ai_Snake != null)
+            ai_Snake.Restate();
 
         isPaused = false;
         isLost = false; 
