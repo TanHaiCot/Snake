@@ -4211,6 +4211,7 @@ MonoBehaviour:
   pauseMenu: {fileID: 1745688539}
   lostMenu: {fileID: 1314489508}
   snake: {fileID: 624845952}
+  secondSnake: {fileID: 95846454}
   scoreManager: {fileID: 616454441}
   timer: {fileID: 1390239444}
   door: {fileID: 1602164144}
