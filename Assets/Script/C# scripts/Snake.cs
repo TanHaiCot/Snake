@@ -12,6 +12,8 @@ public class Snake : MonoBehaviour
     [SerializeField] Transform bodyPrefab;
     [SerializeField] GameManager gameManager;
     [SerializeField] ScoreManager scoreManager;
+    [SerializeField] DarknessManager darknessManager;
+
     private float speed = 10f; 
 
     private int initialBodyPart = 4;
@@ -144,6 +146,11 @@ public class Snake : MonoBehaviour
             }
         }
         
+        if(darknessManager != null)
+        {
+            darknessManager.UpdateVisibility();
+        }
+
         for (int i = bodies.Count - 1; i > 0; i--)
         {
             bodies[i].position = bodies[i - 1].position;
