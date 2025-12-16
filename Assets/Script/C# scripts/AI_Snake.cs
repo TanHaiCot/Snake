@@ -65,16 +65,13 @@ public class AI_Snake : MonoBehaviour
             return;
 
         nextMoveTime = Time.time + (1.0f / speed);
-        //Debug.Log("next time move of AI" + nextMoveTime);
+        
         UpdateHeadRotation();
         UpdateAIDirection(); 
 
         // next position of the snake head the same tick
         int nextX = Mathf.RoundToInt(this.transform.position.x) + direction.x;
         int nextY = Mathf.RoundToInt(this.transform.position.y) + direction.y;
-
-
-        //check all the collision on the world space to see which one is overlap with the next position
 
         for (int i = bodies.Count - 1; i > 0; i--)
         {

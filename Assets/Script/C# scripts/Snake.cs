@@ -10,11 +10,12 @@ public class Snake : MonoBehaviour
     private List<Transform> bodies = new List<Transform>();
 
     [SerializeField] Transform bodyPrefab;
+    [SerializeField] Transform bodyContainer;
     [SerializeField] GameManager gameManager;
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] DarknessManager darknessManager;
 
-    private float speed = 10f; 
+    private float speed = 8f; 
 
     private int initialBodyPart = 4;
 
@@ -117,10 +118,10 @@ public class Snake : MonoBehaviour
             return;
         
         nextMoveTime = Time.time + (1.0f / speed);
-        //Debug.Log("next time move of Player: " + nextMoveTime);
+        
         UpdateHeadRotation();
 
-        // next position of the snake head the same tick
+        // next position of the snake head at the same tick
         int nextX = Mathf.RoundToInt(this.transform.position.x) + direction.x;
         int nextY = Mathf.RoundToInt(this.transform.position.y) + direction.y;
 
@@ -145,18 +146,17 @@ public class Snake : MonoBehaviour
                 }
             }
         }
-        
-        if(darknessManager != null)
-        {
-            darknessManager.UpdateVisibility();
-        }
 
         for (int i = bodies.Count - 1; i > 0; i--)
         {
             bodies[i].position = bodies[i - 1].position;
         }
-
         transform.position = new Vector3(nextX, nextY, 0);
+
+
+        if(darknessManager != null)
+            darknessManager.UpdateVisibility(); //Update visibility after snake move (newest head position)
+
 
         isInputLockOpened = false; 
     }
@@ -179,7 +179,7 @@ public class Snake : MonoBehaviour
 
     public void Grow()
     {
-        Transform body = Instantiate(bodyPrefab);
+        Transform body = Instantiate(bodyPrefab, bodyContainer);
         body.position = bodies[bodies.Count - 1].position;
         bodies.Add(body);
 

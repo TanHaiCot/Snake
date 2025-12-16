@@ -42,6 +42,7 @@ public class Food : MonoBehaviour
 
         Vector2Int chosenSpot = freeSpots[Random.Range(0, freeSpots.Count)];
         this.transform.position = new Vector2(chosenSpot.x, chosenSpot.y);
+        Debug.Log($"Food spawned at: {chosenSpot.x}, {chosenSpot.y}");  
 
     }
 

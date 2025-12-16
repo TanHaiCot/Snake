@@ -12,7 +12,7 @@ public class DarknessManager : MonoBehaviour
     [SerializeField] private Transform snake;
     [SerializeField] LayerMask wallLayer;
 
-    private int visableRange = 3;
+    private int visableRange = 5;
 
     private Dictionary<Vector2Int, SpriteRenderer> darkTiles = new Dictionary<Vector2Int, SpriteRenderer>();
     private Vector2Int[] directions = new Vector2Int[]
@@ -44,19 +44,20 @@ public class DarknessManager : MonoBehaviour
         posQueue.Enqueue(startPotition);
         visited.Add(startPotition);
 
-        while(posQueue.Count > 0)
+        while (posQueue.Count > 0)
         {
             Vector2Int pos = posQueue.Dequeue();
 
             if(!darkTiles.TryGetValue(pos, out SpriteRenderer sr))
                 continue;
 
-            SetAlpha(sr, 0f);
-
-            // Limit vision by range (Chebyshev distance)
-            int distance = Mathf.Max(Mathf.Abs(pos.x - startPotition.x) + Mathf.Abs(pos.y - startPotition.y)); 
-            if(distance >= visableRange)
+            // Limit vision by range 
+            int distance = Mathf.Abs(pos.x - startPotition.x) + Mathf.Abs(pos.y - startPotition.y);
+            
+            if (distance > visableRange)
                 continue;
+            
+            SetAlpha(sr, 0f);
 
             bool isWall = Physics2D.OverlapBox(new Vector2(pos.x, pos.y), new Vector2(0.9f, 0.9f), 0, wallLayer) != null;
             if (isWall)
