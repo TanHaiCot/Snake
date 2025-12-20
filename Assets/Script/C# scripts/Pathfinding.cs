@@ -6,10 +6,16 @@ using System.Runtime.CompilerServices;
 
 public class Pathfinding : MonoBehaviour
 {
+    public enum PathPurpose
+    {
+        FoodChasing,
+        PlayerChasing,
+    }
+
     [Header("Grid Settings")]
     [SerializeField] private BoxCollider2D gridArea;
 
-    [SerializeField] LayerMask wallLayer;
+    [SerializeField] public LayerMask wallLayer;
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
 
@@ -57,7 +63,7 @@ public class Pathfinding : MonoBehaviour
         return true;    
     }
 
-    public List<Vector2Int> FindPath(Vector2Int startPos, Vector2Int targetPos)
+    public List<Vector2Int> FindPath(Vector2Int startPos, Vector2Int targetPos, PathPurpose purpose)
     {
         Dictionary<Vector2Int, Node> nodes = new Dictionary<Vector2Int, Node>();
 
@@ -90,16 +96,29 @@ public class Pathfinding : MonoBehaviour
             {
                 Vector2Int neighbourPos = currentNode.position + dir;
 
-                if(closedSet.Contains(neighbourPos) || !IsWalkable(neighbourPos))
+                if(closedSet.Contains(neighbourPos))
                     continue;
 
+                switch(purpose)
+                {
+                    case PathPurpose.FoodChasing:
+                        if(!IsWalkable(neighbourPos))
+                            continue;
+                        break;
+
+                    case PathPurpose.PlayerChasing:
+                        if (neighbourPos != targetPos && !IsWalkable(neighbourPos)) //allow the target position even if occupied
+                            continue;
+                        break; 
+                }
+
                 Node neighbourNode = GetNode(nodes, neighbourPos);
-                int gCostToNeighbour = currentNode.gCost + 1; 
+                int gCostToNeighbour = currentNode.gCost + GetDistance(currentNode.position, neighbourPos); 
               
                 if (gCostToNeighbour < neighbourNode.gCost || !openList.Contains(neighbourNode))
                 {
                     neighbourNode.gCost = gCostToNeighbour;
-                    neighbourNode.hCost = hCostCalculation(neighbourPos, targetPos);
+                    neighbourNode.hCost = GetDistance(neighbourPos, targetPos);
                     neighbourNode.parent = currentNode;
                     openList.Add(neighbourNode);
                 }
@@ -132,13 +151,28 @@ public class Pathfinding : MonoBehaviour
         return nodeFound; 
     }
 
-    private int hCostCalculation(Vector2Int a, Vector2Int b)
+    private int GetDistance(Vector2Int a, Vector2Int b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
-    }  
+    }     
 
+    public bool TryToGetRandomWalkablePosition(out Vector2Int result, int attempts = 200) //by default try 200 times
+    {
+        result = Vector2Int.zero;
 
-    
+        for(int i = 0; i < attempts; i++)
+        {
+            int randomX = UnityEngine.Random.Range(minX, maxX);
+            int randomY = UnityEngine.Random.Range(minY, maxY);
+            Vector2Int randomPos = new Vector2Int(randomX, randomY);
+            if (IsWalkable(randomPos))
+            {
+                result = randomPos;
+                return true;
+            }
+        }
+        return false; 
+    }
 }
 
 

@@ -15,7 +15,7 @@ public class Snake : MonoBehaviour
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] DarknessManager darknessManager;
 
-    private float speed = 8f; 
+    private float speed = 15f; 
 
     private int initialBodyPart = 4;
 
@@ -188,7 +188,7 @@ public class Snake : MonoBehaviour
     public void Restate()
     {
         direction = Vector2Int.right;
-        this.transform.position = Vector3.zero;
+        this.transform.position = new Vector3(10, 10, 0);
 
         for (int i = 1; i < bodies.Count; i++)
         {
