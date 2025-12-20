@@ -20,7 +20,9 @@ public class AI_Snake : MonoBehaviour
     private Vector2Int patrolDestination;
     private int visionRange = 10; 
     private bool hasPatrolDestination;
-    
+    private float lostSightTimer;
+    private float loseSightDelay = 2f;
+
     private Vector2Int direction = Vector2Int.right;    //using Vector2Int for grid-based game
     private List<Transform> bodies = new List<Transform>();
 
@@ -148,14 +150,23 @@ public class AI_Snake : MonoBehaviour
                 if (CanSeePlayer())
                 {
                     currentState = AI_snakeState.Chase;
+                    lostSightTimer = 0f; 
                     Debug.Log("AI Snake switched to Chase state");
                 }
                 break;
             case AI_snakeState.Chase:
-                if (!CanSeePlayer())
+                if (CanSeePlayer())
                 {
-                    currentState = AI_snakeState.Patrol;
-                    hasPatrolDestination = false; 
+                    lostSightTimer = 0f;
+                }
+                else
+                {
+                    lostSightTimer += Time.fixedDeltaTime;
+                    if (lostSightTimer >= loseSightDelay) //lose sight delay
+                    {
+                        currentState = AI_snakeState.Patrol;
+                        hasPatrolDestination = false;
+                    }
                 }
                 break;
         }
@@ -221,8 +232,8 @@ public class AI_Snake : MonoBehaviour
         Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
 
-        Vector3 from = new Vector3(myPos.x + 0.5f, myPos.y + 0.5f, 0f);
-        Vector3 to = new Vector3(playerPos.x + 0.5f, playerPos.y + 0.5f, 0f);
+        Vector3 from = new Vector3(myPos.x, myPos.y, 0f);
+        Vector3 to = new Vector3(playerPos.x, playerPos.y, 0f);
 
         Gizmos.color = CanSeePlayer() ? Color.green : Color.red;
         Gizmos.DrawLine(from, to);
