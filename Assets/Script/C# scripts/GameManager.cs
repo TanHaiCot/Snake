@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] DoorController door;
     [SerializeField] Food food;
     [SerializeField] AI_Snake ai_Snake;
+    [SerializeField] BoxCollider2D gridArea; 
 
     [Header("Game State")]
     private bool isLost; 
@@ -22,6 +24,9 @@ public class GameManager : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
+    [SerializeField] private Color color1;
+    [SerializeField] private Color color2;
+
 
     void Start() 
     {
@@ -45,7 +50,89 @@ public class GameManager : MonoBehaviour
         {
             timer.SetLevelTimer(LevelData.timeLimit);
         }
+
+        CreateMap(); 
     }
+
+    private void CreateMap()
+    {
+        Bounds bound = gridArea.bounds;
+
+        int minX = Mathf.RoundToInt(bound.min.x);
+        int minY = Mathf.RoundToInt(bound.min.y);
+
+        int width = Mathf.RoundToInt(bound.size.x);
+        int height = Mathf.RoundToInt(bound.size.y);
+
+
+        GameObject gameMap = new GameObject("GameMap");
+        SpriteRenderer sr = gameMap.AddComponent<SpriteRenderer>();
+
+        Texture2D texture = new Texture2D(width + 1, height + 1);
+        for (int x = 0; x < texture.width; x++)
+        {
+            for (int y = 0; y < texture.height; y++)
+            {
+                if (x % 2 != 0 && y % 2 != 0 || x % 2 == 0 && y % 2 == 0)
+                {
+                    texture.SetPixel(x, y, color1);
+                }
+                else
+                {
+                    texture.SetPixel(x, y, color2);
+                }
+            }
+        }
+
+        texture.filterMode = FilterMode.Point;
+        texture.Apply();
+
+        Rect rect = new Rect(0, 0, texture.width, texture.height);
+
+        Sprite sprite = Sprite.Create(texture, rect, new Vector2(0f, 0f), 1f, 0, SpriteMeshType.FullRect);
+        sr.sprite = sprite;
+
+        gameMap.transform.position = new Vector3(minX - 0.5f, minY - 0.5f, 0f);
+
+        sr.sortingOrder = -10; 
+    }
+
+
+    //private void CreateMap()
+    //{
+    //    Bounds bound = gridArea.bounds;
+
+    //    int width = Mathf.RoundToInt(bound.size.x);
+    //    int height = Mathf.RoundToInt(bound.size.y);
+
+    //    Texture2D texture = new Texture2D(width, height);
+    //    texture.filterMode = FilterMode.Point;
+    //    texture.wrapMode = TextureWrapMode.Clamp;
+
+    //    for (int x = 0; x < width; x++)
+    //    {
+    //        for (int y = 0; y < height; y++)
+    //        {
+    //            bool sameParity = (x + y) % 2 == 0;
+    //            texture.SetPixel(x, y, sameParity ? color1 : color2);
+    //        }
+    //    }
+
+    //    texture.Apply();
+
+    //    GameObject gameMap = new GameObject("GameMap");
+    //    SpriteRenderer sr = gameMap.AddComponent<SpriteRenderer>();
+
+    //    sr.sprite = Sprite.Create(
+    //        texture,
+    //        new Rect(0, 0, width, height),
+    //        new Vector2(0.5f, 0.5f),
+    //        16f
+    //    );
+
+    //    gameMap.transform.position = bound.center;
+    //}
+
 
     private void OnEnable()
     {
