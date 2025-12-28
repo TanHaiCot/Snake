@@ -73,13 +73,15 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < texture.height; y++)
             {
+
+               
                 if (x % 2 != 0 && y % 2 != 0 || x % 2 == 0 && y % 2 == 0)
                 {
-                    texture.SetPixel(x, y, color1);
+                    texture.SetPixel(x, y, SetColor( 0, 226, 21, 220));
                 }
                 else
                 {
-                    texture.SetPixel(x, y, color2);
+                    texture.SetPixel(x, y, SetColor( 0, 165, 6, 220));
                 }
             }
         }
@@ -97,42 +99,10 @@ public class GameManager : MonoBehaviour
         sr.sortingOrder = -10; 
     }
 
-
-    //private void CreateMap()
-    //{
-    //    Bounds bound = gridArea.bounds;
-
-    //    int width = Mathf.RoundToInt(bound.size.x);
-    //    int height = Mathf.RoundToInt(bound.size.y);
-
-    //    Texture2D texture = new Texture2D(width, height);
-    //    texture.filterMode = FilterMode.Point;
-    //    texture.wrapMode = TextureWrapMode.Clamp;
-
-    //    for (int x = 0; x < width; x++)
-    //    {
-    //        for (int y = 0; y < height; y++)
-    //        {
-    //            bool sameParity = (x + y) % 2 == 0;
-    //            texture.SetPixel(x, y, sameParity ? color1 : color2);
-    //        }
-    //    }
-
-    //    texture.Apply();
-
-    //    GameObject gameMap = new GameObject("GameMap");
-    //    SpriteRenderer sr = gameMap.AddComponent<SpriteRenderer>();
-
-    //    sr.sprite = Sprite.Create(
-    //        texture,
-    //        new Rect(0, 0, width, height),
-    //        new Vector2(0.5f, 0.5f),
-    //        16f
-    //    );
-
-    //    gameMap.transform.position = bound.center;
-    //}
-
+    private Color32 SetColor(byte r, byte g, byte b, byte alpha)
+    {
+        return new Color32(r, g, b, alpha); 
+    }
 
     private void OnEnable()
     {
