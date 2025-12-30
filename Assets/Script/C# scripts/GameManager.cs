@@ -28,8 +28,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] LevelData LevelData;
     [SerializeField] private Color color1;
     [SerializeField] private Color color2;
-    private bool[] isBlackOut;
-    private static readonly Color32 GRAY = new Color32(128, 128, 128, 255);
+
+    private bool[] isGreyedOut;
+    private bool[] isLightTile;
+
+    private static readonly Color32 LIGHT_GREEN = new Color32(0, 226, 21, 220);
+    private static readonly Color32 DARK_GREEN = new Color32(0, 165, 6, 220);
+
+    private static readonly Color32 LIGHT_GRAY = new Color32(170, 170, 170, 220);
+    private static readonly Color32 DARK_GRAY = new Color32(130, 130, 130, 220);
+
     private Texture2D mapTexture;
 
   
@@ -89,21 +97,23 @@ public class GameManager : MonoBehaviour
 
         mapTexture = new Texture2D(mapWidth, mapHeight);
 
-        isBlackOut = new bool[mapWidth * mapHeight];
+        isLightTile = new bool[mapWidth * mapHeight];
 
         for (int x = 0; x < mapTexture.width; x++)
         {
             for (int y = 0; y < mapTexture.height; y++)
             {
+                int index = y * mapTexture.width + x;
 
-               
                 if (x % 2 != 0 && y % 2 != 0 || x % 2 == 0 && y % 2 == 0)
                 {
-                    mapTexture.SetPixel(x, y, SetColor( 0, 226, 21, 220));
+                    mapTexture.SetPixel(x, y, LIGHT_GREEN); 
+                    isLightTile[index] = true;
                 }
                 else
                 {
-                    mapTexture.SetPixel(x, y, SetColor( 0, 165, 6, 220));
+                    mapTexture.SetPixel(x, y,DARK_GREEN);
+                    isLightTile[index] = false;
                 }
             }
         }
@@ -123,14 +133,17 @@ public class GameManager : MonoBehaviour
 
     public void BlackOutRandomTiles(int count = 50)
     {
-        if (mapTexture == null || isBlackOut == null) return; 
+        if (mapTexture == null) return;
+
+        if (isGreyedOut == null)
+            isGreyedOut = new bool[mapTexture.width * mapTexture.height]; 
 
         int totalTiles = mapTexture.width * mapTexture.height;  
 
         List<int> availableTiles = new List<int>(totalTiles); 
         for(int i = 0; i < totalTiles; i++)
         {
-            if (!isBlackOut[i])
+            if (!isGreyedOut[i])
                 availableTiles.Add(i); 
         }   
 
@@ -144,12 +157,13 @@ public class GameManager : MonoBehaviour
             int index = availableTiles[random];
             availableTiles.RemoveAt(random);
 
-            isBlackOut[index] = true;
+            isGreyedOut[index] = true;
                 
             int x = index % mapTexture.width; // column
             int y = index / mapTexture.width; // row
 
-            mapTexture.SetPixel(x, y, GRAY);
+            Color32 grey = isLightTile[index] ? LIGHT_GRAY : DARK_GRAY;
+            mapTexture.SetPixel(x, y, grey);
         }
         mapTexture.Apply();
     }
