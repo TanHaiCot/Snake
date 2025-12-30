@@ -33,8 +33,8 @@ public class ScoreManager : MonoBehaviour
         }
         UpdateUI();
 
-        OnScoreChanged?.Invoke(currentScore, targetScore);
-        if(TargetReached)
+        OnScoreChanged?.Invoke(currentScore, targetScore);   // have not used this yet, but useful for future
+        if (TargetReached)
         {
             OnTargetReached?.Invoke(); 
         }

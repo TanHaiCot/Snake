@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class Snake : MonoBehaviour
@@ -14,6 +15,8 @@ public class Snake : MonoBehaviour
     [SerializeField] GameManager gameManager;
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] DarknessManager darknessManager;
+
+    public UnityEvent OnFoodEaten;
 
     private float speed = 15f; 
 
@@ -223,6 +226,8 @@ public class Snake : MonoBehaviour
             Grow();
             if(scoreManager)
                 scoreManager.AddScore(1);
+
+            OnFoodEaten?.Invoke();
         }
 
         if (collision.CompareTag("Next Level Trigger"))
