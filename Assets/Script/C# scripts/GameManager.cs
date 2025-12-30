@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour
             int x = index % mapTexture.width; // column
             int y = index / mapTexture.width; // row
 
-            mapTexture.SetPixel(x, y, BLACK);
+            mapTexture.SetPixel(x, y, GRAY);
         }
         mapTexture.Apply();
     }
