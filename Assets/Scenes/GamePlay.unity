@@ -1027,6 +1027,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridArea: {fileID: 1242246800}
   snake: {fileID: 624845952}
+  opponentSnake: {fileID: 0}
   wallLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -1207,8 +1208,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPrefab: {fileID: 6874129864492939515, guid: 6a7fe4e399aea6349aa76cc1567a9428, type: 3}
+  bodyContainer: {fileID: 0}
   gameManager: {fileID: 1741257627}
   scoreManager: {fileID: 616454441}
+  darknessManager: {fileID: 0}
+  OnFoodEaten:
+    m_PersistentCalls:
+      m_Calls: []
+  keyType: 0
+  reverseMovement: 0
 --- !u!1 &631863847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2828,10 +2836,17 @@ MonoBehaviour:
   pauseMenu: {fileID: 1745688539}
   lostMenu: {fileID: 1314489508}
   snake: {fileID: 624845952}
+  secondSnake: {fileID: 0}
   scoreManager: {fileID: 616454441}
   timer: {fileID: 1390239444}
   door: {fileID: 1602164144}
+  food: {fileID: 620879146}
+  ai_Snake: {fileID: 0}
+  gridArea: {fileID: 1242246800}
   LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}
+  color1: {r: 0, g: 0.8867924, b: 0.08328986, a: 0}
+  color2: {r: 0, g: 0.64705884, b: 0.023529412, a: 0}
+  wallContainer: {fileID: 608004691}
 --- !u!1 &1745688539
 GameObject:
   m_ObjectHideFlags: 0

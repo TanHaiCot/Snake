@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Food : MonoBehaviour
 {
@@ -9,7 +9,7 @@ public class Food : MonoBehaviour
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
 
-    [SerializeField] LayerMask wallLayer; 
+    [SerializeField] LayerMask wallLayer;
 
     private void Start()
     {
