@@ -8,7 +8,7 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] int targetScore;
     [SerializeField] TextMeshProUGUI scoreText;
 
-    public UnityEvent<int, int> OnScoreChanged;   // have not used this yet, but useful for future
+    public UnityEvent<int, int> OnScoreChanged;   
     public UnityEvent OnTargetReached;
 
     int currentScore;
@@ -33,7 +33,8 @@ public class ScoreManager : MonoBehaviour
         }
         UpdateUI();
 
-        OnScoreChanged?.Invoke(currentScore, targetScore);   // have not used this yet, but useful for future
+        OnScoreChanged?.Invoke(currentScore, targetScore);   
+
         if (TargetReached)
         {
             OnTargetReached?.Invoke(); 
