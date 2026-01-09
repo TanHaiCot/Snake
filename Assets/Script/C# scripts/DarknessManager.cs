@@ -36,7 +36,7 @@ public class DarknessManager : MonoBehaviour
             SetAlpha(tile.Value, 1f);
         }
 
-        Vector2Int startPotition = WorldToGrid(snake.position); 
+        Vector2Int startPotition = WorldToCell(snake.position); 
 
         Queue<Vector2Int> posQueue = new Queue<Vector2Int>();
         HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
@@ -77,7 +77,7 @@ public class DarknessManager : MonoBehaviour
         
     }
 
-    private Vector2Int WorldToGrid(Vector3 worldPos)
+    private Vector2Int WorldToCell(Vector3 worldPos)
     {
         return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
@@ -112,6 +112,5 @@ public class DarknessManager : MonoBehaviour
                 darkTiles[pos] = sr;
             }
         }
-
     }
 }
