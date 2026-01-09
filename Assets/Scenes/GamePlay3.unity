@@ -2004,6 +2004,9 @@ MonoBehaviour:
   gameManager: {fileID: 1741257627}
   scoreManager: {fileID: 616454441}
   darknessManager: {fileID: 0}
+  OnFoodEaten:
+    m_PersistentCalls:
+      m_Calls: []
   keyType: 0
   reverseMovement: 0
 --- !u!1 &631863847
@@ -4294,6 +4297,8 @@ MonoBehaviour:
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
   color1: {r: 0, g: 0, b: 0, a: 0}
   color2: {r: 0, g: 0, b: 0, a: 0}
+  wallContainer: {fileID: 85069639}
+  wallMode: 2
 --- !u!1 &1745688539
 GameObject:
   m_ObjectHideFlags: 0

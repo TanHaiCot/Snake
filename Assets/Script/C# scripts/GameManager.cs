@@ -8,6 +8,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public enum WallMode
+    {
+        Original,
+        GreyOutOnScore,
+        AllGreyed
+    }
+
     [Header("UI Components")]
     [SerializeField] GameObject pauseMenu;
     [SerializeField] GameObject lostMenu;
@@ -40,14 +47,15 @@ public class GameManager : MonoBehaviour
     private static readonly Color32 DARK_GREEN = new Color32(0, 165, 6, 220);
 
     private static readonly Color32 LIGHT_GRAY = new Color32(170, 170, 170, 220);
-    private static readonly Color32 DARK_GRAY = new Color32(130, 130, 130, 220);
+    private static readonly Color32 DARK_GRAY = new Color32(140, 140, 140, 220);
 
 
     [Header("Walls")]
-    [SerializeField] private Transform wallContainer; 
+    [SerializeField] private Transform wallContainer;
+    [SerializeField] private WallMode wallMode = WallMode.Original;
 
     private static readonly Color32 defaultWallColor = new Color32(120, 75, 30, 255);
-    private static readonly Color32 greyWallColor = new Color32(100, 100, 100, 255);
+    private static readonly Color32 greyWallColor = new Color32(75, 75, 75, 255);
 
     private List<SpriteRenderer> wallRenderers = new List<SpriteRenderer>();
     private HashSet<SpriteRenderer> greyedWalls = new HashSet<SpriteRenderer>();
@@ -78,7 +86,8 @@ public class GameManager : MonoBehaviour
 
         CreateMap();
         InitWalls();
-        ApplyMapStatus(); 
+        ApplyMapStatus();
+        ApplyWallMode(); 
     }
 
     public void Update()
@@ -190,12 +199,28 @@ public class GameManager : MonoBehaviour
 
             greyedWalls.Add(chosen); 
             chosen.color = greyWallColor;
+        }
+    }
 
-            if(MapStatus.Instance != null)
-            {
-                Vector2Int cellPos = WorldToCell(chosen.transform.position);
-                MapStatus.Instance.GreyedWallPositions.Add(cellPos);
-            }
+    private void ApplyWallMode()
+    {
+        if(wallRenderers == null) return;
+
+        switch (wallMode)
+        {
+            case WallMode.Original:
+                break;
+
+            case WallMode.GreyOutOnScore:
+                break;
+
+            case WallMode.AllGreyed:
+                foreach(var sr in wallRenderers)
+                {
+                    sr.color = greyWallColor;
+                    greyedWalls.Add(sr);
+                }
+                break;
         }
     }
 
@@ -250,7 +275,10 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
-        if(current == target - 1 && wallGreyOutWave < 1)
+        if(wallMode != WallMode.GreyOutOnScore)
+            return;
+
+        if (current == target - 1 && wallGreyOutWave < 1)
         {
             GreyOutRandomWalls(3);
             wallGreyOutWave = 1; 
@@ -265,7 +293,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleFoodEaten()
     {
-        GreyOutRandomTiles(100); 
+        GreyOutRandomTiles(500); 
     }
 
     private void OnDisable()
@@ -341,21 +369,8 @@ public class GameManager : MonoBehaviour
             }
         }
         mapTexture.Apply();
-
-        if(wallRenderers != null)
-        {
-            foreach(var sr in wallRenderers)
-            {
-                Vector2Int cellPos = WorldToCell(sr.transform.position);
-                if(MapStatus.Instance.GreyedWallPositions.Contains(cellPos))
-                {
-                    sr.color = greyWallColor;
-                    greyedWalls.Add(sr);   //greyedWalls was cleared in InitWalls(), so we need to add it back here
-                }
-            }   
-        } 
-        
     }
+
     public void Resume()
     {
         pauseMenu.SetActive(false);

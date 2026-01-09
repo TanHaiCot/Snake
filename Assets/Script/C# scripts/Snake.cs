@@ -232,7 +232,7 @@ public class Snake : MonoBehaviour
 
         if (collision.CompareTag("Next Level Trigger"))
         {
-            SceneManager.LoadScene("GamePlay2");
+            SceneManager.LoadScene("GamePlay3");
         }
     }
 }

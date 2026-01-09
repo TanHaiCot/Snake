@@ -3317,7 +3317,8 @@ MonoBehaviour:
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
   color1: {r: 0, g: 0, b: 0, a: 0}
   color2: {r: 0, g: 0, b: 0, a: 0}
-  wallContainer: {fileID: 0}
+  wallContainer: {fileID: 85069639}
+  wallMode: 1
 --- !u!1 &1745688539
 GameObject:
   m_ObjectHideFlags: 0
