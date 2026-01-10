@@ -43,8 +43,8 @@ public class GameManager : MonoBehaviour
     private bool[] isLightColorTile;
     private Texture2D mapTexture;
 
-    private static readonly Color32 LIGHT_GREEN = new Color32(0, 226, 21, 220);
-    private static readonly Color32 DARK_GREEN = new Color32(0, 165, 6, 220);
+    private static readonly Color32 LIGHT_GREEN = new Color32(0, 226, 21, 255);
+    private static readonly Color32 DARK_GREEN = new Color32(0, 165, 6, 255);
 
     private static readonly Color32 LIGHT_GRAY = new Color32(170, 170, 170, 220);
     private static readonly Color32 DARK_GRAY = new Color32(140, 140, 140, 220);

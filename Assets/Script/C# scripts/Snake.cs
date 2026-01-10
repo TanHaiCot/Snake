@@ -191,7 +191,7 @@ public class Snake : MonoBehaviour
     public void Restate()
     {
         direction = Vector2Int.right;
-        this.transform.position = new Vector3(10, 10, 0);
+        this.transform.position = new Vector3(0, 0, 0);
 
         for (int i = 1; i < bodies.Count; i++)
         {
