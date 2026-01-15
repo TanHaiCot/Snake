@@ -199,7 +199,7 @@ GameObject:
   m_Component:
   - component: {fileID: 220702245}
   m_Layer: 0
-  m_Name: CountdownTimer
+  m_Name: UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,7 +214,7 @@ Transform:
   m_GameObject: {fileID: 220702244}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.6015172, y: 5.632084, z: 0.10493569}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -927,12 +927,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 616454440}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -25.219645, y: -2.4572165, z: 0.2518742}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1790016287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &620879142
 GameObject:
@@ -2173,6 +2173,7 @@ RectTransform:
   m_Children:
   - {fileID: 1390239443}
   - {fileID: 1467603273}
+  - {fileID: 2116618413}
   m_Father: {fileID: 220702245}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2941,6 +2942,7 @@ Transform:
   - {fileID: 1741257626}
   - {fileID: 602504149}
   - {fileID: 1239357049}
+  - {fileID: 616454442}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1807575896
@@ -3612,12 +3614,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2116618410}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -960, y: -540, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1344073962}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1699445278153417241
 PrefabInstance:
@@ -3823,11 +3825,9 @@ SceneRoots:
   - {fileID: 620879145}
   - {fileID: 1242246801}
   - {fileID: 1745688540}
-  - {fileID: 2116618413}
   - {fileID: 1314489509}
   - {fileID: 220702245}
   - {fileID: 6037067301012278269}
-  - {fileID: 616454442}
   - {fileID: 7852819120062008130}
   - {fileID: 608004691}
   - {fileID: 1790016287}

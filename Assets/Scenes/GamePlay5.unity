@@ -1572,8 +1572,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bodyPrefab: {fileID: 6874129864492939515, guid: 6a7fe4e399aea6349aa76cc1567a9428, type: 3}
+  bodyContainer: {fileID: 0}
   gameManager: {fileID: 1741257627}
   scoreManager: {fileID: 616454441}
+  darknessManager: {fileID: 0}
+  OnFoodEaten:
+    m_PersistentCalls:
+      m_Calls: []
   keyType: 0
   reverseMovement: 1
 --- !u!1 &631863847
@@ -3302,12 +3307,18 @@ MonoBehaviour:
   pauseMenu: {fileID: 1745688539}
   lostMenu: {fileID: 1314489508}
   snake: {fileID: 624845952}
+  secondSnake: {fileID: 0}
   scoreManager: {fileID: 616454441}
   timer: {fileID: 1390239444}
   door: {fileID: 1602164144}
   food: {fileID: 0}
   ai_Snake: {fileID: 0}
+  gridArea: {fileID: 1242246800}
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
+  color1: {r: 0, g: 0, b: 0, a: 0}
+  color2: {r: 0, g: 0, b: 0, a: 0}
+  wallContainer: {fileID: 0}
+  wallMode: 0
 --- !u!1 &1745688539
 GameObject:
   m_ObjectHideFlags: 0
