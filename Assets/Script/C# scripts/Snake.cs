@@ -15,6 +15,7 @@ public class Snake : MonoBehaviour
     [SerializeField] GameManager gameManager;
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] DarknessManager darknessManager;
+    [SerializeField] Energy energy;
 
     public UnityEvent OnFoodEaten;
 
@@ -226,6 +227,9 @@ public class Snake : MonoBehaviour
             Grow();
             if(scoreManager)
                 scoreManager.AddScore(1);
+
+            if(energy)
+                energy.AddEnergy(10f);
 
             OnFoodEaten?.Invoke();
         }
