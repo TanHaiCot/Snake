@@ -22,8 +22,8 @@ public class MapStatus : MonoBehaviour
         Instance = this;
         transform.SetParent(null); 
         DontDestroyOnLoad(gameObject);
-       
     }   
+
 
         
 }
