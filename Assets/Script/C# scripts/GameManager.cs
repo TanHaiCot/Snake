@@ -57,8 +57,6 @@ public class GameManager : MonoBehaviour
         }
         
         mapManager.InitAndBuildMap();
-        //ApplyMapStatus();
-       
     }
 
     public void Update()
@@ -76,18 +74,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    private Vector2Int WorldToCell(Vector3 worldPos)
-    {
-        return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
-    }
-
-   
-
-  
-
-    
-
     private void OnEnable()
     {
         if (timer)
@@ -102,7 +88,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
-        if(mapManager.CurrentWallMode == MapManager.WallMode.GreyOutOnScore)
+        if(mapManager.CurrentWallMode != MapManager.WallMode.GreyOutOnScore)
             return;
 
         if (current == target - 1 && wallGreyOutWave < 1)
@@ -120,7 +106,7 @@ public class GameManager : MonoBehaviour
 
     private void HandleFoodEaten()
     {
-        mapManager.GreyOutRandomTiles(500); 
+        mapManager.GreyOutRandomTiles(50); 
     }
 
     private void OnDisable()
@@ -152,51 +138,9 @@ public class GameManager : MonoBehaviour
         {
             isLevelCompleted = true;
             door.Open();
-
-            //SaveMapStatus(); 
-
-            // Load next level or show win screen
-            Debug.Log("Level Completed!");
+            mapManager.SaveMapStatus(); 
         }
     }
-
-    //private void SaveMapStatus()
-    //{
-    //    if(MapStatus.Instance == null)
-    //        return;
-
-    //    MapStatus.Instance.width = mapTexture.width;
-    //    MapStatus.Instance.height = mapTexture.height;
-
-    //    if(isGreyedTile == null)
-    //        isGreyedTile = new bool[mapTexture.width * mapTexture.height];
-
-    //    MapStatus.Instance.greyedTiles = (bool[])isGreyedTile.Clone();   
-    //}
-
-    //private void ApplyMapStatus()
-    //{
-    //    if(MapStatus.Instance == null || MapStatus.Instance.greyedTiles == null)
-    //        return;
-
-    //    if(MapStatus.Instance.width != mapTexture.width || MapStatus.Instance.height != mapTexture.height)
-    //        return;
-            
-    //    isGreyedTile = (bool[])MapStatus.Instance.greyedTiles.Clone();
-       
-    //    for(int i = 0; i < isGreyedTile.Length; i++)
-    //    {
-    //        if(isGreyedTile[i])
-    //        {
-    //            int x = i % mapTexture.width;
-    //            int y = i / mapTexture.width;
-
-    //            Color32 grey = isLightColorTile[i] ? LIGHT_GRAY : DARK_GRAY;
-    //            mapTexture.SetPixel(x, y, grey);
-    //        }
-    //    }
-    //    mapTexture.Apply();
-    //}
 
     public void Resume()
     {
@@ -215,6 +159,8 @@ public class GameManager : MonoBehaviour
     public void Restart()
     {
         Time.timeScale = 1f;
+
+        mapManager.InitAndBuildMap(); 
 
         snake.Restate();
         food.RandomizedSpawn();

@@ -236,6 +236,7 @@ public class Snake : MonoBehaviour
 
         if (collision.CompareTag("Next Level Trigger"))
         {
+            gameManager.WinLevel();
             SceneManagement.Instance.NextLevel();
         }
     }

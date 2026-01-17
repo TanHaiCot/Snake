@@ -43,7 +43,8 @@ public class MapManager : MonoBehaviour
     {
         CreateMap();
         InitWalls();
-        ApplyWallMode();    
+        ApplyWallStatus();
+        ApplyMapStatus();
     }
 
     // ---------- Tiles Code ----------
@@ -82,21 +83,27 @@ public class MapManager : MonoBehaviour
             for (int y = 0; y < mapHeight; y++)
             {
                 int index = y * mapWidth + x;
-                bool light = (x % 2 == y % 2);
-
-                isLightColorTile[index] = light;
-                mapTexture.SetPixel(x, y, light ? LIGHT_GREEN : DARK_GREEN);
+                if (x % 2 != 0 && y % 2 != 0 || x % 2 == 0 && y % 2 == 0)
+                {
+                    mapTexture.SetPixel(x, y, LIGHT_GREEN);
+                    isLightColorTile[index] = true;
+                }
+                else
+                {
+                    mapTexture.SetPixel(x, y, DARK_GREEN);
+                    isLightColorTile[index] = false;
+                }
             }
-
-            mapTexture.filterMode = FilterMode.Point;
-            mapTexture.Apply();
-
-            Rect rect = new Rect(0, 0, mapWidth, mapHeight);
-            Sprite sprite = Sprite.Create(mapTexture, rect, new Vector2(0f, 0f), 1f, 0, SpriteMeshType.FullRect);
-            mapRenderer.sprite = sprite;
-
-            mapRenderer.transform.position = mapOrigin;
         }
+
+        mapTexture.filterMode = FilterMode.Point;
+        mapTexture.Apply();
+
+        Rect rect = new Rect(0, 0, mapWidth, mapHeight);
+        Sprite sprite = Sprite.Create(mapTexture, rect, new Vector2(0f, 0f), 1f, 0, SpriteMeshType.FullRect);
+        mapRenderer.sprite = sprite;
+
+        mapRenderer.transform.position = mapOrigin;
     }
 
     public void GreyOutRandomTiles(int count)
@@ -178,7 +185,7 @@ public class MapManager : MonoBehaviour
         }
     }
 
-    private void ApplyWallMode()
+    private void ApplyWallStatus()
     {
         if (wallMode != WallMode.AllGreyed) return;
 
@@ -188,4 +195,54 @@ public class MapManager : MonoBehaviour
             greyedWalls.Add(sr);
         }
     }
+
+    public void SaveMapStatus()
+    {
+        if (MapStatus.Instance == null || mapTexture == null)
+            return;
+
+        MapStatus.Instance.SaveTiles(mapTexture.width, mapTexture.height, isGreyedTile);
+
+        MapStatus.Instance.ClearWalls();
+        //foreach (var sr in greyedWalls)  //may not be used but so far so good for now 
+        //{
+        //    Vector2Int cell = WorldToCell(sr.transform.position);
+        //    MapStatus.Instance.GreyedWallPositions.Add(cell);
+        //}
+
+    }
+
+    private void ApplyMapStatus()
+    {
+        if(MapStatus.Instance == null || mapTexture == null)
+            return;
+
+        if (MapStatus.Instance.IsTheMapValidToSave(mapTexture.width, mapTexture.height))
+        {
+            isGreyedTile = (bool[])MapStatus.Instance.greyedTiles.Clone();
+
+            for (int i = 0; i < isGreyedTile.Length; i++)
+            {
+                if (isGreyedTile[i])
+                {
+                    int x = i % mapTexture.width;
+                    int y = i / mapTexture.width;
+                    Color32 grey = isLightColorTile[i] ? LIGHT_GRAY : DARK_GRAY;
+                    mapTexture.SetPixel(x, y, grey);
+
+                }            
+            }
+
+            mapTexture.Apply();
+        }
+    }
+
+    //private Vector2Int WorldToCell(Vector3 worldPos)
+    //{
+    //    // Your tiles are drawn with origin at (minX-0.5, minY-0.5)
+    //    // Convert world to tile index coordinates.
+    //    float localX = worldPos.x - mapOrigin.x;
+    //    float localY = worldPos.y - mapOrigin.y;
+    //    return new Vector2Int(Mathf.RoundToInt(localX), Mathf.RoundToInt(localY));
+    //}
 }

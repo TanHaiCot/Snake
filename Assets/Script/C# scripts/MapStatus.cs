@@ -24,6 +24,20 @@ public class MapStatus : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }   
 
+    public void SaveTiles(int w, int h, bool[] greyed)
+    {
+        width = w;
+        height = h;
+        greyedTiles = (bool[])greyed.Clone();
+    }
 
-        
+    public bool IsTheMapValidToSave(int w, int h)
+    {
+        return greyedTiles != null && width == w && height == h;
+    }
+
+    public void ClearWalls()
+    {
+        GreyedWallPositions.Clear();
+    }
 }
