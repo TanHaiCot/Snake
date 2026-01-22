@@ -52,7 +52,7 @@ public class SnakeAbilities : MonoBehaviour
 
     private void HandleDashing()
     {
-        if (Input.GetKeyDown(dashKey) && isDashingCooldown == false)
+        if (Input.GetKeyDown(dashKey) && isDashingCooldown == false && energy.CurrentEnergy >= dashEnergyCost)
         {
             TryDash();
             isDashingCooldown = true;
@@ -72,7 +72,7 @@ public class SnakeAbilities : MonoBehaviour
 
     private void HandleGhostMode()
     {
-        if (Input.GetKeyDown(ghostModeKey) && isGhostModeCooldown == false)
+        if (Input.GetKeyDown(ghostModeKey) && isGhostModeCooldown == false && energy.CurrentEnergy >= ghostModeEnergyDrainPerSecond) 
         {
             ToggleGhostMode();
             //isGhostModeCooldown = true;
@@ -97,7 +97,7 @@ public class SnakeAbilities : MonoBehaviour
             if (Time.time < ghostModeReadyTime)
                 return;
 
-            if (energy != null && energy.CurrentEnergy < minEnergyForGhostMode)
+            if (energy != null && energy.CurrentEnergy < ghostModeEnergyDrainPerSecond)
                 return;
             
             ghostModeRequested = true;
