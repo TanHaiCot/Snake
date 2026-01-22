@@ -1,24 +1,24 @@
-using System;
-using System.Diagnostics.Contracts;
-using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SnakeAbilities : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] Energy energy;
 
-    [Header("Input")]
-    [SerializeField] private KeyCode dashKey = KeyCode.E;
-    [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
-
     [Header("Dash")]
+    [SerializeField] private KeyCode dashKey = KeyCode.E;
+    [SerializeField] private Image dashImage;
+    private bool isDashingCooldown; 
     private float dashSpeedMultiplier = 4f;
     private float dashDuration = 0.15f;
     private float dashCooldown = 0.8f;
     private float dashEnergyCost = 10f;
 
     [Header("Ghost Mode (Go Through Walls)")]
+    [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
+    [SerializeField] private Image ghostModeImage;
+    private bool isGhostModeCooldown;
     private float ghostModeCooldown = 3.0f;
     private float ghostModeEnergyDrainPerSecond = 5.0f;
     private float minEnergyForGhostMode = 15.0f;
@@ -34,20 +34,60 @@ public class SnakeAbilities : MonoBehaviour
 
     public bool GhostActive => ghostModeRequested || ghostModeStepsRemaining > 0;
 
+    private void Start()
+    {
+        dashImage.fillAmount = 0f;
+        ghostModeImage.fillAmount = 0f;
+
+        isDashingCooldown = false;
+        isGhostModeCooldown = false;
+    }
+
     private void Update()
     {
-        HandleInput();
+        HandleDashing();
+        HandleGhostMode();
         GhostModeEnergyDrain();
     }
 
-    private void HandleInput()
+    private void HandleDashing()
     {
-        if (Input.GetKeyDown(dashKey))
+        if (Input.GetKeyDown(dashKey) && isDashingCooldown == false)
+        {
             TryDash();
+            isDashingCooldown = true;
+            dashImage.fillAmount = 1f;
+        }
 
+        if(isDashingCooldown)
+        {
+            dashImage.fillAmount -= 1f / dashCooldown * Time.deltaTime;
+            if(dashImage.fillAmount <= 0f)
+            {
+                dashImage.fillAmount = 0f;
+                isDashingCooldown = false;
+            }
+        }
+    }
 
-        if (Input.GetKeyDown(ghostModeKey))
+    private void HandleGhostMode()
+    {
+        if (Input.GetKeyDown(ghostModeKey) && isGhostModeCooldown == false)
+        {
             ToggleGhostMode();
+            //isGhostModeCooldown = true;
+            ghostModeImage.fillAmount = 1f;
+        }
+
+        if(isGhostModeCooldown)
+        {
+            ghostModeImage.fillAmount -= 1f / ghostModeCooldown * Time.deltaTime;
+            if(ghostModeImage.fillAmount <= 0f)
+            {
+                ghostModeImage.fillAmount = 0f;
+                isGhostModeCooldown = false;
+            }
+        }
     }
 
     private void ToggleGhostMode()
@@ -59,12 +99,13 @@ public class SnakeAbilities : MonoBehaviour
 
             if (energy != null && energy.CurrentEnergy < minEnergyForGhostMode)
                 return;
-
+            
             ghostModeRequested = true;
             return;
         }
 
         ghostModeRequested = false;
+        isGhostModeCooldown = true;
         ghostModeReadyTime = Time.time + ghostModeCooldown;
     }
 
@@ -79,6 +120,7 @@ public class SnakeAbilities : MonoBehaviour
         if (!stillHaveEnergyToSpend)
         {
             ghostModeRequested = false;
+            isGhostModeCooldown = true;
             ghostModeReadyTime = Time.time + ghostModeCooldown;
         }
         
