@@ -16,6 +16,7 @@ public class Snake : MonoBehaviour
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] DarknessManager darknessManager;
     [SerializeField] Energy energy;
+    [SerializeField] SnakeAbilities snakeAbilities;
 
     public UnityEvent OnFoodEaten;
 
@@ -23,7 +24,7 @@ public class Snake : MonoBehaviour
 
     private int initialBodyPart = 4;
 
-    private float nextMoveTime;
+    private float moveTimer; 
 
     private bool isInputLockOpened;  //work as a lock to prevent multiple direction change in one tick
 
@@ -118,11 +119,16 @@ public class Snake : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(Time.time < nextMoveTime)
-            return;
-        
-        nextMoveTime = Time.time + (1.0f / speed);
-        
+        float effectiveSpeed = snakeAbilities != null ? snakeAbilities.ModifySpeed(speed) : speed;
+
+        float intervalForA_Move = 1.0f / effectiveSpeed;   //time waiting for a move
+
+        moveTimer += Time.fixedDeltaTime;
+        if (moveTimer < intervalForA_Move)
+            return; 
+
+        moveTimer -= intervalForA_Move;
+
         UpdateHeadRotation();
 
         // next position of the snake head at the same tick
@@ -136,6 +142,8 @@ public class Snake : MonoBehaviour
             return;
         }
 
+        bool nextIsWallOrDoor = false;
+
         //check all the collision on the world space to see which one is overlap with the next position
         var hits = Physics2D.OverlapPointAll(new Vector2(nextX, nextY));
         foreach (var hit in hits)
@@ -148,7 +156,25 @@ public class Snake : MonoBehaviour
                     gameManager.GameOver();
                     //return;
                 }
+
+                if (hit.CompareTag("Wall") || hit.CompareTag("Door"))
+                {
+                    nextIsWallOrDoor = true; 
+                }
             }
+        }
+
+        if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
+        {
+            Debug.Log("Hit wall/door");
+            gameManager.GameOver();
+            return;
+        }
+
+        // If entering wall/door while ghost active -> start "finish passing" buffer
+        if (nextIsWallOrDoor && snakeAbilities != null && snakeAbilities.GhostActive)
+        {
+            snakeAbilities.NotifyHeadEnteredWall(bodies.Count);
         }
 
         for (int i = bodies.Count - 1; i > 0; i--)
@@ -157,8 +183,9 @@ public class Snake : MonoBehaviour
         }
         transform.position = new Vector3(nextX, nextY, 0);
 
+        snakeAbilities?.AfterSnakeMoved();
 
-        if(darknessManager != null)
+        if (darknessManager != null)
             darknessManager.UpdateVisibility(); //Update visibility after snake move (newest head position)
 
 

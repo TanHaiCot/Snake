@@ -8,12 +8,19 @@ public class Food : MonoBehaviour
    
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
+    [SerializeField] ScoreManager scoreManager;
 
     [SerializeField] LayerMask wallLayer;
 
     private void Start()
     {
+        scoreManager.OnTargetReached.AddListener(HandleTargetReached);
         RandomizedSpawn(); 
+    }
+
+    private void HandleTargetReached()
+    {
+        this.gameObject.SetActive(false);
     }
 
     public void RandomizedSpawn()

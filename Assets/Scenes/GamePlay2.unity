@@ -1607,6 +1607,7 @@ MonoBehaviour:
   gridArea: {fileID: 1242246800}
   snake: {fileID: 624845952}
   opponentSnake: {fileID: 0}
+  scoreManager: {fileID: 616454441}
   wallLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1792,6 +1793,7 @@ MonoBehaviour:
   scoreManager: {fileID: 616454441}
   darknessManager: {fileID: 0}
   energy: {fileID: 0}
+  snakeAbilities: {fileID: 0}
   OnFoodEaten:
     m_PersistentCalls:
       m_Calls: []
