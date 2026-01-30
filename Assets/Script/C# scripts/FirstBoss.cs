@@ -27,9 +27,9 @@ public class FirstBoss : MonoBehaviour
 
     [Header("Boss Settings")]
     int initialBodySegments = 3;   
-    private float moveSpeed = 10f;          // steps/sec
+    private float moveSpeed = 12f;          // steps/sec
     private float dashSpeed = 22f;          // steps/sec during dash
-    private float dashTriggerRange = 5f;
+    private float dashTriggerRange = 10f;
     private int currentDashDistance; 
     private int maxDashDistance = 8; 
     private float laggingDelay = 0.2f;       // seconds between steps when lagging
@@ -40,7 +40,9 @@ public class FirstBoss : MonoBehaviour
 
     public Vector2Int AnchorCell { get; private set; }
 
-    private List<Transform> bossBodies = new(); 
+    private List<Transform> bossBodies = new();
+    int bossBodyGap = 2; 
+    private List<Vector2Int> headPosHistory = new();    
 
     private float moveTimer;
     private float stateTimer;
@@ -83,13 +85,15 @@ public class FirstBoss : MonoBehaviour
 
 
         moveTimer += Time.fixedDeltaTime;
-        while (moveTimer >= interval) 
+        if (moveTimer >= interval) 
         {
             moveTimer -= interval;
             MakeMovement(); 
+            RecordHeadPosition(AnchorCell);
+            UpdateBody();
+            UpdateHeadRotation();
         }
 
-        UpdateHeadRotation();
 
     }
 
@@ -269,7 +273,7 @@ public class FirstBoss : MonoBehaviour
             if (nextDistance < closestDistance)
             {
                 closestDistance = nextDistance;
-                bestDir = direction;
+                bestDir = dir;
             }
         }
 
@@ -330,6 +334,30 @@ public class FirstBoss : MonoBehaviour
         return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
 
+    private void RecordHeadPosition(Vector2Int headPos)
+    {
+        headPosHistory.Insert(0, headPos);
+
+        int requiredHistoryLength = (bossBodies.Count - 1) * bossBodyGap + 5;  // extra buffer
+        if(headPosHistory.Count > requiredHistoryLength)
+        {
+            headPosHistory.RemoveRange(requiredHistoryLength,headPosHistory.Count - requiredHistoryLength);
+        }
+    }
+
+    private void UpdateBody()
+    {
+        for (int i = 1; i < bossBodies.Count; i++)
+        {
+            int historyIndex = i * bossBodyGap;
+            if (historyIndex < headPosHistory.Count)
+            {
+                Vector2Int bodyCell = headPosHistory[historyIndex];
+                bossBodies[i].position = new Vector3(bodyCell.x + 0.5f, bodyCell.y + 0.5f, 0);
+            }
+        }
+    }
+
     private void Restate()
     {
         AnchorCell = new Vector2Int(0, 0);
@@ -343,6 +371,13 @@ public class FirstBoss : MonoBehaviour
         bossBodies.Clear();
         bossBodies.Add(transform);
 
+        headPosHistory.Clear();
+
+        // Fill with the current cell so all segments start aligned
+        int required = (initialBodySegments) * bossBodyGap + 10;
+        for (int i = 0; i < required; i++)
+            headPosHistory.Add(AnchorCell);
+       
         for (int i = 0; i < initialBodySegments; i++)
             Grow();
     }
