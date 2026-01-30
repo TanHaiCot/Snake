@@ -210,7 +210,8 @@ public class Snake : MonoBehaviour
 
     public void Grow()
     {
-        Transform body = Instantiate(bodyPrefab, bodyContainer);
+        Transform body = Instantiate(bodyPrefab);
+        body.SetParent(bodyContainer);
         body.position = bodies[bodies.Count - 1].position;
         bodies.Add(body);
 

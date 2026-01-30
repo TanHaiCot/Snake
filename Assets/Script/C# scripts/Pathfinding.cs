@@ -47,7 +47,7 @@ public class Pathfinding : MonoBehaviour
 
     private bool IsWalkable(Vector2Int position)
     {
-        if(position.x < minX || position.x >= maxX || position.y < minY || position.y >= maxY)
+        if(position.x < minX || position.x > maxX || position.y < minY || position.y > maxY)
             return false;
 
         Collider2D obstacles = Physics2D.OverlapBox(new Vector2(position.x, position.y), new Vector2(0.9f, 0.9f), 0, wallLayer);

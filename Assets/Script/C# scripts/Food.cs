@@ -31,6 +31,7 @@ public class Food : MonoBehaviour
         int maxX = Mathf.RoundToInt(bounds.max.x);
         int minY = Mathf.RoundToInt(bounds.min.y);
         int maxY = Mathf.RoundToInt(bounds.max.y);
+        Debug.Log($"Grid bounds: minX={minX}, maxX={maxX}, minY={minY}, maxY={maxY}");
 
         List<Vector2Int> freeSpots = new List<Vector2Int>((maxX - minX + 1) * (maxY - minY + 1));
         for (int y = minY; y < maxY; y++)

@@ -24,7 +24,7 @@ public class SnakeAbilities : MonoBehaviour
     private float minEnergyForGhostMode = 15.0f;
 
     //dash state
-    private float dashActiveTime;
+    private float dashActiveTime;  // when dash effect ends
     private float dashReadyTime;
 
     //ghost mode state
