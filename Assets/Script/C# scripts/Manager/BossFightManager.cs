@@ -2,19 +2,57 @@ using UnityEngine;
 
 public class BossFightManager : MonoBehaviour
 {
-    public bool PlayerEmpowered => empowerTimer > 0f;   
+    [Header("References")]
+    [SerializeField] private SnakeAbilities snakeAbilities;
+    [SerializeField] private Energy energy;
+    [SerializeField] private FirstBoss firstBoss;
 
-    private float empowerTimer; 
+    [Header("Empower Settings")]
+    private float empowerDuration = 6f;
+    private float energyFilledOnEmpower = 999f;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Boss HP")]
+    private int bossHP = 5;
+
+    private float empowerEndTime;
+    private bool isEmpowered;
+    private int bossHits; 
+
+    private void Start()
     {
-        
+        if(snakeAbilities != null)
+            snakeAbilities.enabled = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        if (!isEmpowered) return;
         
+        if(Time.time > empowerEndTime)
+        {
+            isEmpowered = false;    
+            if(snakeAbilities != null)
+                snakeAbilities.enabled = false;
+            return; 
+        }    
+
+        if(energy != null) 
+            energy.AddEnergy(energyFilledOnEmpower * Time.deltaTime);
+    }
+
+    public void OnBossFoodEaten()
+    {
+        isEmpowered = true;
+        empowerEndTime = Time.time + empowerDuration;
+
+        if (snakeAbilities != null)
+            snakeAbilities.enabled = true;
+    }
+
+    public void RegisterBossHit()
+    {
+        bossHits++;
+        if (bossHits >= bossHP)
+            firstBoss?.Die();
     }
 }

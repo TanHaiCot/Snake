@@ -27,7 +27,7 @@ public class FirstBoss : MonoBehaviour
 
     [Header("Boss Settings")]
     int initialBodySegments = 3;   
-    private float moveSpeed = 12f;          // steps/sec
+    private float moveSpeed = 5f;          // steps/sec
     private float dashSpeed = 22f;          // steps/sec during dash
     private float dashTriggerRange = 10f;
     private int currentDashDistance; 
@@ -41,8 +41,9 @@ public class FirstBoss : MonoBehaviour
     public Vector2Int AnchorCell { get; private set; }
 
     private List<Transform> bossBodies = new();
-    int bossBodyGap = 2; 
-    private List<Vector2Int> headPosHistory = new();    
+    //int bossBodyGap = 2;
+    const int BossCellSize = 2;
+    private List<Vector2Int> anchorHistory = new();    
 
     private float moveTimer;
     private float stateTimer;
@@ -89,7 +90,7 @@ public class FirstBoss : MonoBehaviour
         {
             moveTimer -= interval;
             MakeMovement(); 
-            RecordHeadPosition(AnchorCell);
+            RecordAnchor();
             UpdateBody();
             UpdateHeadRotation();
         }
@@ -171,7 +172,7 @@ public class FirstBoss : MonoBehaviour
     {
         currentDashDistance++;  
         
-        Vector2Int next = AnchorCell + direction;
+        Vector2Int next = AnchorCell + direction * BossCellSize;
 
         if (!IsWalkable2x2(next))
         {
@@ -224,7 +225,7 @@ public class FirstBoss : MonoBehaviour
 
     private void TryToMove(Vector2Int dir)
     {
-        Vector2Int next = AnchorCell + dir;
+        Vector2Int next = AnchorCell + dir * BossCellSize;
 
         if (IsWalkable2x2(next))
         {
@@ -235,7 +236,7 @@ public class FirstBoss : MonoBehaviour
         Vector2Int otherWay = ChooseAnyWalkableWay();
         if (otherWay != Vector2Int.zero)
         {
-            SetAnchor(AnchorCell + otherWay); 
+            SetAnchor(AnchorCell + otherWay * BossCellSize); 
         }
     }
 
@@ -243,7 +244,7 @@ public class FirstBoss : MonoBehaviour
     {
         foreach(var dir in directions)
         {
-            if (IsWalkable2x2(AnchorCell + dir))
+            if (IsWalkable2x2(AnchorCell + dir * BossCellSize))
                 return dir;
         }
 
@@ -264,7 +265,7 @@ public class FirstBoss : MonoBehaviour
 
         foreach(var dir in directions)
         {
-            Vector2Int next = AnchorCell + dir;
+            Vector2Int next = AnchorCell + dir * BossCellSize;
             if(!IsWalkable2x2(next))
                 continue;   
 
@@ -287,7 +288,7 @@ public class FirstBoss : MonoBehaviour
 
         foreach (var dir in directions)
         {
-            Vector2Int next = AnchorCell + dir;
+            Vector2Int next = AnchorCell + dir * BossCellSize;
             if (!IsWalkable2x2(next)) continue;
 
             int score = GetDistance(next, targetCell);
@@ -334,14 +335,14 @@ public class FirstBoss : MonoBehaviour
         return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
     }
 
-    private void RecordHeadPosition(Vector2Int headPos)
+    private void RecordAnchor()
     {
-        headPosHistory.Insert(0, headPos);
+        anchorHistory.Insert(0, AnchorCell);
 
-        int requiredHistoryLength = (bossBodies.Count - 1) * bossBodyGap + 5;  // extra buffer
-        if(headPosHistory.Count > requiredHistoryLength)
+        int requiredHistoryLength = bossBodies.Count +  5;  // extra buffer
+        if(anchorHistory.Count > requiredHistoryLength)
         {
-            headPosHistory.RemoveRange(requiredHistoryLength,headPosHistory.Count - requiredHistoryLength);
+            anchorHistory.RemoveRange(requiredHistoryLength, anchorHistory.Count - requiredHistoryLength);
         }
     }
 
@@ -349,11 +350,10 @@ public class FirstBoss : MonoBehaviour
     {
         for (int i = 1; i < bossBodies.Count; i++)
         {
-            int historyIndex = i * bossBodyGap;
-            if (historyIndex < headPosHistory.Count)
+            if (i < anchorHistory.Count)
             {
-                Vector2Int bodyCell = headPosHistory[historyIndex];
-                bossBodies[i].position = new Vector3(bodyCell.x + 0.5f, bodyCell.y + 0.5f, 0);
+                Vector2Int a = anchorHistory[i];
+                bossBodies[i].position = new Vector3(a.x + 0.5f, a.y + 0.5f, 0);
             }
         }
     }
@@ -371,12 +371,12 @@ public class FirstBoss : MonoBehaviour
         bossBodies.Clear();
         bossBodies.Add(transform);
 
-        headPosHistory.Clear();
+        //headPosHistory.Clear();
 
-        // Fill with the current cell so all segments start aligned
-        int required = (initialBodySegments) * bossBodyGap + 10;
-        for (int i = 0; i < required; i++)
-            headPosHistory.Add(AnchorCell);
+        //// Fill with the current cell so all segments start aligned
+        //int required = (initialBodySegments) * bossBodyGap + 10;
+        //for (int i = 0; i < required; i++)
+        //    headPosHistory.Add(AnchorCell);
        
         for (int i = 0; i < initialBodySegments; i++)
             Grow();
@@ -389,5 +389,13 @@ public class FirstBoss : MonoBehaviour
         Transform body = Instantiate(bossBodyPrefab);
         body.position = bossBodies[bossBodies.Count - 1].position;
         bossBodies.Add(body); 
+    }
+
+    public void Die()
+    {
+        state = BossState.Die;
+        // simple: destroy bodies
+        for (int i = 0; i < bossBodies.Count; i++)
+            if (bossBodies[i] != null) Destroy(bossBodies[i].gameObject);
     }
 }
