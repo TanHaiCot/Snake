@@ -394,7 +394,6 @@ public class FirstBoss : MonoBehaviour
     public void Die()
     {
         state = BossState.Die;
-        // simple: destroy bodies
         for (int i = 0; i < bossBodies.Count; i++)
             if (bossBodies[i] != null) Destroy(bossBodies[i].gameObject);
     }
