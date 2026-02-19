@@ -167,11 +167,11 @@ public class Snake : MonoBehaviour
         if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
             Debug.Log("Hit wall/door");
-            gameManager.GameOver();
+            //gameManager.GameOver();
             return;
         }
 
-        // If entering wall/door while ghost active -> start "finish passing" buffer
+        // let player finish the move thru wall if the ghost mode is off but the bodies still not yet thru wall
         if (nextIsWallOrDoor && snakeAbilities != null && snakeAbilities.GhostActive)
         {
             snakeAbilities.NotifyHeadEnteredWall(bodies.Count);

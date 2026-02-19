@@ -40,7 +40,7 @@ public class Energy : MonoBehaviour
     public void AddEnergy(float amount)
     {
         currentEnergy += amount;
-        Debug.Log($"Energy increased by {amount}, current energy: {currentEnergy}");
+        //Debug.Log($"Energy increased by {amount}, current energy: {currentEnergy}");
     }
 
     public bool TryConsumeEnergy(float amount)

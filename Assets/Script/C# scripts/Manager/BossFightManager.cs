@@ -18,6 +18,8 @@ public class BossFightManager : MonoBehaviour
     private bool isEmpowered;
     private int bossHits; 
 
+    public bool IsEmpowered => isEmpowered;
+
     private void Start()
     {
         if(snakeAbilities != null)
@@ -40,7 +42,7 @@ public class BossFightManager : MonoBehaviour
             energy.AddEnergy(energyFilledOnEmpower * Time.deltaTime);
     }
 
-    public void OnBossFoodEaten()
+    public void OnBossPowerUpEaten()
     {
         isEmpowered = true;
         empowerEndTime = Time.time + empowerDuration;
@@ -56,3 +58,6 @@ public class BossFightManager : MonoBehaviour
             firstBoss?.Die();
     }
 }
+
+
+
