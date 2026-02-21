@@ -132,7 +132,7 @@ public class SnakeAbilities : MonoBehaviour
             ghostModeStepsRemaining = Mathf.Max(1, snakeLength);
     }
 
-    public void AfterSnakeMoved()
+    public void GhostModeRemaining()
     {
         if(ghostModeStepsRemaining > 0)
             ghostModeStepsRemaining--;

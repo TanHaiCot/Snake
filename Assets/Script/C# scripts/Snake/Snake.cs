@@ -150,7 +150,7 @@ public class Snake : MonoBehaviour
         {
             if (hit != null && hit.gameObject != this.gameObject)
             {
-                if (/*hit.CompareTag("Wall") || hit.CompareTag("Door") ||*/ hit.CompareTag("Opponent Snake"))
+                if (hit.CompareTag("Opponent Snake"))
                 {
                     Debug.Log("Hit snake");
                     gameManager.GameOver();
@@ -168,7 +168,7 @@ public class Snake : MonoBehaviour
         {
             Debug.Log("Hit wall/door");
             //gameManager.GameOver();
-            return;
+            //return;
         }
 
         // let player finish the move thru wall if the ghost mode is off but the bodies still not yet thru wall
@@ -183,7 +183,7 @@ public class Snake : MonoBehaviour
         }
         transform.position = new Vector3(nextX, nextY, 0);
 
-        snakeAbilities?.AfterSnakeMoved();
+        snakeAbilities?.GhostModeRemaining();
 
         if (darknessManager != null)
             darknessManager.UpdateVisibility(); //Update visibility after snake move (newest head position)
