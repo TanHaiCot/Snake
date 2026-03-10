@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -65,23 +66,29 @@ public class FirstBoss : MonoBehaviour
 
     // pathfiding variables
     private float repathInterval = 0.2f;
-    private int maxVisitedNodes = 2000;
+    private int maxVisitedNodes = 20000;
     private float repathTimer;
     private readonly List<Vector2Int> currentPath = new();
-    private int pathIndex; 
+    private int pathIndex;
 
+    private Vector2Int lastDir = Vector2Int.zero;
 
     private void Start()
     {
         Bounds bound = gridArea.bounds;
-        minX = Mathf.RoundToInt(bound.min.x);
-        maxX = Mathf.RoundToInt(bound.max.x);
-        minY = Mathf.RoundToInt(bound.min.y);
-        maxY = Mathf.RoundToInt(bound.max.y);
-        
+        //minX = Mathf.RoundToInt(bound.min.x);
+        //maxX = Mathf.RoundToInt(bound.max.x);
+        //minY = Mathf.RoundToInt(bound.min.y);
+        //maxY = Mathf.RoundToInt(bound.max.y);
+        minX = Mathf.FloorToInt(bound.min.x);
+        maxX = Mathf.CeilToInt(bound.max.x);
+        minY = Mathf.FloorToInt(bound.min.y);
+        maxY = Mathf.CeilToInt(bound.max.y);
+
         Debug.Log($"Boss movement bounds: minX={minX}, maxX={maxX}, minY={minY}, maxY={maxY}");
 
-        Restate(); 
+        Restate();
+        Debug.Log($"Boss start anchor={AnchorCell} walkable={IsWalkable2x2(AnchorCell)}");
     }
 
     private void Update()
@@ -237,7 +244,7 @@ public class FirstBoss : MonoBehaviour
         }
         
         Vector2Int playerPos = WorldToGrid(player.position);
-        int distace = GetDistance(AnchorCell, playerPos);
+        //int distace = GetDistance(AnchorCell, playerPos);
 
         if (CanSeePlayer(playerPos, out var dashDir))
         {
@@ -246,43 +253,52 @@ public class FirstBoss : MonoBehaviour
             return;
         }
 
-        UpdatePathToPlayer(playerPos, Time.fixedDeltaTime);
+        // Pathfind to a REACHABLE anchor near player (fixes “unreachable goal” oscillation)
+        Vector2Int goalAnchor = GetBestReachableGoalAnchorNearPlayer(playerPos);
+
+        UpdatePathToPlayer(goalAnchor, Time.fixedDeltaTime);
 
         if (!TryFollowPathStep())
         {
-            Vector2Int anyway = ChooseAnyWalkableWay();
-            if(anyway != Vector2Int.zero) 
-                TryToMove(anyway);
+            Vector2Int anyway = ChooseBestWayTowards(goalAnchor);
+            TryToMove(anyway);
         }
     }
 
     private void TryToMove(Vector2Int dir)
+    {
+        Vector2Int next = AnchorCell + dir * BossCellSize;
+
+        if (IsWalkable2x2(next))
         {
-            Vector2Int next = AnchorCell + dir * BossCellSize;
-
-            if (IsWalkable2x2(next))
-            {
-                SetAnchor(next);
-                return;
-            }
-
-            Vector2Int otherWay = ChooseAnyWalkableWay();
-            if (otherWay != Vector2Int.zero)
-            {
-                SetAnchor(AnchorCell + otherWay * BossCellSize); 
-            }
+            direction = dir; // update direction
+            SetAnchor(next);
+            return;
         }
+
+        Vector2Int otherWay = ChooseAnyWalkableWay();
+        if (otherWay != Vector2Int.zero && IsWalkable2x2(AnchorCell + otherWay * BossCellSize))
+        {
+            direction = otherWay;
+            SetAnchor(AnchorCell + otherWay * BossCellSize); 
+        }
+    }
 
     private Vector2Int ChooseAnyWalkableWay()
-        {
-            foreach(var dir in directions)
-            {
-                if (IsWalkable2x2(AnchorCell + dir * BossCellSize))
-                    return dir;
-            }
+    {
+        Vector2Int reverse = -lastDir;
 
-            return Vector2Int.zero; 
+        foreach (var dir in directions)
+        {
+            if (dir == reverse) continue;
+            if (IsWalkable2x2(AnchorCell + dir * BossCellSize))
+                return dir;
         }
+        if (reverse != Vector2Int.zero && IsWalkable2x2(AnchorCell + reverse * BossCellSize))
+            return reverse;
+
+        return Vector2Int.zero; 
+    }
 
     private void Lagging()
         {
@@ -292,45 +308,59 @@ public class FirstBoss : MonoBehaviour
 
     private Vector2Int ChooseBestWayTowards(Vector2Int targetPos)
         {
-            Vector2Int bestDir = direction;
-            int closestDistance = int.MaxValue;
+            Vector2Int bestDir = Vector2Int.zero;
+            int bestDistance = int.MaxValue;
 
-            foreach(var dir in directions)
+        Vector2Int reverse = -lastDir;
+
+        foreach (var dir in directions)
             {
+            if (dir == reverse) continue;
                 Vector2Int next = AnchorCell + dir * BossCellSize;
                 if(!IsWalkable2x2(next))
                     continue;   
 
                 int nextDistance = GetDistance(next, targetPos);
 
-                if (nextDistance < closestDistance)
+                if (nextDistance < bestDistance)
                 {
-                    closestDistance = nextDistance;
+                    bestDistance = nextDistance;
                     bestDir = dir;
                 }
             }
 
-            return bestDir;
+        if (bestDir == Vector2Int.zero && reverse != Vector2Int.zero && IsWalkable2x2(AnchorCell + reverse * BossCellSize))
+            bestDir = reverse;
+
+        return bestDir;
         }
 
     private Vector2Int ChooseBestWayToRunAway(Vector2Int targetCell)
         {
-            Vector2Int bestDir = direction;
-            int bestScore = int.MinValue;
+            Vector2Int bestDir = Vector2Int.zero;
+            int bestDistance = int.MinValue;
 
-            foreach (var dir in directions)
+        Vector2Int reverse = -lastDir;
+
+        foreach (var dir in directions)
             {
+            if (dir == reverse) continue;
+
                 Vector2Int next = AnchorCell + dir * BossCellSize;
                 if (!IsWalkable2x2(next)) continue;
 
-                int score = GetDistance(next, targetCell);
-                if (score > bestScore)
+                int nextDistance = GetDistance(next, targetCell);
+                if (nextDistance > bestDistance)
                 {
-                    bestScore = score;
+                bestDistance = nextDistance;
                     bestDir = dir;
                 }
             }
-            return bestDir;
+
+        if (bestDir == Vector2Int.zero && reverse != Vector2Int.zero && IsWalkable2x2(AnchorCell + reverse * BossCellSize))
+            bestDir = reverse;
+
+        return bestDir;
         }
 
     private bool IsWalkable2x2(Vector2Int anchor)
@@ -338,11 +368,8 @@ public class FirstBoss : MonoBehaviour
         if (anchor.x < minX || anchor.x + 1 > maxX || anchor.y < minY || anchor.y + 1 > maxY)
             return false;
 
-        Vector2 center = new Vector2(anchor.x + 0.5f, anchor.y + 0.5f); 
-        if (Physics2D.OverlapBox(center, new Vector2(1.9f, 1.9f), 0f, obstacleLayer) != null)
-            return false;
-
-        return true;    
+        Vector2 center = new Vector2(anchor.x + 0.5f, anchor.y + 0.5f);
+        return Physics2D.OverlapBox(center, new Vector2(1.9f, 1.9f), 0f, obstacleLayer) == null;
     }
 
     private int GetDistance(Vector2Int a, Vector2Int b)
@@ -351,15 +378,20 @@ public class FirstBoss : MonoBehaviour
         }
 
     private void SetAnchor(Vector2Int newAnchor)
-        {
-            for(int i = bossBodies.Count - 1; i > 0 ; i--)
-            {
-                bossBodies[i].position = bossBodies[i - 1].position;
-            }   
+    {
+        //for(int i = bossBodies.Count - 1; i > 0 ; i--)
+        //{
+        //    bossBodies[i].position = bossBodies[i - 1].position;
+        //}   
+        Vector2Int delta = newAnchor - AnchorCell;
+        if (delta == new Vector2Int(BossCellSize, 0)) lastDir = Vector2Int.right;
+        else if (delta == new Vector2Int(-BossCellSize, 0)) lastDir = Vector2Int.left;
+        else if (delta == new Vector2Int(0, BossCellSize)) lastDir = Vector2Int.up;
+        else if (delta == new Vector2Int(0, -BossCellSize)) lastDir = Vector2Int.down;
 
-            AnchorCell = newAnchor;
-            transform.position = new Vector3(newAnchor.x + 0.5f, newAnchor.y + 0.5f, 0); 
-        }
+        AnchorCell = newAnchor;
+        transform.position = new Vector3(newAnchor.x + 0.5f, newAnchor.y + 0.5f, 0); 
+    }
 
     private Vector2Int WorldToGrid(Vector3 worldPos)
         {
@@ -391,7 +423,7 @@ public class FirstBoss : MonoBehaviour
 
     private void Restate()
         {
-            AnchorCell = new Vector2Int(0, 0);
+            AnchorCell = new Vector2Int(2, -2);
             transform.position = new Vector3(AnchorCell.x + 0.5f, AnchorCell.y + 0.5f, 0);
 
             for (int i = 1; i < bossBodies.Count; i++)
@@ -486,7 +518,55 @@ public class FirstBoss : MonoBehaviour
         return false; 
     }
 
+    private Vector2Int GetBestReachableGoalAnchorNearPlayer(Vector2Int playerCell)
+    {
+        // Candidate anchors that make the 2x2 overlap around the player.
+        // (Because anchor is bottom-left of 2x2)
+        var candidates = new List<Vector2Int>
+        {
+            new Vector2Int(playerCell.x, playerCell.y),
+            new Vector2Int(playerCell.x-1, playerCell.y),
+            new Vector2Int(playerCell.x, playerCell.y-1),
+            new Vector2Int(playerCell.x-1, playerCell.y-1),
+        };
 
+        Vector2Int best = ParityCheck(candidates[0]);
+        int bestDist = int.MaxValue;
+        bool found = false;
+
+        foreach (var c in candidates)
+        {
+            Vector2Int check = ParityCheck(c);
+            if (!IsWalkable2x2(check)) continue;
+
+            int d = GetDistance(check, playerCell);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = check;
+                found = true;
+            }
+        }
+
+        // If none walkable, still return a parity-snapped position near player.
+        if (!found)
+            best = ParityCheck(playerCell);
+
+        return best;
+    }
+
+    // Ensure (candidate - AnchorCell) is divisible by 2 in both axes,
+    // otherwise the boss can NEVER reach it using +/-2 steps.
+    private Vector2Int ParityCheck(Vector2Int candidate)
+    {
+        int dx = candidate.x - AnchorCell.x;
+        int dy = candidate.y - AnchorCell.y;
+
+        if ((dx & 1) != 0) candidate.x += (dx > 0) ? 1 : -1;
+        if ((dy & 1) != 0) candidate.y += (dy > 0) ? 1 : -1;
+
+        return candidate;
+    }
 
 
     private class ANode
@@ -506,18 +586,19 @@ public class FirstBoss : MonoBehaviour
         }
     }
 
-    private bool FindPath2x2_AStar(Vector2Int startAnchor, Vector2Int playerPos, List<Vector2Int> path)
+    private bool FindPath2x2_AStar(Vector2Int startAnchor, Vector2Int goal, List<Vector2Int> path)
     {
         path.Clear();
 
         if (!IsWalkable2x2(startAnchor))
-            return false; 
+            return false;
+        if (!IsWalkable2x2(goal)) return false;
 
         List<ANode> openList = new();
         Dictionary<Vector2Int, ANode> allNodes = new();
         HashSet<Vector2Int> closedSet = new();
 
-        ANode start = new(startAnchor, 0, GetDistance(startAnchor, playerPos), null); 
+        ANode start = new(startAnchor, 0, GetDistance(startAnchor, goal), null); 
         openList.Add(start);
         allNodes[startAnchor] = start;
 
@@ -536,18 +617,19 @@ public class FirstBoss : MonoBehaviour
             }
             openList.Remove(currentNode);
             allNodes.Remove(currentNode.position);
+            closedSet.Add(currentNode.position);
 
             visitedNodes++;
-            if (visitedNodes > maxVisitedNodes) break;
+            if (visitedNodes > maxVisitedNodes) return false;
 
+            //int stopDistance = 4; 
             //goal is to get close enough to player so that the boss can dash
-            if (GetDistance(currentNode.position, playerPos) <= dashTriggerRange)
+            if (currentNode.position == goal)  /*dashTriggerRange*/
             {
                 RetracePath(currentNode, path);
                 return path.Count > 0;
             }
 
-            closedSet.Add(currentNode.position);
 
             foreach(var dir in directions)
             {
@@ -555,8 +637,8 @@ public class FirstBoss : MonoBehaviour
                 if (closedSet.Contains(neighborPos) || !IsWalkable2x2(neighborPos))
                     continue;
 
-                int gCost = currentNode.gCost + GetDistance(currentNode.position, neighborPos);
-                int hCost = GetDistance(neighborPos, playerPos);
+                int gCost = currentNode.gCost + BossCellSize;
+                int hCost = GetDistance(neighborPos, goal);
                 if (allNodes.TryGetValue(neighborPos, out ANode existingNode))
                 {
                     if (gCost < existingNode.gCost)
@@ -589,7 +671,7 @@ public class FirstBoss : MonoBehaviour
         path.Reverse();
     }
 
-    private void UpdatePathToPlayer(Vector2Int playerCell, float dt)
+    private void UpdatePathToPlayer(Vector2Int goalAnchor, float dt)
     {
         repathTimer -= dt;
         if (repathTimer > 0f) return;
@@ -599,7 +681,7 @@ public class FirstBoss : MonoBehaviour
         currentPath.Clear();
         pathIndex = 0;
 
-        if (FindPath2x2_AStar(AnchorCell, playerCell, currentPath))
+        if (FindPath2x2_AStar(AnchorCell, goalAnchor, currentPath))
         {
             // currentPath[0] is current anchor
             pathIndex = 1; // next step
