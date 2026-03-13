@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BossFightManager : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class BossFightManager : MonoBehaviour
     {
         if(snakeAbilities != null)
             snakeAbilities.enabled = false;
+   
+
     }
 
     private void Update()
@@ -32,8 +35,9 @@ public class BossFightManager : MonoBehaviour
         
         if(Time.time > empowerEndTime)
         {
-            isEmpowered = false;    
-            if(snakeAbilities != null)
+            isEmpowered = false;   
+            energy.TryConsumeEnergy(energyFilledOnEmpower); //energy turn to 0 when empower ends
+            if (snakeAbilities != null && snakeAbilities.dashImage.fillAmount == 1 && snakeAbilities.ghostModeImage.fillAmount == 1)
                 snakeAbilities.enabled = false;
             return; 
         }    

@@ -1,12 +1,15 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Energy : MonoBehaviour
 {
     [SerializeField] Image[] energyPoints;
 
     float currentEnergy;
+    float startEnergy = 50f;
     float maxEnergy = 100f;
 
     public float CurrentEnergy => currentEnergy;
@@ -14,13 +17,24 @@ public class Energy : MonoBehaviour
 
     private void Start()
     {
-        currentEnergy = 50f;
+        if (SceneManager.GetActiveScene().name == "Boss1Fight")
+            startEnergy = 0; 
+
+        currentEnergy = startEnergy;
+
     }
 
     private void Update()
     {
         if (currentEnergy > maxEnergy) currentEnergy = maxEnergy;
 
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log("Current Energy: " + currentEnergy);
+            if (currentEnergy <= 0)
+                Debug.Log("Energy no more!");
+
+        }
         UpdateEnergyUI();
     }
 

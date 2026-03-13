@@ -7668,7 +7668,7 @@ MonoBehaviour:
   ai_Snake: {fileID: 0}
   gridArea: {fileID: 1242246800}
   mapManager: {fileID: 1239357050}
-  LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}
+  LevelData: {fileID: 11400000, guid: 73e68d783bbb2ed4f864f509d81e98a2, type: 2}
 --- !u!1001 &1743946232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10668,6 +10668,10 @@ PrefabInstance:
     - target: {fileID: 1200333499866220205, guid: 1e10536d9afe9ea44aaf241260005064, type: 3}
       propertyPath: m_Name
       value: Food
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200333499866220205, guid: 1e10536d9afe9ea44aaf241260005064, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3926746537000911492, guid: 1e10536d9afe9ea44aaf241260005064, type: 3}
       propertyPath: m_LocalPosition.x

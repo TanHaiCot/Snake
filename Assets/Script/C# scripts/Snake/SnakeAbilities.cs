@@ -8,7 +8,7 @@ public class SnakeAbilities : MonoBehaviour
 
     [Header("Dash")]
     [SerializeField] private KeyCode dashKey = KeyCode.E;
-    [SerializeField] private Image dashImage;
+    public Image dashImage;
     private bool isDashingCooldown; 
     private float dashSpeedMultiplier = 4f;
     private float dashDuration = 0.15f;
@@ -17,11 +17,11 @@ public class SnakeAbilities : MonoBehaviour
 
     [Header("Ghost Mode (Go Through Walls)")]
     [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
-    [SerializeField] private Image ghostModeImage;
+    public Image ghostModeImage;
     private bool isGhostModeCooldown;
     private float ghostModeCooldown = 3.0f;
     private float ghostModeEnergyDrainPerSecond = 5.0f;
-    private float minEnergyForGhostMode = 15.0f;
+    //private float minEnergyForGhostMode = 15.0f;
 
     //dash state
     private float dashActiveTime;  // when dash effect ends
@@ -48,6 +48,8 @@ public class SnakeAbilities : MonoBehaviour
         HandleDashing();
         HandleGhostMode();
         GhostModeEnergyDrain();
+
+        
     }
 
     private void HandleDashing()

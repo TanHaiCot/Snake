@@ -20,7 +20,7 @@ public class Snake : MonoBehaviour
 
     public UnityEvent OnFoodEaten;
 
-    private float speed = 8f; 
+    private float speed = 10f; 
 
     private int initialBodyPart = 4;
 
@@ -154,7 +154,7 @@ public class Snake : MonoBehaviour
                 {
                     Debug.Log("Hit snake");
                     gameManager.GameOver();
-                    //return;
+                    return;
                 }
 
                 if (hit.CompareTag("Wall") || hit.CompareTag("Door"))
@@ -166,7 +166,7 @@ public class Snake : MonoBehaviour
 
         if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
-            Debug.Log("Hit wall/door");
+            //Debug.Log("Hit wall/door");
             //gameManager.GameOver();
             //return;
         }
@@ -220,7 +220,7 @@ public class Snake : MonoBehaviour
     public void Restate()
     {
         direction = Vector2Int.right;
-        this.transform.position = new Vector3(0, 0, 0);
+        this.transform.position = new Vector3(-3, -10, 0);
 
         for (int i = 1; i < bodies.Count; i++)
         {

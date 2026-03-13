@@ -6,5 +6,6 @@ public class LevelData : ScriptableObject
     [Header("Level Requirements")]
     public int targetScore;
     public float timeLimit; // in seconds
+    //public int initialEnergy; // starting energy for the player
 
 }
