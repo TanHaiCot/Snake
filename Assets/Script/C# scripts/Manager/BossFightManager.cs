@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,7 +9,7 @@ public class BossFightManager : MonoBehaviour
     [SerializeField] private SnakeAbilities snakeAbilities;
     [SerializeField] private Energy energy;
     [SerializeField] private FirstBoss firstBoss;
-
+    [SerializeField] private GameManager gameManager; 
     [Header("Empower Settings")]
     private float empowerDuration = 6f;
     private float energyFilledOnEmpower = 999f;
@@ -17,7 +19,8 @@ public class BossFightManager : MonoBehaviour
 
     private float empowerEndTime;
     private bool isEmpowered;
-    private int bossHits; 
+    private int bossHits;
+    private bool collisionLocked; // to prevent multiple collision handling in one hit\
 
     public bool IsEmpowered => isEmpowered;
 
@@ -25,20 +28,18 @@ public class BossFightManager : MonoBehaviour
     {
         if(snakeAbilities != null)
             snakeAbilities.enabled = false;
-   
-
     }
 
     private void Update()
     {
+        if (collisionLocked && firstBoss != null && firstBoss.IsDangerous)        
+            collisionLocked = false;
+        
         if (!isEmpowered) return;
         
         if(Time.time > empowerEndTime)
         {
-            isEmpowered = false;   
-            energy.TryConsumeEnergy(energyFilledOnEmpower); //energy turn to 0 when empower ends
-            if (snakeAbilities != null && snakeAbilities.dashImage.fillAmount == 1 && snakeAbilities.ghostModeImage.fillAmount == 1)
-                snakeAbilities.enabled = false;
+            EmpowerEnd();
             return; 
         }    
 
@@ -55,12 +56,52 @@ public class BossFightManager : MonoBehaviour
             snakeAbilities.enabled = true;
     }
 
+
+    private void EmpowerEnd()
+    {
+        if(!isEmpowered) return;
+
+        isEmpowered = false;
+
+        if(energy != null)
+            energy.TryConsumeEnergy(energyFilledOnEmpower); //energy turn to 0 when empower ends
+
+        if(snakeAbilities != null)
+            snakeAbilities.enabled = false;
+    }
+
+    public bool HandleCollisionBetweenSnakeAndBoss()
+    {
+       
+        if (firstBoss == null) return false;
+
+        // Ignore collision while boss is stunned or dead
+        if (!firstBoss.IsDangerous) return false;
+
+        if (collisionLocked) return true;
+
+        collisionLocked = true;
+
+        if (isEmpowered)
+        {
+            RegisterBossHit();
+            EmpowerEnd();
+            firstBoss.StunnedByHit();
+            return false; 
+        }
+        else
+        {
+            gameManager.GameOver();
+            return true;
+        }
+    }
     public void RegisterBossHit()
     {
         bossHits++;
         if (bossHits >= bossHP)
             firstBoss?.Die();
     }
+
 }
 
 

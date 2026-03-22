@@ -36,6 +36,7 @@ public class FirstBoss : MonoBehaviour
     private int maxDashDistance = 8; 
     private float laggingDelay = 0.2f;       // seconds between steps when lagging
     private float stunDuration = 3f;
+    private float stunByHitDuration = 5f;     // stun time when player hits boss (e.g. with empowered bite)
 
     [Header("Power-up Drop")]
     [SerializeField] GameObject powerUpPrefab;
@@ -73,17 +74,16 @@ public class FirstBoss : MonoBehaviour
 
     private Vector2Int lastDir = Vector2Int.zero;
 
+    public bool IsDangerous => state != BossState.Die && state != BossState.Stunned;
+
     private void Start()
     {
         Bounds bound = gridArea.bounds;
-        //minX = Mathf.RoundToInt(bound.min.x);
-        //maxX = Mathf.RoundToInt(bound.max.x);
-        //minY = Mathf.RoundToInt(bound.min.y);
-        //maxY = Mathf.RoundToInt(bound.max.y);
-        minX = Mathf.FloorToInt(bound.min.x);
-        maxX = Mathf.CeilToInt(bound.max.x);
-        minY = Mathf.FloorToInt(bound.min.y);
-        maxY = Mathf.CeilToInt(bound.max.y);
+        minX = Mathf.RoundToInt(bound.min.x);
+        maxX = Mathf.RoundToInt(bound.max.x);
+        minY = Mathf.RoundToInt(bound.min.y);
+        maxY = Mathf.RoundToInt(bound.max.y);
+
 
         Debug.Log($"Boss movement bounds: minX={minX}, maxX={maxX}, minY={minY}, maxY={maxY}");
 
@@ -120,7 +120,7 @@ public class FirstBoss : MonoBehaviour
         if (moveTimer >= interval) 
         {
             moveTimer -= interval;
-            MakeMovement(); 
+            TakeAction(); 
             RecordAnchor();
             UpdateBody();
             UpdateHeadRotation();
@@ -164,6 +164,44 @@ public class FirstBoss : MonoBehaviour
 
     }
 
+
+    private bool CrossesCellDuringMove(Vector2Int fromAnchor, Vector2Int toAnchor, Vector2Int cell)
+    {
+        int minX = Mathf.Min(fromAnchor.x, toAnchor.x);
+        int maxX = Mathf.Max(fromAnchor.x + 1, toAnchor.x + 1);
+        int minY = Mathf.Min(fromAnchor.y, toAnchor.y);
+        int maxY = Mathf.Max(fromAnchor.y + 1, toAnchor.y + 1);
+
+        return cell.x >= minX && cell.x <= maxX &&
+               cell.y >= minY && cell.y <= maxY;
+    }
+
+
+
+    private bool MoveBossAndCheckCollisionWithPlayer(Vector2Int nextAnchor)
+    {
+        if (!IsWalkable2x2(nextAnchor))
+            return false;
+
+        Vector2Int oldAnchor = AnchorCell;
+        SetAnchor(nextAnchor);
+
+        if (bossFightManager != null && player != null)
+        {
+            Vector2Int playerCell = WorldToGrid(player.position);
+            
+            bool hitPlayer = CrossesCellDuringMove(oldAnchor, nextAnchor, playerCell);
+
+            if (hitPlayer) 
+                bossFightManager.HandleCollisionBetweenSnakeAndBoss();
+            
+        } 
+
+        return true;
+      
+
+    }
+
     private void UpdateHeadRotation()
     {
         float angle = 0f;
@@ -179,7 +217,7 @@ public class FirstBoss : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    private void MakeMovement()
+    private void TakeAction()
     {
         if (state == BossState.Lagging || state == BossState.Stunned)
             return; // no movement during these
@@ -205,14 +243,12 @@ public class FirstBoss : MonoBehaviour
     
         Vector2Int next = AnchorCell + direction * BossCellSize;
 
-        if (!IsWalkable2x2(next))
+        if (!MoveBossAndCheckCollisionWithPlayer(next))
         {
             Stunned();
             return;
         }
-
-        SetAnchor(next);
-
+   
         if (currentDashDistance >= maxDashDistance)
         {
             state = BossState.Chasing;
@@ -223,8 +259,15 @@ public class FirstBoss : MonoBehaviour
     {
         state = BossState.Stunned;
         stateTimer = stunDuration;  
-
         SpawnPowerPickup();
+    }
+
+    public void StunnedByHit()
+    {
+        state = BossState.Stunned;
+        stateTimer = stunByHitDuration;
+        currentPath.Clear();
+        pathIndex = 0;
     }
 
     private void Flee()
@@ -256,6 +299,7 @@ public class FirstBoss : MonoBehaviour
         // Pathfind to a REACHABLE anchor near player (fixes “unreachable goal” oscillation)
         Vector2Int goalAnchor = GetBestReachableGoalAnchorNearPlayer(playerPos);
 
+      
         UpdatePathToPlayer(goalAnchor, Time.fixedDeltaTime);
 
         if (!TryFollowPathStep())
@@ -269,18 +313,20 @@ public class FirstBoss : MonoBehaviour
     {
         Vector2Int next = AnchorCell + dir * BossCellSize;
 
-        if (IsWalkable2x2(next))
+        if (MoveBossAndCheckCollisionWithPlayer(next))
         {
             direction = dir; // update direction
-            SetAnchor(next);
             return;
         }
 
         Vector2Int otherWay = ChooseAnyWalkableWay();
-        if (otherWay != Vector2Int.zero && IsWalkable2x2(AnchorCell + otherWay * BossCellSize))
+        if (otherWay != Vector2Int.zero)
         {
-            direction = otherWay;
-            SetAnchor(AnchorCell + otherWay * BossCellSize); 
+            Vector2Int fallback = AnchorCell + otherWay * BossCellSize;
+            if (MoveBossAndCheckCollisionWithPlayer(fallback))
+            {
+                direction = otherWay;
+            }
         }
     }
 
@@ -422,28 +468,26 @@ public class FirstBoss : MonoBehaviour
         }
 
     private void Restate()
-        {
-            AnchorCell = new Vector2Int(2, -2);
-            transform.position = new Vector3(AnchorCell.x + 0.5f, AnchorCell.y + 0.5f, 0);
+    {
+        AnchorCell = new Vector2Int(2, -2);
+        transform.position = new Vector3(AnchorCell.x + 0.5f, AnchorCell.y + 0.5f, 0);
+    
+        for (int i = 1; i < bossBodies.Count; i++)
+            if (bossBodies[i] != null)
+                Destroy(bossBodies[i].gameObject);
+    
+    
+        bossBodies.Clear();
+        bossBodies.Add(transform);
+    
+        anchorHistory.Clear();
+        currentPath.Clear();
+        pathIndex = 0;
+        lastDir = Vector2Int.zero;
 
-            for (int i = 1; i < bossBodies.Count; i++)
-                if (bossBodies[i] != null)
-                    Destroy(bossBodies[i].gameObject);
-
-
-            bossBodies.Clear();
-            bossBodies.Add(transform);
-
-            //headPosHistory.Clear();
-
-            //// Fill with the current cell so all segments start aligned
-            //int required = (initialBodySegments) * bossBodyGap + 10;
-            //for (int i = 0; i < required; i++)
-            //    headPosHistory.Add(AnchorCell);
-       
-            for (int i = 0; i < initialBodySegments; i++)
+        for (int i = 0; i < initialBodySegments; i++)
                 Grow();
-        }
+    }
 
     private void Grow()
         {
@@ -705,10 +749,9 @@ public class FirstBoss : MonoBehaviour
         else if (delta.y < 0) direction = Vector2Int.down;
 
         // move now (your existing mover)
-        if (!IsWalkable2x2(nextAnchor))
+        if (!MoveBossAndCheckCollisionWithPlayer(nextAnchor))
             return false;
 
-        SetAnchor(nextAnchor);
         pathIndex++;
         return true;
     }

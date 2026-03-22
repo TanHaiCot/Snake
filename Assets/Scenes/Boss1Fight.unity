@@ -700,7 +700,7 @@ GameObject:
   - component: {fileID: 113663766}
   m_Layer: 0
   m_Name: Snake Bodies
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1932,6 +1932,7 @@ MonoBehaviour:
   snakeAbilities: {fileID: 1940870283}
   energy: {fileID: 1890005380}
   firstBoss: {fileID: 562724364}
+  gameManager: {fileID: 1741257627}
 --- !u!1001 &458541651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10440,11 +10441,11 @@ PrefabInstance:
       objectReference: {fileID: 1620676940}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.11
+      value: -2.89
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.57
+      value: -10.07
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10498,6 +10499,10 @@ PrefabInstance:
       propertyPath: bodyContainer
       value: 
       objectReference: {fileID: 113663766}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: bossFightManager
+      value: 
+      objectReference: {fileID: 456882115}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

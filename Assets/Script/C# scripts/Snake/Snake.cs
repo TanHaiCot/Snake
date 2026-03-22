@@ -17,6 +17,7 @@ public class Snake : MonoBehaviour
     [SerializeField] DarknessManager darknessManager;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
+    [SerializeField] BossFightManager bossFightManager; 
 
     public UnityEvent OnFoodEaten;
 
@@ -152,9 +153,18 @@ public class Snake : MonoBehaviour
             {
                 if (hit.CompareTag("Opponent Snake"))
                 {
-                    Debug.Log("Hit snake");
-                    gameManager.GameOver();
-                    return;
+                    if (bossFightManager == null)
+                    {
+                        gameManager.GameOver();
+                        return; 
+                    }
+                    
+                    bool stopMoving = bossFightManager.HandleCollisionBetweenSnakeAndBoss();
+                    
+                    if (stopMoving)
+                        return;
+
+                    continue; 
                 }
 
                 if (hit.CompareTag("Wall") || hit.CompareTag("Door"))
