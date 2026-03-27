@@ -32,29 +32,45 @@ public class SnakeAbilities : MonoBehaviour
     private int ghostModeStepsRemaining; // keeps ghost active long enough for body to follow
     private float ghostModeReadyTime;
 
+    public bool abilitiesUnlocked; 
+
     public bool GhostActive => ghostModeRequested || ghostModeStepsRemaining > 0;
 
     private void Start()
     {
-        dashImage.fillAmount = 0f;
-        ghostModeImage.fillAmount = 0f;
+        dashImage.fillAmount = 1f;
+        ghostModeImage.fillAmount = 1f;
 
         isDashingCooldown = false;
         isGhostModeCooldown = false;
+        abilitiesUnlocked = false; 
     }
 
     private void Update()
     {
         HandleDashing();
         HandleGhostMode();
-        GhostModeEnergyDrain();
+        GhostModeEnergyDrain();  
+    }
 
-        
+    public void SetAbilitiesUnlocked(bool value)
+    {
+        abilitiesUnlocked = value;
+
+        if(!abilitiesUnlocked)
+        {
+            ghostModeRequested = false;
+        }
+        else
+        {
+            dashImage.fillAmount = 0f;
+            ghostModeImage.fillAmount = 0f;
+        }
     }
 
     private void HandleDashing()
     {
-        if (Input.GetKeyDown(dashKey) && isDashingCooldown == false && energy.CurrentEnergy >= dashEnergyCost)
+        if (abilitiesUnlocked && Input.GetKeyDown(dashKey) && isDashingCooldown == false && energy.CurrentEnergy >= dashEnergyCost)
         {
             TryDash();
             isDashingCooldown = true;
@@ -74,7 +90,7 @@ public class SnakeAbilities : MonoBehaviour
 
     private void HandleGhostMode()
     {
-        if (Input.GetKeyDown(ghostModeKey) && isGhostModeCooldown == false && energy.CurrentEnergy >= ghostModeEnergyDrainPerSecond) 
+        if (abilitiesUnlocked && Input.GetKeyDown(ghostModeKey) && isGhostModeCooldown == false && energy.CurrentEnergy >= ghostModeEnergyDrainPerSecond) 
         {
             ToggleGhostMode();
             //isGhostModeCooldown = true;

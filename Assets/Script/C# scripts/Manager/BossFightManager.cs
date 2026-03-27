@@ -27,7 +27,7 @@ public class BossFightManager : MonoBehaviour
     private void Start()
     {
         if(snakeAbilities != null)
-            snakeAbilities.enabled = false;
+            snakeAbilities.SetAbilitiesUnlocked(false);
     }
 
     private void Update()
@@ -53,7 +53,7 @@ public class BossFightManager : MonoBehaviour
         empowerEndTime = Time.time + empowerDuration;
 
         if (snakeAbilities != null)
-            snakeAbilities.enabled = true;
+            snakeAbilities.SetAbilitiesUnlocked(true);
     }
 
 
@@ -67,7 +67,7 @@ public class BossFightManager : MonoBehaviour
             energy.TryConsumeEnergy(energyFilledOnEmpower); //energy turn to 0 when empower ends
 
         if(snakeAbilities != null)
-            snakeAbilities.enabled = false;
+            snakeAbilities.SetAbilitiesUnlocked(false);
     }
 
     public bool HandleCollisionBetweenSnakeAndBoss()
