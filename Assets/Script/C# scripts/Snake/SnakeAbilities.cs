@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SnakeAbilities : MonoBehaviour
@@ -43,7 +44,11 @@ public class SnakeAbilities : MonoBehaviour
 
         isDashingCooldown = false;
         isGhostModeCooldown = false;
-        abilitiesUnlocked = false; 
+
+        if (SceneManager.GetActiveScene().name == "Boss1Fight")
+            abilitiesUnlocked = false;
+
+        abilitiesUnlocked = true; 
     }
 
     private void Update()
