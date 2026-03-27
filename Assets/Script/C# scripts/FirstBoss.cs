@@ -29,7 +29,8 @@ public class FirstBoss : MonoBehaviour
 
     [Header("Boss Settings")]
     int initialBodySegments = 3;   
-    private float moveSpeed = 10f;          // steps/sec
+    private float chaseSpeed = 7.5f;          // steps/sec
+    private float fleeSpeed = 10f; 
     private float dashSpeed = 22f;          // steps/sec during dash
     private float dashTriggerRange = 10f;
     private int currentDashDistance; 
@@ -112,7 +113,11 @@ public class FirstBoss : MonoBehaviour
         if(state == BossState.Lagging || state == BossState.Stunned)
             return;
 
-        float currentSpeed = (state == BossState.Dashing) ? dashSpeed : moveSpeed;
+        float currentSpeed;
+        if(state == BossState.Dashing) currentSpeed = dashSpeed;
+        else if(state == BossState.Fleeing) currentSpeed = fleeSpeed;
+        else currentSpeed = chaseSpeed;
+
         float interval = 1f / currentSpeed; 
 
 
