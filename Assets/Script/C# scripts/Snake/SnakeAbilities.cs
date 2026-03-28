@@ -9,6 +9,7 @@ public class SnakeAbilities : MonoBehaviour
 
     [Header("Dash")]
     [SerializeField] private KeyCode dashKey = KeyCode.E;
+    [SerializeField] private Image dashLockImage; 
     public Image dashImage;
     private bool isDashingCooldown; 
     private float dashSpeedMultiplier = 4f;
@@ -18,12 +19,14 @@ public class SnakeAbilities : MonoBehaviour
 
     [Header("Ghost Mode (Go Through Walls)")]
     [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
+    [SerializeField] private Image ghostModeLockImage;
     public Image ghostModeImage;
     private bool isGhostModeCooldown;
     private float ghostModeCooldown = 3.0f;
     private float ghostModeEnergyDrainPerSecond = 5.0f;
     //private float minEnergyForGhostMode = 15.0f;
 
+    
     //dash state
     private float dashActiveTime;  // when dash effect ends
     private float dashReadyTime;
@@ -42,20 +45,35 @@ public class SnakeAbilities : MonoBehaviour
         dashImage.fillAmount = 1f;
         ghostModeImage.fillAmount = 1f;
 
-        isDashingCooldown = false;
-        isGhostModeCooldown = false;
+        isDashingCooldown = true;
+        isGhostModeCooldown = true;
 
         if (SceneManager.GetActiveScene().name == "Boss1Fight")
             abilitiesUnlocked = false;
+        else
+            abilitiesUnlocked = true;
 
-        abilitiesUnlocked = true; 
     }
 
     private void Update()
     {
         HandleDashing();
         HandleGhostMode();
-        GhostModeEnergyDrain();  
+        GhostModeEnergyDrain(); 
+        UpdateAbilitiesUI();
+    }
+
+    private void UpdateAbilitiesUI()
+    {
+        bool dashLocked = !abilitiesUnlocked || energy.CurrentEnergy < dashEnergyCost;
+        dashLockImage.gameObject.SetActive(dashLocked);
+        if (dashLocked == true)
+            dashImage.fillAmount = 1f;
+
+        bool ghostModeLocked =!abilitiesUnlocked || energy.CurrentEnergy < ghostModeEnergyDrainPerSecond;
+        ghostModeLockImage.gameObject.SetActive(dashLocked);
+        if(ghostModeLocked == true)
+            ghostModeImage.fillAmount = 1f; 
     }
 
     public void SetAbilitiesUnlocked(bool value)
