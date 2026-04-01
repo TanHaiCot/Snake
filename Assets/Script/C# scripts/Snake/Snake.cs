@@ -177,8 +177,8 @@ public class Snake : MonoBehaviour
         if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
             //Debug.Log("Hit wall/door");
-            //gameManager.GameOver();
-            //return;
+            gameManager.GameOver();
+            return;
         }
 
         // let player finish the move thru wall if the ghost mode is off but the bodies still not yet thru wall
@@ -276,6 +276,22 @@ public class Snake : MonoBehaviour
         {
             gameManager.WinLevel();
             SceneManagement.Instance.NextLevel();
+        }
+    }
+
+    public void SetGhostVisual(bool isGhost)
+    {
+        float alpha = isGhost ? 0.7f : 1f;
+
+        foreach (Transform body in bodies)
+        {
+            SpriteRenderer sr = body.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                Color c = sr.color;
+                c.a = alpha;
+                sr.color = c;
+            }
         }
     }
 }

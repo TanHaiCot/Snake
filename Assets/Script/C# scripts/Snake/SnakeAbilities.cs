@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,7 +10,8 @@ public class SnakeAbilities : MonoBehaviour
 
     [Header("Dash")]
     [SerializeField] private KeyCode dashKey = KeyCode.E;
-    [SerializeField] private Image dashLockImage; 
+    [SerializeField] private Image dashLockImage;
+    [SerializeField] private Image dashLockDarkImage;
     public Image dashImage;
     private bool isDashingCooldown; 
     private float dashSpeedMultiplier = 4f;
@@ -20,6 +22,7 @@ public class SnakeAbilities : MonoBehaviour
     [Header("Ghost Mode (Go Through Walls)")]
     [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
     [SerializeField] private Image ghostModeLockImage;
+    [SerializeField] private Image ghostLockDarkImage;
     public Image ghostModeImage;
     private bool isGhostModeCooldown;
     private float ghostModeCooldown = 3.0f;
@@ -36,7 +39,11 @@ public class SnakeAbilities : MonoBehaviour
     private int ghostModeStepsRemaining; // keeps ghost active long enough for body to follow
     private float ghostModeReadyTime;
 
-    public bool abilitiesUnlocked; 
+    public bool abilitiesUnlocked;
+    private float debugTimer;
+
+    [SerializeField] private Snake snake;
+    private bool lastGhostState;
 
     public bool GhostActive => ghostModeRequested || ghostModeStepsRemaining > 0;
 
@@ -61,19 +68,49 @@ public class SnakeAbilities : MonoBehaviour
         HandleGhostMode();
         GhostModeEnergyDrain(); 
         UpdateAbilitiesUI();
+
+        DebugEnergy();
+
+        UpdateGhostVisual(); 
+    }
+
+    private void UpdateGhostVisual()
+    {
+        bool current = GhostActive;
+
+        if (current != lastGhostState)
+        {
+            snake.SetGhostVisual(current);
+            lastGhostState = current;
+        }
+    }
+
+    private void DebugEnergy()
+    {
+        debugTimer += Time.deltaTime;
+
+        if (debugTimer >= 1f)
+        {
+            debugTimer = 0f;
+            if (energy != null)
+                Debug.Log($"Current Energy: {energy.CurrentEnergy}");
+        }
     }
 
     private void UpdateAbilitiesUI()
     {
         bool dashLocked = !abilitiesUnlocked || energy.CurrentEnergy < dashEnergyCost;
+        if( dashLocked) dashImage.fillAmount = 0f; 
         dashLockImage.gameObject.SetActive(dashLocked);
-        if (dashLocked == true)
-            dashImage.fillAmount = 1f;
+        dashLockDarkImage.gameObject.SetActive(dashLocked);
+       
 
         bool ghostModeLocked =!abilitiesUnlocked || energy.CurrentEnergy < ghostModeEnergyDrainPerSecond;
-        ghostModeLockImage.gameObject.SetActive(dashLocked);
-        if(ghostModeLocked == true)
-            ghostModeImage.fillAmount = 1f; 
+        if(ghostModeLocked) ghostModeImage.fillAmount = 0f;
+        ghostModeLockImage.gameObject.SetActive(ghostModeLocked);
+        ghostLockDarkImage.gameObject.SetActive(ghostModeLocked); 
+   
+            
     }
 
     public void SetAbilitiesUnlocked(bool value)
@@ -96,6 +133,7 @@ public class SnakeAbilities : MonoBehaviour
         if (abilitiesUnlocked && Input.GetKeyDown(dashKey) && isDashingCooldown == false && energy.CurrentEnergy >= dashEnergyCost)
         {
             TryDash();
+            //if()
             isDashingCooldown = true;
             dashImage.fillAmount = 1f;
         }
@@ -162,6 +200,7 @@ public class SnakeAbilities : MonoBehaviour
         {
             ghostModeRequested = false;
             isGhostModeCooldown = true;
+            Debug.Log("Energy depleted, exiting ghost mode.");
             ghostModeReadyTime = Time.time + ghostModeCooldown;
         }
         
