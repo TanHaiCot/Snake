@@ -4101,6 +4101,8 @@ MonoBehaviour:
   ai_Snake: {fileID: 0}
   gridArea: {fileID: 1242246800}
   mapManager: {fileID: 1239357050}
+  energy: {fileID: 1890005380}
+  snakeAbilities: {fileID: 27731633}
   LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}
 --- !u!1 &1745688539
 GameObject:

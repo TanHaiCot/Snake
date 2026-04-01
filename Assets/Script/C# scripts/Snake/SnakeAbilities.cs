@@ -241,5 +241,43 @@ public class SnakeAbilities : MonoBehaviour
         return baseSpeed;
     }
 
+    public void ResetAbilities(bool unlockAbilities = true)
+    {
+        // Dash
+        isDashingCooldown = true;
+        dashActiveTime = 0f;
+        dashReadyTime = 0f;
 
+        if (dashImage != null)
+            dashImage.fillAmount = 1f;
+
+        if (dashLockImage != null)
+            dashLockImage.gameObject.SetActive(false);
+
+        if (dashLockDarkImage != null)
+            dashLockDarkImage.gameObject.SetActive(false);
+
+        // Ghost
+        ghostModeRequested = false;
+        ghostModeStepsRemaining = 0;
+        ghostModeReadyTime = 0f;
+        isGhostModeCooldown = true;
+
+        if (ghostModeImage != null)
+            ghostModeImage.fillAmount = 1f;
+
+        if (ghostModeLockImage != null)
+            ghostModeLockImage.gameObject.SetActive(false);
+
+        if (ghostLockDarkImage != null)
+            ghostLockDarkImage.gameObject.SetActive(false);
+
+        // Abilities state
+        abilitiesUnlocked = unlockAbilities;
+
+        if (snake != null)
+            snake.SetGhostVisual(false);
+
+        lastGhostState = false;
+    }
 }

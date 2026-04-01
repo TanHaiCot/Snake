@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] AI_Snake ai_Snake;
     [SerializeField] BoxCollider2D gridArea; 
     [SerializeField] MapManager mapManager;
+    [SerializeField] Energy energy;
+    [SerializeField] SnakeAbilities snakeAbilities;
 
     [Header("Game State")]
     private bool isLost; 
@@ -180,6 +182,9 @@ public class GameManager : MonoBehaviour
         scoreManager.SetTargetScore(LevelData.targetScore);
 
         timer.SetLevelTimer(LevelData.timeLimit);
+
+        energy.ResetEnergy();
+        snakeAbilities.ResetAbilities();
     }
 
     public void MainMenu()

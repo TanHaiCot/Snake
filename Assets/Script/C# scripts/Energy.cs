@@ -70,4 +70,9 @@ public class Energy : MonoBehaviour
         currentEnergy -= amount;
         return true;
     }
+
+    public void ResetEnergy()
+    {
+        currentEnergy = startEnergy;
+    }
 }
