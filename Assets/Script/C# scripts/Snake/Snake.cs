@@ -281,7 +281,7 @@ public class Snake : MonoBehaviour
 
     public void SetGhostVisual(bool isGhost)
     {
-        float alpha = isGhost ? 0.7f : 1f;
+        float alpha = isGhost ? 0.65f : 1f;
 
         foreach (Transform body in bodies)
         {
