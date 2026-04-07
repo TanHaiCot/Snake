@@ -12,7 +12,7 @@ public class SnakeAbilities : MonoBehaviour
     [SerializeField] private KeyCode dashKey = KeyCode.E;
     [SerializeField] private Image dashLockImage;
     [SerializeField] private Image dashLockDarkImage;
-    public Image dashImage;
+    public Image dashCooldownImage;
     private bool isDashingCooldown; 
     private float dashSpeedMultiplier = 4f;
     private float dashDuration = 0.15f;
@@ -23,7 +23,7 @@ public class SnakeAbilities : MonoBehaviour
     [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
     [SerializeField] private Image ghostModeLockImage;
     [SerializeField] private Image ghostLockDarkImage;
-    public Image ghostModeImage;
+    public Image ghostModeCooldownImage;
     private bool isGhostModeCooldown;
     private float ghostModeCooldown = 3.0f;
     private float ghostModeEnergyDrainPerSecond = 5.0f;
@@ -49,8 +49,8 @@ public class SnakeAbilities : MonoBehaviour
 
     private void Start()
     {
-        dashImage.fillAmount = 1f;
-        ghostModeImage.fillAmount = 1f;
+        dashCooldownImage.fillAmount = 1f;
+        ghostModeCooldownImage.fillAmount = 1f;
 
         isDashingCooldown = true;
         isGhostModeCooldown = true;
@@ -100,13 +100,13 @@ public class SnakeAbilities : MonoBehaviour
     private void UpdateAbilitiesUI()
     {
         bool dashLocked = !abilitiesUnlocked || energy.CurrentEnergy < dashEnergyCost;
-        if( dashLocked) dashImage.fillAmount = 0f; 
+        if( dashLocked) dashCooldownImage.fillAmount = 0f; 
         dashLockImage.gameObject.SetActive(dashLocked);
         dashLockDarkImage.gameObject.SetActive(dashLocked);
        
 
         bool ghostModeLocked =!abilitiesUnlocked || energy.CurrentEnergy < ghostModeEnergyDrainPerSecond;
-        if(ghostModeLocked) ghostModeImage.fillAmount = 0f;
+        if(ghostModeLocked) ghostModeCooldownImage.fillAmount = 0f;
         ghostModeLockImage.gameObject.SetActive(ghostModeLocked);
         ghostLockDarkImage.gameObject.SetActive(ghostModeLocked); 
    
@@ -123,8 +123,8 @@ public class SnakeAbilities : MonoBehaviour
         }
         else
         {
-            dashImage.fillAmount = 0f;
-            ghostModeImage.fillAmount = 0f;
+            dashCooldownImage.fillAmount = 0f;
+            ghostModeCooldownImage.fillAmount = 0f;
         }
     }
 
@@ -135,15 +135,15 @@ public class SnakeAbilities : MonoBehaviour
             TryDash();
             //if()
             isDashingCooldown = true;
-            dashImage.fillAmount = 1f;
+            dashCooldownImage.fillAmount = 1f;
         }
 
         if(isDashingCooldown)
         {
-            dashImage.fillAmount -= 1f / dashCooldown * Time.deltaTime;
-            if(dashImage.fillAmount <= 0f)
+            dashCooldownImage.fillAmount -= 1f / dashCooldown * Time.deltaTime;
+            if(dashCooldownImage.fillAmount <= 0f)
             {
-                dashImage.fillAmount = 0f;
+                dashCooldownImage.fillAmount = 0f;
                 isDashingCooldown = false;
             }
         }
@@ -155,15 +155,15 @@ public class SnakeAbilities : MonoBehaviour
         {
             ToggleGhostMode();
             //isGhostModeCooldown = true;
-            ghostModeImage.fillAmount = 1f;
+            ghostModeCooldownImage.fillAmount = 1f;
         }
 
         if(isGhostModeCooldown)
         {
-            ghostModeImage.fillAmount -= 1f / ghostModeCooldown * Time.deltaTime;
-            if(ghostModeImage.fillAmount <= 0f)
+            ghostModeCooldownImage.fillAmount -= 1f / ghostModeCooldown * Time.deltaTime;
+            if(ghostModeCooldownImage.fillAmount <= 0f)
             {
-                ghostModeImage.fillAmount = 0f;
+                ghostModeCooldownImage.fillAmount = 0f;
                 isGhostModeCooldown = false;
             }
         }
@@ -248,8 +248,8 @@ public class SnakeAbilities : MonoBehaviour
         dashActiveTime = 0f;
         dashReadyTime = 0f;
 
-        if (dashImage != null)
-            dashImage.fillAmount = 1f;
+        if (dashCooldownImage != null)
+            dashCooldownImage.fillAmount = 1f;
 
         if (dashLockImage != null)
             dashLockImage.gameObject.SetActive(false);
@@ -263,8 +263,8 @@ public class SnakeAbilities : MonoBehaviour
         ghostModeReadyTime = 0f;
         isGhostModeCooldown = true;
 
-        if (ghostModeImage != null)
-            ghostModeImage.fillAmount = 1f;
+        if (ghostModeCooldownImage != null)
+            ghostModeCooldownImage.fillAmount = 1f;
 
         if (ghostModeLockImage != null)
             ghostModeLockImage.gameObject.SetActive(false);
