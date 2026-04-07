@@ -1245,7 +1245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridArea: {fileID: 1242246800}
-  snake: {fileID: 0}
+  snake: {fileID: 914842887}
   opponentSnake: {fileID: 0}
   scoreManager: {fileID: 616454441}
   wallLayer:
@@ -2908,6 +2908,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4077221015659105035, guid: 2bd4bc1780bc2664ebfbb0d2c5f646a7, type: 3}
   m_PrefabInstance: {fileID: 3471685171287451736}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1707342483 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 490881445762878665, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+  m_PrefabInstance: {fileID: 570612087}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9549cc70ba4c4c45abcfebca223e11d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1741257624
 GameObject:
   m_ObjectHideFlags: 0
@@ -2954,7 +2965,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseMenu: {fileID: 1745688539}
   lostMenu: {fileID: 1314489508}
-  snake: {fileID: 0}
+  snake: {fileID: 914842887}
   secondSnake: {fileID: 0}
   scoreManager: {fileID: 616454441}
   timer: {fileID: 1390239444}
@@ -2964,7 +2975,7 @@ MonoBehaviour:
   gridArea: {fileID: 1242246800}
   mapManager: {fileID: 1239357050}
   energy: {fileID: 991312581}
-  snakeAbilities: {fileID: 0}
+  snakeAbilities: {fileID: 1707342483}
   LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}
 --- !u!1 &1745688539
 GameObject:
