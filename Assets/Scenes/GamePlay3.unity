@@ -628,10 +628,10 @@ MonoBehaviour:
   aiMode: 0
   pathfinding: {fileID: 781086730}
   foodTarget: {fileID: 620879145}
-  playerSnake: {fileID: 0}
+  playerSnake: {fileID: 1796027304}
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
 --- !u!1001 &121628289
 PrefabInstance:
@@ -4579,6 +4579,11 @@ Transform:
   - {fileID: 910980463}
   m_Father: {fileID: 220702245}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1796027304 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+  m_PrefabInstance: {fileID: 77481036}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1799917961
 GameObject:
   m_ObjectHideFlags: 0
