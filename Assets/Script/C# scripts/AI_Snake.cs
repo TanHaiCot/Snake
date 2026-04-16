@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.LightTransport;
 using UnityEngine.SceneManagement;
+using static UnityEditor.PlayerSettings;
 
 public class AI_Snake : MonoBehaviour
 {
     private enum AI_snakeState { Patrol, Chase }
-    private enum AI_Mode {  FoodChaser, PlayerChaser }
+    private enum AI_Mode { FoodChaser, PlayerChaser }
 
     [SerializeField] private AI_snakeState currentState = AI_snakeState.Patrol;
     [SerializeField] private AI_Mode aiMode = AI_Mode.FoodChaser;
@@ -27,7 +28,7 @@ public class AI_Snake : MonoBehaviour
     private List<Transform> bodies = new List<Transform>();
 
     private float nextMoveTime;
-    private float speed = 14f;
+    private float speed = 8f;
     private int initialBodyPart = 4;
 
     [SerializeField] Transform bodyPrefab;
@@ -38,12 +39,13 @@ public class AI_Snake : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        UpdateAIState();
+
         if (Time.time < nextMoveTime)
             return;
 
         nextMoveTime = Time.time + (1.0f / speed);
 
-        UpdateAIState();
 
         UpdatePatrolProgress();
         UpdateHeadRotation();
@@ -166,6 +168,7 @@ public class AI_Snake : MonoBehaviour
                     {
                         currentState = AI_snakeState.Patrol;
                         hasPatrolDestination = false;
+                        Debug.Log("AI Snake switched to Patrol state");
                     }
                 }
                 break;
@@ -181,38 +184,54 @@ public class AI_Snake : MonoBehaviour
             return false;
         }
 
-        if (playerSnake == null || pathfinding == null) return false;
-
-        Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
+        Vector2Int currentPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
 
-        int dist = Mathf.Abs(myPos.x - playerPos.x) + Mathf.Abs(myPos.y - playerPos.y);
+        Vector2Int sightDir = Vector2Int.zero;
+
+        bool sameRow = currentPos.y == playerPos.y;
+        bool sameCol = currentPos.x == playerPos.x;
+
+        if (sameRow)
+        {
+            if (playerPos.x > currentPos.x) sightDir = Vector2Int.right;
+            else if (playerPos.x < currentPos.x) sightDir = Vector2Int.left;
+        }
+        else if (sameCol)
+        {
+            if (playerPos.y > currentPos.y) sightDir = Vector2Int.up;
+            else if (playerPos.y < currentPos.y) sightDir = Vector2Int.down;
+        }
+
+        if (sightDir == Vector2Int.zero)
+            return false;
+
+        if(sightDir != direction)
+            return false;
+
+        int dist = Mathf.Abs(currentPos.x - playerPos.x) + Mathf.Abs(currentPos.y - playerPos.y);
         if (dist > visionRange) return false;
 
-        // Optional LOS check (recommended)
-        Vector2 from = new Vector2(myPos.x, myPos.y);
-        Vector2 to = new Vector2(playerPos.x, playerPos.y);
-        RaycastHit2D hit = Physics2D.Raycast(from, (to - from).normalized, Vector2.Distance(from, to), pathfinding.wallLayer);
-        // If you don't want to expose WallLayer, you can duplicate a LayerMask field in AI_Snake and use that.
+        Vector2Int current = currentPos;
 
-        return hit.collider == null; // no wall in between
+        while(true)
+        {
+            current += sightDir;
 
-        //Vector2 dir = new Vector2(direction.x, direction.y); 
-        //if(dir == Vector2.zero)
-        //    dir = Vector2.right;
+            if (current == playerPos)
+                return true;
 
-        //Vector2 origin = new Vector2(transform.position.x, transform.position.y);
-
-        //RaycastHit2D playerCheck = Physics2D.Raycast(origin, dir, visionRange, playerLayer);
-        //if(playerCheck.collider == null)
-        //    return false;
-
-        //RaycastHit2D wallCheck = Physics2D.Raycast(origin, dir, visionRange, pathfinding.wallLayer);
-        //if(wallCheck.collider != null && wallCheck.distance < playerCheck.distance)
-        //    return false;
-
-        //return true;
+            if (!IsSightClear(current))
+                return false;
+        }
     }
+
+    private bool IsSightClear(Vector2Int position)
+    {
+        Collider2D wall = Physics2D.OverlapBox(new Vector2(position.x, position.y), new Vector2(0.9f, 0.9f), 0f, pathfinding.wallLayer);
+        return wall == null;
+    }
+
 
     private void OnDrawGizmos()
     {
