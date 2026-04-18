@@ -21,7 +21,7 @@ public class Snake : MonoBehaviour
 
     public UnityEvent OnFoodEaten;
 
-    private float speed = 9f; 
+    private float speed = 7f; 
 
     private int initialBodyPart = 4;
 

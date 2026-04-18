@@ -10,28 +10,42 @@ public class AI_Snake : MonoBehaviour
     private enum AI_snakeState { Patrol, Chase }
     private enum AI_Mode { FoodChaser, PlayerChaser }
 
-    [SerializeField] private AI_snakeState currentState = AI_snakeState.Patrol;
     [SerializeField] private AI_Mode aiMode = AI_Mode.FoodChaser;
 
+    [Header("References")]
     [SerializeField] private Pathfinding pathfinding;
-    [SerializeField] private Transform foodTarget;
     [SerializeField] private Transform playerSnake;
+    [SerializeField] private Transform bodyPrefab;
     [SerializeField] private LayerMask playerLayer; 
+    [SerializeField] private Transform foodTarget;
 
-    private Vector2Int patrolDestination;
-    private int visionRange = 10; 
-    private bool hasPatrolDestination;
-    private float lostSightTimer;
-    private float loseSightDelay = 2f;
+    [Header("State")]
+    [SerializeField] private AI_snakeState currentState = AI_snakeState.Patrol;
 
-    private Vector2Int direction = Vector2Int.right;    //using Vector2Int for grid-based game
-    private List<Transform> bodies = new List<Transform>();
 
-    private float nextMoveTime;
+    [Header("AI Statistics")]
     private float speed = 8f;
     private int initialBodyPart = 4;
 
-    [SerializeField] Transform bodyPrefab;
+    [Header("AI Vision")]
+    private int sideAwarenessRange = 6;
+    private float lostSightTimer;
+    private float loseSightDelay = 2f;
+
+    private Vector2Int patrolDestination;
+    private bool hasPatrolDestination;
+
+    private Vector2Int lastSeenPlayerPos;
+    private bool hasLastSeenPlayerPos;
+
+    private Vector2Int direction = Vector2Int.right;    
+    private float nextMoveTime;
+
+    private List<Transform> bodies = new List<Transform>();
+    private List<Vector2Int> currentPath = null;
+
+    private int patrolPickAttempts = 30;
+    private bool drawPath = true;
 
     private void Start()
     {
@@ -46,16 +60,34 @@ public class AI_Snake : MonoBehaviour
 
         nextMoveTime = Time.time + (1.0f / speed);
 
+        bool gotMove = false;
 
-        UpdatePatrolProgress();
+        if (aiMode == AI_Mode.FoodChaser)
+            FoodChaserAIUpdate();
+
+
+        switch (currentState)
+        {
+            case AI_snakeState.Patrol:
+                gotMove = UpdatePatrol();
+                break;
+            case AI_snakeState.Chase:
+                gotMove = UpdatePlayerChase();
+                break;
+        }
+
         UpdateHeadRotation();
-        
-        if(aiMode == AI_Mode.PlayerChaser)
-            PlayerChaserAIUpdate();
-        else if(aiMode == AI_Mode.FoodChaser)   
-            FoodChaserAIUpdate(); 
+
+        if (!gotMove)
+            return;
+
+        MoveNextStep(); 
 
 
+    }
+
+    private void MoveNextStep()
+    {
         // next position of the snake head the same tick
         int nextX = Mathf.RoundToInt(this.transform.position.x) + direction.x;
         int nextY = Mathf.RoundToInt(this.transform.position.y) + direction.y;
@@ -66,6 +98,107 @@ public class AI_Snake : MonoBehaviour
         }
 
         transform.position = new Vector3(nextX, nextY, 0);
+    }
+    private void UpdateAIState()
+    {
+        bool canSeePlayer = CanSeePlayer();
+
+        if (canSeePlayer)
+        {
+            lastSeenPlayerPos = pathfinding.WorldToGrid(playerSnake.position);
+            hasLastSeenPlayerPos = true;
+            lostSightTimer = 0f;
+
+            if (currentState != AI_snakeState.Chase)
+            {
+                currentState = AI_snakeState.Chase;
+                Debug.Log("Switch to Chase");
+            }
+
+            return;
+        }
+
+        if (currentState == AI_snakeState.Chase)
+        {
+            lostSightTimer += Time.fixedDeltaTime;
+
+            if (lostSightTimer >= loseSightDelay)
+            {
+                currentState = AI_snakeState.Patrol;
+                lostSightTimer = 0f;
+                hasLastSeenPlayerPos = false;
+                currentPath = null;
+                Debug.Log("Switch to Patrol");
+            }
+        }
+    }
+
+    private bool UpdatePatrol()
+    {
+        Vector2Int currentPos = pathfinding.WorldToGrid(this.transform.position);
+
+        if(hasPatrolDestination && currentPos == patrolDestination)
+        {
+            hasPatrolDestination = false;
+            currentPath = null;
+            Debug.Log("Reached patrol destination: " + patrolDestination);
+        }
+
+        if (!hasPatrolDestination)
+        {
+            if (!TryPickReachablePatrolDestination(currentPos))
+                return false;
+        }
+
+        currentPath = pathfinding.FindPath(currentPos, patrolDestination, Pathfinding.PathPurpose.PlayerChasing);
+
+        if (currentPath == null || currentPath.Count == 0)
+        {
+            Debug.Log("Patrol destination unreachable: " + patrolDestination);
+
+            //if (pauseWhenPatrolUnreachable)
+            //{
+            //    Debug.Break();
+            //}
+
+            hasPatrolDestination = false;
+            currentPath = null;
+            return false;
+        }
+
+        Vector2Int firstStep = currentPath[0];
+        direction = firstStep - currentPos;
+        return true;
+    }
+
+    private bool TryPickReachablePatrolDestination(Vector2Int startPos)
+    {
+        for (int i = 0; i < patrolPickAttempts; i++)
+        {
+            Vector2Int candidate;
+            if (!pathfinding.TryToGetRandomWalkablePosition(out candidate))
+                return false;
+
+            List<Vector2Int> path = pathfinding.FindPath(startPos, candidate, Pathfinding.PathPurpose.PlayerChasing);
+
+            if (path != null && path.Count > 0)
+            {
+                patrolDestination = candidate;
+                hasPatrolDestination = true;
+                currentPath = path;
+                Debug.Log("New patrol destination: " + patrolDestination);
+                return true;
+            }
+        }
+
+        Debug.Log("Could not find reachable patrol destination");
+
+        //if (pauseWhenPatrolUnreachable)
+        //{
+        //    Debug.Break();
+        //}
+
+        return false;
     }
 
     private void UpdateHeadRotation()
@@ -106,177 +239,116 @@ public class AI_Snake : MonoBehaviour
         }
     }
 
-    private void PlayerChaserAIUpdate()
+    private bool UpdatePlayerChase()
     {
-        if (pathfinding == null)
-        {
-            Debug.Log("Pathfinding is not assigned in AI_Snake");
-            return;
-        }
-        Vector2Int startPos = pathfinding.WorldToGrid(this.transform.position);
-        Vector2Int targetPos = GetCurrentTargetPos();
+        if (!hasLastSeenPlayerPos)
+            return false;
 
-        List<Vector2Int> path = pathfinding.FindPath(startPos, targetPos, Pathfinding.PathPurpose.PlayerChasing);
-        if (path != null && path.Count > 0)
+        Vector2Int currentPos = pathfinding.WorldToGrid(transform.position);
+        Vector2Int targetPos = lastSeenPlayerPos;
+
+        currentPath = pathfinding.FindPath(currentPos, targetPos, Pathfinding.PathPurpose.PlayerChasing);
+
+        if (currentPath == null || currentPath.Count == 0)
         {
-            Vector2Int firstStep = path[0]; 
-            Vector2Int newDirection = firstStep - startPos;     
-            direction = newDirection;
+            currentPath = null;
+            return false;
         }
-        else
-        {
-            if (currentState == AI_snakeState.Patrol) hasPatrolDestination = false;  
-        }
+
+        Vector2Int firstStep = currentPath[0];
+        direction = firstStep - currentPos;
+        return true;
     }
 
-    private Vector2Int GetCurrentTargetPos()
-    {
-        if(currentState == AI_snakeState.Chase)
-        { 
-            return pathfinding.WorldToGrid(playerSnake.position);
-            
-        }
-        else //Patrol
-        {
-            EnsurePatrolDestination();
-            return patrolDestination;
-        }
-
-    }
-
-    private void UpdateAIState()
-    {
-        switch (currentState)
-        {
-            case AI_snakeState.Patrol:
-                if (CanSeePlayer())
-                {
-                    currentState = AI_snakeState.Chase;
-                    lostSightTimer = 0f; 
-                    Debug.Log("AI Snake switched to Chase state");
-                }
-                break;
-            case AI_snakeState.Chase:
-                if (CanSeePlayer())
-                {
-                    lostSightTimer = 0f;
-                }
-                else
-                {
-                    lostSightTimer += Time.fixedDeltaTime;
-                    if (lostSightTimer >= loseSightDelay) //lose sight delay
-                    {
-                        currentState = AI_snakeState.Patrol;
-                        hasPatrolDestination = false;
-                        Debug.Log("AI Snake switched to Patrol state");
-                    }
-                }
-                break;
-        }
-    }
-
+ 
 
     private bool CanSeePlayer()
     {
         if (playerSnake == null || pathfinding == null)
-        {
-            Debug.Log("PlayerSnake or Pathfinding is not assigned in AI_Snake");
             return false;
-        }
 
-        Vector2Int currentPos = pathfinding.WorldToGrid(transform.position);
+        Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
+
+        Vector2Int delta = playerPos - myPos;
+        int dist = Mathf.Abs(delta.x) + Mathf.Abs(delta.y);
+
+        bool sameRow = myPos.y == playerPos.y;
+        bool sameCol = myPos.x == playerPos.x;
 
         Vector2Int sightDir = Vector2Int.zero;
 
-        bool sameRow = currentPos.y == playerPos.y;
-        bool sameCol = currentPos.x == playerPos.x;
-
         if (sameRow)
         {
-            if (playerPos.x > currentPos.x) sightDir = Vector2Int.right;
-            else if (playerPos.x < currentPos.x) sightDir = Vector2Int.left;
+            if (playerPos.x > myPos.x) sightDir = Vector2Int.right;
+            else if (playerPos.x < myPos.x) sightDir = Vector2Int.left;
         }
         else if (sameCol)
         {
-            if (playerPos.y > currentPos.y) sightDir = Vector2Int.up;
-            else if (playerPos.y < currentPos.y) sightDir = Vector2Int.down;
+            if (playerPos.y > myPos.y) sightDir = Vector2Int.up;
+            else if (playerPos.y < myPos.y) sightDir = Vector2Int.down;
         }
 
         if (sightDir == Vector2Int.zero)
             return false;
 
-        if(sightDir != direction)
+        if (sightDir != direction)
             return false;
 
-        int dist = Mathf.Abs(currentPos.x - playerPos.x) + Mathf.Abs(currentPos.y - playerPos.y);
-        if (dist > visionRange) return false;
+        if (dist > sideAwarenessRange)
+            return false;
 
-        Vector2Int current = currentPos;
-
-        while(true)
-        {
-            current += sightDir;
-
-            if (current == playerPos)
-                return true;
-
-            if (!IsSightClear(current))
-                return false;
-        }
+        return HasLineOfSight(myPos, playerPos);
     }
 
-    private bool IsSightClear(Vector2Int position)
+    private bool HasLineOfSight(Vector2Int fromGrid, Vector2Int toGrid)
     {
-        Collider2D wall = Physics2D.OverlapBox(new Vector2(position.x, position.y), new Vector2(0.9f, 0.9f), 0f, pathfinding.wallLayer);
-        return wall == null;
-    }
+        Vector2 from = new Vector2(fromGrid.x, fromGrid.y);
+        Vector2 to = new Vector2(toGrid.x, toGrid.y);
+        Vector2 dir = (to - from).normalized;
+        float distance = Vector2.Distance(from, to);
 
+        RaycastHit2D hit = Physics2D.Raycast(from, dir, distance, pathfinding.wallLayer);
+        return hit.collider == null;
+    }
 
     private void OnDrawGizmos()
     {
-        //if (!Application.isPlaying) return;
-
-        //Vector2 origin = (Vector2)this.transform.position;
-        //Vector2 dir = new Vector2(direction.x, direction.y);
-        //if(dir == Vector2.zero)
-        //    dir = Vector2.right;
-
-        //Gizmos.color = CanSeePlayer() ? Color.green : Color.red;
-        //Gizmos.DrawLine(origin, origin + dir.normalized * visionRange);
-
-        if (!Application.isPlaying) return;
-        if (playerSnake == null || pathfinding == null) return;
-
-        Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
-        Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
-
-        Vector3 from = new Vector3(myPos.x, myPos.y, 0f);
-        Vector3 to = new Vector3(playerPos.x, playerPos.y, 0f);
-
-        Gizmos.color = CanSeePlayer() ? Color.green : Color.red;
-        Gizmos.DrawLine(from, to);
-    }
-
-    private void EnsurePatrolDestination()
-    {
-        if (hasPatrolDestination)
+        if (!Application.isPlaying || pathfinding == null)
             return;
 
-        if(pathfinding.TryToGetRandomWalkablePosition(out patrolDestination))
+        Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
+
+        if (hasPatrolDestination)
         {
-            hasPatrolDestination = true;    
-            Debug.Log("AI Snake new patrol destination: " + patrolDestination);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(new Vector3(patrolDestination.x, patrolDestination.y, 0f), Vector3.one);
+            Gizmos.DrawLine(new Vector3(myPos.x, myPos.y, 0f), new Vector3(patrolDestination.x, patrolDestination.y, 0f));
         }
 
+        if (playerSnake != null)
+        {
+            Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
+            Gizmos.color = CanSeePlayer() ? Color.green : Color.red;
+            Gizmos.DrawLine(new Vector3(myPos.x, myPos.y, 0f), new Vector3(playerPos.x, playerPos.y, 0f));
+        }
+
+        if (drawPath && currentPath != null && currentPath.Count > 0)
+        {
+            Gizmos.color = Color.cyan;
+
+            Vector3 prev = new Vector3(myPos.x, myPos.y, 0f);
+            for (int i = 0; i < currentPath.Count; i++)
+            {
+                Vector3 next = new Vector3(currentPath[i].x, currentPath[i].y, 0f);
+                Gizmos.DrawLine(prev, next);
+                Gizmos.DrawSphere(next, 0.12f);
+                prev = next;
+            }
+        }
     }
 
-    private void UpdatePatrolProgress()
-    {
-        Vector2Int currentPos = pathfinding.WorldToGrid(this.transform.position);
-        if(hasPatrolDestination && currentPos == patrolDestination)
-            hasPatrolDestination = false;
-    }
+
 
     public void Restate()
     {

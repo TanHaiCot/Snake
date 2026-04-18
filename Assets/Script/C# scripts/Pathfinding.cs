@@ -45,7 +45,7 @@ public class Pathfinding : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    private bool IsWalkable(Vector2Int position)
+    public bool IsWalkable(Vector2Int position)
     {
         if(position.x < minX || position.x > maxX || position.y < minY || position.y > maxY)
             return false;
