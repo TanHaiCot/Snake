@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
-using System.Runtime.CompilerServices;
 
 
 public class Pathfinding : MonoBehaviour
@@ -10,6 +8,7 @@ public class Pathfinding : MonoBehaviour
     {
         FoodChasing,
         PlayerChasing,
+        Patrol
     }
 
     [Header("Grid Settings")]
@@ -45,14 +44,18 @@ public class Pathfinding : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    public bool IsWalkable(Vector2Int position)
+    public bool IsWalkable(Vector2Int position, PathPurpose purpose)
     {
         if(position.x < minX || position.x > maxX || position.y < minY || position.y > maxY)
             return false;
 
         Collider2D obstacles = Physics2D.OverlapBox(new Vector2(position.x, position.y), new Vector2(0.9f, 0.9f), 0, wallLayer);
+
         if(obstacles != null)
             return false;
+
+        if (purpose == PathPurpose.Patrol)
+            return true; 
 
         if (snake.SpotOccupied(position.x, position.y))
             return false;
@@ -102,12 +105,13 @@ public class Pathfinding : MonoBehaviour
                 switch(purpose)
                 {
                     case PathPurpose.FoodChasing:
-                        if(!IsWalkable(neighbourPos))
+                    case PathPurpose.Patrol:
+                        if (!IsWalkable(neighbourPos, purpose))
                             continue;
                         break;
 
                     case PathPurpose.PlayerChasing:
-                        if (neighbourPos != targetPos && !IsWalkable(neighbourPos)) //allow the target position even if occupied
+                        if (neighbourPos != targetPos && !IsWalkable(neighbourPos, purpose)) //allow the target position even if occupied
                             continue;
                         break; 
                 }
@@ -120,7 +124,10 @@ public class Pathfinding : MonoBehaviour
                     neighbourNode.gCost = gCostToNeighbour;
                     neighbourNode.hCost = GetDistance(neighbourPos, targetPos);
                     neighbourNode.parent = currentNode;
-                    openList.Add(neighbourNode);
+
+                    if (!openList.Contains(neighbourNode))
+                        openList.Add(neighbourNode);
+                    
                 }
             }
         }
@@ -165,7 +172,7 @@ public class Pathfinding : MonoBehaviour
             int randomX = UnityEngine.Random.Range(minX, maxX);
             int randomY = UnityEngine.Random.Range(minY, maxY);
             Vector2Int randomPos = new Vector2Int(randomX, randomY);
-            if (IsWalkable(randomPos))
+            if (IsWalkable(randomPos, PathPurpose.Patrol))
             {
                 result = randomPos;
                 return true;

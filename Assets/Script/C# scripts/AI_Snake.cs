@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.LightTransport;
 using UnityEngine.SceneManagement;
@@ -28,9 +29,9 @@ public class AI_Snake : MonoBehaviour
     private int initialBodyPart = 4;
 
     [Header("AI Vision")]
-    private int sideAwarenessRange = 6;
-    private float lostSightTimer;
-    private float loseSightDelay = 2f;
+    private int sideAwarenessRange = 10;
+    private float ChaseTimer;
+    private float ChasingDelay = 1.5f;
 
     private Vector2Int patrolDestination;
     private bool hasPatrolDestination;
@@ -46,6 +47,17 @@ public class AI_Snake : MonoBehaviour
 
     private int patrolPickAttempts = 30;
     private bool drawPath = true;
+
+    private static readonly Vector2Int[] FourDirs =
+    {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right
+    };
+
+    private Vector2Int previousHeadPos;
+    private bool hasPreviousHeadPos;
 
     private void Start()
     {
@@ -88,6 +100,10 @@ public class AI_Snake : MonoBehaviour
 
     private void MoveNextStep()
     {
+        Vector2Int currentPos = pathfinding.WorldToGrid(this.transform.position);
+        previousHeadPos = currentPos;
+        hasPreviousHeadPos = true; 
+
         // next position of the snake head the same tick
         int nextX = Mathf.RoundToInt(this.transform.position.x) + direction.x;
         int nextY = Mathf.RoundToInt(this.transform.position.y) + direction.y;
@@ -107,11 +123,13 @@ public class AI_Snake : MonoBehaviour
         {
             lastSeenPlayerPos = pathfinding.WorldToGrid(playerSnake.position);
             hasLastSeenPlayerPos = true;
-            lostSightTimer = 0f;
+            ChaseTimer = 0f;
 
             if (currentState != AI_snakeState.Chase)
             {
                 currentState = AI_snakeState.Chase;
+                currentPath = null;
+                hasPatrolDestination = false;
                 Debug.Log("Switch to Chase");
             }
 
@@ -120,14 +138,15 @@ public class AI_Snake : MonoBehaviour
 
         if (currentState == AI_snakeState.Chase)
         {
-            lostSightTimer += Time.fixedDeltaTime;
+            ChaseTimer += Time.fixedDeltaTime;
 
-            if (lostSightTimer >= loseSightDelay)
+            if (ChaseTimer >= ChasingDelay)
             {
                 currentState = AI_snakeState.Patrol;
-                lostSightTimer = 0f;
+                ChaseTimer = 0f;
                 hasLastSeenPlayerPos = false;
                 currentPath = null;
+                hasPatrolDestination = false;
                 Debug.Log("Switch to Patrol");
             }
         }
@@ -150,25 +169,39 @@ public class AI_Snake : MonoBehaviour
                 return false;
         }
 
-        currentPath = pathfinding.FindPath(currentPos, patrolDestination, Pathfinding.PathPurpose.PlayerChasing);
+        currentPath = pathfinding.FindPath(currentPos, patrolDestination, Pathfinding.PathPurpose.Patrol);
 
         if (currentPath == null || currentPath.Count == 0)
         {
             Debug.Log("Patrol destination unreachable: " + patrolDestination);
+            currentPath = null;
 
-            //if (pauseWhenPatrolUnreachable)
-            //{
-            //    Debug.Break();
-            //}
+            if (TryGetRecoveryDirection(currentPos, patrolDestination, out Vector2Int recoveryDir))
+            {
+                direction = recoveryDir;
+                return true;
+            }
 
             hasPatrolDestination = false;
-            currentPath = null;
             return false;
         }
 
         Vector2Int firstStep = currentPath[0];
-        direction = firstStep - currentPos;
-        return true;
+        Vector2Int desiredDirection = firstStep - currentPos;
+
+        if (pathfinding.IsWalkable(currentPos + desiredDirection, Pathfinding.PathPurpose.Patrol))
+        {
+            direction = desiredDirection;
+            return true;
+        }
+
+        if (TryGetRecoveryDirection(currentPos, patrolDestination, out Vector2Int backupDir))
+        {
+            direction = backupDir;
+            return true;
+        }
+
+        return false;
     }
 
     private bool TryPickReachablePatrolDestination(Vector2Int startPos)
@@ -179,7 +212,7 @@ public class AI_Snake : MonoBehaviour
             if (!pathfinding.TryToGetRandomWalkablePosition(out candidate))
                 return false;
 
-            List<Vector2Int> path = pathfinding.FindPath(startPos, candidate, Pathfinding.PathPurpose.PlayerChasing);
+            List<Vector2Int> path = pathfinding.FindPath(startPos, candidate, Pathfinding.PathPurpose.Patrol);
 
             if (path != null && path.Count > 0)
             {
@@ -192,12 +225,6 @@ public class AI_Snake : MonoBehaviour
         }
 
         Debug.Log("Could not find reachable patrol destination");
-
-        //if (pauseWhenPatrolUnreachable)
-        //{
-        //    Debug.Break();
-        //}
-
         return false;
     }
 
@@ -241,10 +268,20 @@ public class AI_Snake : MonoBehaviour
 
     private bool UpdatePlayerChase()
     {
-        if (!hasLastSeenPlayerPos)
+        if (playerSnake == null || pathfinding == null)
             return false;
 
         Vector2Int currentPos = pathfinding.WorldToGrid(transform.position);
+
+        if (CanSeePlayer())
+        {
+            lastSeenPlayerPos = pathfinding.WorldToGrid(playerSnake.position);
+            hasLastSeenPlayerPos = true;
+        }
+
+        if (!hasLastSeenPlayerPos)
+            return false;
+
         Vector2Int targetPos = lastSeenPlayerPos;
 
         currentPath = pathfinding.FindPath(currentPos, targetPos, Pathfinding.PathPurpose.PlayerChasing);
@@ -252,12 +289,31 @@ public class AI_Snake : MonoBehaviour
         if (currentPath == null || currentPath.Count == 0)
         {
             currentPath = null;
+            if (TryGetRecoveryDirection(currentPos, targetPos, out Vector2Int recoveryDir))
+            {
+                direction = recoveryDir;
+                return true;
+            }
+
             return false;
         }
 
         Vector2Int firstStep = currentPath[0];
-        direction = firstStep - currentPos;
-        return true;
+        Vector2Int desiredDir = firstStep - currentPos;
+
+        if (pathfinding.IsWalkable(currentPos + desiredDir, Pathfinding.PathPurpose.PlayerChasing) || currentPos + desiredDir == targetPos)
+        {
+            direction = desiredDir;
+            return true;
+        }
+
+        if (TryGetRecoveryDirection(currentPos, targetPos, out Vector2Int fallbackDir))
+        {
+            direction = fallbackDir;
+            return true;
+        }
+
+        return false;
     }
 
  
@@ -270,30 +326,7 @@ public class AI_Snake : MonoBehaviour
         Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
 
-        Vector2Int delta = playerPos - myPos;
-        int dist = Mathf.Abs(delta.x) + Mathf.Abs(delta.y);
-
-        bool sameRow = myPos.y == playerPos.y;
-        bool sameCol = myPos.x == playerPos.x;
-
-        Vector2Int sightDir = Vector2Int.zero;
-
-        if (sameRow)
-        {
-            if (playerPos.x > myPos.x) sightDir = Vector2Int.right;
-            else if (playerPos.x < myPos.x) sightDir = Vector2Int.left;
-        }
-        else if (sameCol)
-        {
-            if (playerPos.y > myPos.y) sightDir = Vector2Int.up;
-            else if (playerPos.y < myPos.y) sightDir = Vector2Int.down;
-        }
-
-        if (sightDir == Vector2Int.zero)
-            return false;
-
-        if (sightDir != direction)
-            return false;
+        int dist = Mathf.Abs(myPos.x - playerPos.x) + Mathf.Abs(myPos.y - playerPos.y);
 
         if (dist > sideAwarenessRange)
             return false;
@@ -310,6 +343,68 @@ public class AI_Snake : MonoBehaviour
 
         RaycastHit2D hit = Physics2D.Raycast(from, dir, distance, pathfinding.wallLayer);
         return hit.collider == null;
+    }
+
+
+    private bool TryGetRecoveryDirection(Vector2Int currentPos, Vector2Int targetPos, out Vector2Int bestDir)
+    {
+        bestDir = Vector2Int.zero;
+
+        int bestScore = int.MinValue;
+
+        for (int i = 0; i < FourDirs.Length; i++)
+        {
+            Vector2Int dir = FourDirs[i];
+            Vector2Int next = currentPos + dir;
+
+            if (!pathfinding.IsWalkable(next, Pathfinding.PathPurpose.Patrol))
+                continue;
+
+            bool isBacktrack = hasPreviousHeadPos && next == previousHeadPos;
+
+            int distanceScore = -Mathf.Abs(targetPos.x - next.x) - Mathf.Abs(targetPos.y - next.y);
+            int exitScore = CountWalkableNeighbors(next);
+
+            int totalScore = distanceScore + (exitScore * 2);
+
+            if (!isBacktrack)
+            {
+                totalScore += 10; // strongly prefer not to bounce back
+            }
+
+            if (exitScore <= 1)
+            {
+                totalScore -= 5;
+            }
+
+
+            if (totalScore > bestScore)
+            {
+                bestScore = totalScore;
+                bestDir = dir;
+            }
+        }
+
+        if (bestDir == Vector2Int.zero)
+            return false;
+
+        return true;
+    }
+
+    // count how many walkable tiles around this position
+    // as a heuristic to avoid going into dead ends when chasing the player
+    private int CountWalkableNeighbors(Vector2Int pos)
+    {
+        int count = 0;
+
+        for (int i = 0; i < FourDirs.Length; i++)
+        {
+            Vector2Int next = pos + FourDirs[i];
+            if (pathfinding.IsWalkable(next, Pathfinding.PathPurpose.Patrol))
+                count++;
+        }
+
+        return count;
     }
 
     private void OnDrawGizmos()
