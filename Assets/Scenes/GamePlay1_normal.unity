@@ -875,6 +875,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 490881445762878665, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: dashCooldownImage
+      value: 
+      objectReference: {fileID: 1160336822}
+    - target: {fileID: 490881445762878665, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: dashLockDarkImage
       value: 
       objectReference: {fileID: 1440743697}
@@ -886,6 +890,10 @@ PrefabInstance:
       propertyPath: ghostModeLockImage
       value: 
       objectReference: {fileID: 1254368876}
+    - target: {fileID: 490881445762878665, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: ghostModeCooldownImage
+      value: 
+      objectReference: {fileID: 1620676940}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.076
@@ -2279,7 +2287,7 @@ Transform:
   m_GameObject: {fileID: 1314489508}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 911.2664, y: 610.8902, z: -4.049619}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2866,7 +2874,7 @@ Transform:
   m_GameObject: {fileID: 1745688539}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1068.3779, y: 732.7297, z: -5.158402}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
