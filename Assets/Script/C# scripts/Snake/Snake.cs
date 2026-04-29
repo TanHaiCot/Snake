@@ -294,4 +294,9 @@ public class Snake : MonoBehaviour
             }
         }
     }
+
+    public void SetReverseMovement(bool reversed)
+    {
+        reverseMovement = reversed;
+    }
 }

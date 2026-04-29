@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -33,7 +32,10 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] LevelData LevelData;
    
-    private int wallGreyOutWave = 0; 
+    private int wallGreyOutWave = 0;
+
+    private int scoreToStartReverseMovement = 3;
+    private bool reverseMovementStarted;
 
     void Start() 
     {
@@ -90,7 +92,13 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
-        if(mapManager.CurrentWallMode != MapManager.WallMode.GreyOutOnScore)
+        if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
+        {
+            reverseMovementStarted = true;
+            snake.SetReverseMovement(true);
+        }
+
+        if (mapManager.CurrentWallMode != MapManager.WallMode.GreyOutOnScore)
             return;
 
         if (current == target - 1 && wallGreyOutWave < 1)
@@ -185,6 +193,9 @@ public class GameManager : MonoBehaviour
 
         energy.ResetEnergy();
         snakeAbilities.ResetAbilities();
+
+        reverseMovementStarted = false;
+        snake.SetReverseMovement(false);
     }
 
     public void MainMenu()
