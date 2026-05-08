@@ -31,8 +31,6 @@ public class GameManager : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
-   
-    private int wallGreyOutWave = 0; 
 
     void Start() 
     {

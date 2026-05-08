@@ -23,14 +23,6 @@ public class MapManager : MonoBehaviour
     //[SerializeField] private TileBase greyLightTile;
     //[SerializeField] private TileBase greyDarkTile;
 
-    //[Header("Grid / Map")]
-    //[SerializeField] private BoxCollider2D gridArea;
-    //[SerializeField] private int sortingOrder = -10;
-
-    [Header("Walls")]
-    [SerializeField] private Transform wallContainer;
-    [SerializeField] private WallMode wallMode = WallMode.Original;
-
     private readonly List<Vector2Int> playableCells = new();
 
     public void InitAndBuildMap()
