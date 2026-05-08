@@ -89,25 +89,10 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
-        if(mapManager.CurrentWallMode != MapManager.WallMode.GreyOutOnScore)
-            return;
-
-        if (current == target - 1 && wallGreyOutWave < 1)
-        {
-            mapManager.GreyOutRandomWalls(3);
-            wallGreyOutWave = 1; 
-        }
-
-        else if(current == target && wallGreyOutWave < 2)
-        {
-            mapManager.GreyOutRandomWalls(3);
-            wallGreyOutWave = 2;
-        }
     }
 
     private void HandleFoodEaten()
-    {
-        //mapManager.GreyOutRandomTiles(50); 
+    {       
     }
 
     private void OnDisable()
@@ -139,7 +124,6 @@ public class GameManager : MonoBehaviour
         {
             isLevelCompleted = true;
             door.Open();
-            mapManager.SaveMapStatus(); 
         }
     }
 
