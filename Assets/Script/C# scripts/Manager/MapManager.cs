@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
@@ -10,13 +12,30 @@ public class MapManager : MonoBehaviour
         AllGreyed
     }
 
-    [Header("Grid / Map")]
-    [SerializeField] private BoxCollider2D gridArea;
-    [SerializeField] private int sortingOrder = -10;
+    [Header("Tilemaps")]
+    [SerializeField] private Tilemap floorTilemap;
+    [SerializeField] private Tilemap wallTilemap;
+    //[SerializeField] private Tilemap greyTilemap;
+
+    [Header("Tiles")]
+    [SerializeField] private TileBase lightFloorTile;
+    [SerializeField] private TileBase darkFloorTile;
+    //[SerializeField] private TileBase greyLightTile;
+    //[SerializeField] private TileBase greyDarkTile;
+
+    [SerializeField] private int mapWidth = 45;
+    [SerializeField] private int mapHeight = 23; 
+
+    //[Header("Grid / Map")]
+    //[SerializeField] private BoxCollider2D gridArea;
+    //[SerializeField] private int sortingOrder = -10;
 
     [Header("Walls")]
     [SerializeField] private Transform wallContainer;
     [SerializeField] private WallMode wallMode = WallMode.Original;
+
+    private readonly List<Vector2Int> playableCells = new();
+    private readonly HashSet<Vector2Int> greyedCells = new();
 
     private Texture2D mapTexture;
     private SpriteRenderer mapRenderer;
@@ -27,15 +46,8 @@ public class MapManager : MonoBehaviour
     private readonly List<SpriteRenderer> wallRenderers = new();
     private readonly HashSet<SpriteRenderer> greyedWalls = new();
 
-    private static readonly Color32 LIGHT_GREEN = new(0, 226, 21, 255);
-    private static readonly Color32 DARK_GREEN = new(0, 165, 6, 255);
-    private static readonly Color32 LIGHT_GRAY = new(170, 170, 170, 220);
-    private static readonly Color32 DARK_GRAY = new(140, 140, 140, 220);
-
     private static readonly Color32 defaultWallColor = new(120, 75, 30, 255);
     private static readonly Color32 greyWallColor = new(75, 75, 75, 255);
-
-    private Vector3 mapOrigin;
 
     public WallMode CurrentWallMode => wallMode;
 
@@ -44,103 +56,90 @@ public class MapManager : MonoBehaviour
         CreateMap();
         InitWalls();
         ApplyWallStatus();
-        ApplyMapStatus();
+        //ApplyMapStatus();
     }
 
     // ---------- Tiles Code ----------
     private void CreateMap()
     {
-        if (gridArea == null)
+        floorTilemap.ClearAllTiles();
+
+        int halfWidth = mapWidth / 2;
+        int halfHeight = mapHeight / 2;
+
+        for (int x = -halfWidth; x <= halfWidth; x++)
         {
-            Debug.LogError("Grid Area is not assigned.");
-            return;
-        }
-
-        Bounds bound = gridArea.bounds;
-
-        int minX = Mathf.RoundToInt(bound.min.x);
-        int minY = Mathf.RoundToInt(bound.min.y);
-
-        int mapWidth = Mathf.RoundToInt(bound.size.x) + 1;
-        int mapHeight = Mathf.RoundToInt(bound.size.y) + 1;
-
-        mapOrigin = new Vector3(minX - 0.5f, minY - 0.5f, 0f);
-
-        if (mapRenderer == null)
-        {
-            GameObject gameMap = new GameObject("GameMap");
-            gameMap.transform.SetParent(transform);
-            mapRenderer = gameMap.AddComponent<SpriteRenderer>();
-            mapRenderer.sortingOrder = sortingOrder;
-        }
-
-        mapTexture = new Texture2D(mapWidth, mapHeight);
-        isLightColorTile = new bool[mapWidth * mapHeight];
-        isGreyedTile = new bool[mapWidth * mapHeight];
-
-        for (int x = 0; x < mapWidth; x++)
-        {
-            for (int y = 0; y < mapHeight; y++)
+            for (int y = -halfHeight; y <= halfHeight; y++)
             {
-                int index = y * mapWidth + x;
-                if (x % 2 != 0 && y % 2 != 0 || x % 2 == 0 && y % 2 == 0)
-                {
-                    mapTexture.SetPixel(x, y, LIGHT_GREEN);
-                    isLightColorTile[index] = true;
-                }
-                else
-                {
-                    mapTexture.SetPixel(x, y, DARK_GREEN);
-                    isLightColorTile[index] = false;
-                }
+                Vector3Int pos = new Vector3Int(x, y, 0);
+
+                bool isLight = (x + y) % 2 == 0;
+
+                floorTilemap.SetTile(
+                    pos,
+                    isLight ? lightFloorTile : darkFloorTile
+                );
             }
         }
-
-        mapTexture.filterMode = FilterMode.Point;
-        mapTexture.Apply();
-
-        Rect rect = new Rect(0, 0, mapWidth, mapHeight);
-        Sprite sprite = Sprite.Create(mapTexture, rect, new Vector2(0f, 0f), 1f, 0, SpriteMeshType.FullRect);
-        mapRenderer.sprite = sprite;
-
-        mapRenderer.transform.position = mapOrigin;
     }
 
-    public void GreyOutRandomTiles(int count)
+    private void CachePlayableCells()
     {
-        if (mapTexture == null) return;
+        playableCells.Clear();
 
-        if (isGreyedTile == null)
-            isGreyedTile = new bool[mapTexture.width * mapTexture.height];
+        BoundsInt bounds = floorTilemap.cellBounds;
 
-        int totalTiles = mapTexture.width * mapTexture.height;
-        List<int> availableTiles = new(totalTiles);
-
-        for (int i = 0; i < totalTiles; i++)
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            if (!isGreyedTile[i])
-                availableTiles.Add(i);
+            if (!floorTilemap.HasTile(pos))
+                continue;
+
+            bool hasWall =
+                wallTilemap != null &&
+                wallTilemap.HasTile(pos);
+
+            if (hasWall)
+                continue;
+
+            playableCells.Add(new Vector2Int(pos.x, pos.y));
         }
-
-        if(availableTiles.Count == 0) return;
-
-        int pick = Mathf.Min(count, availableTiles.Count);
-        for (int n = 0; n < pick; n++)
-        {
-            int random = Random.Range(0, availableTiles.Count);
-            int index = availableTiles[random];
-            availableTiles.RemoveAt(random);
-
-            isGreyedTile[index] = true;
-
-            int x = index % mapTexture.width; // column
-            int y = index / mapTexture.width; // row
-
-            Color32 grey = isLightColorTile[index] ? LIGHT_GRAY : DARK_GRAY;
-            mapTexture.SetPixel(x, y, grey);
-        }
-        mapTexture.Apply();
     }
+
+    //public void GreyOutRandomTiles(int count)
+    //{
+    //    if (mapTexture == null) return;
+
+    //    if (isGreyedTile == null)
+    //        isGreyedTile = new bool[mapTexture.width * mapTexture.height];
+
+    //    int totalTiles = mapTexture.width * mapTexture.height;
+    //    List<int> availableTiles = new(totalTiles);
+
+    //    for (int i = 0; i < totalTiles; i++)
+    //    {
+    //        if (!isGreyedTile[i])
+    //            availableTiles.Add(i);
+    //    }
+
+    //    if(availableTiles.Count == 0) return;
+
+    //    int pick = Mathf.Min(count, availableTiles.Count);
+    //    for (int n = 0; n < pick; n++)
+    //    {
+    //        int random = Random.Range(0, availableTiles.Count);
+    //        int index = availableTiles[random];
+    //        availableTiles.RemoveAt(random);
+
+    //        isGreyedTile[index] = true;
+
+    //        int x = index % mapTexture.width; // column
+    //        int y = index / mapTexture.width; // row
+
+    //        Color32 grey = isLightColorTile[index] ? LIGHT_GRAY : DARK_GRAY;
+    //        mapTexture.SetPixel(x, y, grey);
+    //    }
+    //    mapTexture.Apply();
+    //}
 
     // ---------- Walls Code ----------
     private void InitWalls()
@@ -212,30 +211,30 @@ public class MapManager : MonoBehaviour
 
     }
 
-    private void ApplyMapStatus()
-    {
-        if(MapStatus.Instance == null || mapTexture == null)
-            return;
+    //private void ApplyMapStatus()
+    //{
+    //    if(MapStatus.Instance == null || mapTexture == null)
+    //        return;
 
-        if (MapStatus.Instance.IsTheMapValidToSave(mapTexture.width, mapTexture.height))
-        {
-            isGreyedTile = (bool[])MapStatus.Instance.greyedTiles.Clone();
+    //    if (MapStatus.Instance.IsTheMapValidToSave(mapTexture.width, mapTexture.height))
+    //    {
+    //        isGreyedTile = (bool[])MapStatus.Instance.greyedTiles.Clone();
 
-            for (int i = 0; i < isGreyedTile.Length; i++)
-            {
-                if (isGreyedTile[i])
-                {
-                    int x = i % mapTexture.width;
-                    int y = i / mapTexture.width;
-                    Color32 grey = isLightColorTile[i] ? LIGHT_GRAY : DARK_GRAY;
-                    mapTexture.SetPixel(x, y, grey);
+    //        for (int i = 0; i < isGreyedTile.Length; i++)
+    //        {
+    //            if (isGreyedTile[i])
+    //            {
+    //                int x = i % mapTexture.width;
+    //                int y = i / mapTexture.width;
+    //                Color32 grey = isLightColorTile[i] ? LIGHT_GRAY : DARK_GRAY;
+    //                mapTexture.SetPixel(x, y, grey);
 
-                }            
-            }
+    //            }            
+    //        }
 
-            mapTexture.Apply();
-        }
-    }
+    //        mapTexture.Apply();
+    //    }
+    //}
 
     //private Vector2Int WorldToCell(Vector3 worldPos)
     //{
