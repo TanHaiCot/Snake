@@ -31,11 +31,6 @@ public class GameManager : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
-   
-    private int wallGreyOutWave = 0;
-
-    private int scoreToStartReverseMovement = 3;
-    private bool reverseMovementStarted;
 
     void Start() 
     {
@@ -92,31 +87,10 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
-        if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
-        {
-            reverseMovementStarted = true;
-            snake.SetReverseMovement(true);
-        }
-
-        if (mapManager.CurrentWallMode != MapManager.WallMode.GreyOutOnScore)
-            return;
-
-        if (current == target - 1 && wallGreyOutWave < 1)
-        {
-            mapManager.GreyOutRandomWalls(3);
-            wallGreyOutWave = 1; 
-        }
-
-        else if(current == target && wallGreyOutWave < 2)
-        {
-            mapManager.GreyOutRandomWalls(3);
-            wallGreyOutWave = 2;
-        }
     }
 
     private void HandleFoodEaten()
-    {
-        mapManager.GreyOutRandomTiles(50); 
+    {       
     }
 
     private void OnDisable()
@@ -148,7 +122,6 @@ public class GameManager : MonoBehaviour
         {
             isLevelCompleted = true;
             door.Open();
-            mapManager.SaveMapStatus(); 
         }
     }
 
@@ -193,9 +166,6 @@ public class GameManager : MonoBehaviour
 
         energy.ResetEnergy();
         snakeAbilities.ResetAbilities();
-
-        reverseMovementStarted = false;
-        snake.SetReverseMovement(false);
     }
 
     public void MainMenu()
