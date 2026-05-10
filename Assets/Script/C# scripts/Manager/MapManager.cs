@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -13,15 +12,12 @@ public class MapManager : MonoBehaviour
     }
 
     [Header("Tilemaps")]
-    [SerializeField] private Tilemap floorTilemap;
+    [SerializeField] private Tilemap playgroundTilemap;
     [SerializeField] private Tilemap wallTilemap;
-    //[SerializeField] private Tilemap greyTilemap;
 
     [Header("Tiles")]
     [SerializeField] private TileBase lightFloorTile;
     [SerializeField] private TileBase darkFloorTile;
-    //[SerializeField] private TileBase greyLightTile;
-    //[SerializeField] private TileBase greyDarkTile;
 
     private readonly List<Vector2Int> playableCells = new();
 
@@ -34,16 +30,16 @@ public class MapManager : MonoBehaviour
     // ---------- Tiles Code ----------
     private void CreateMap()
     {
-        BoundsInt bounds = floorTilemap.cellBounds;
+        BoundsInt bounds = playgroundTilemap.cellBounds;
 
         foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            if (!floorTilemap.HasTile(pos))
+            if (!playgroundTilemap.HasTile(pos))
                 continue;
 
             bool isLight = (pos.x + pos.y) % 2 == 0;
 
-            floorTilemap.SetTile(
+            playgroundTilemap.SetTile(
                 pos,
                 isLight ? lightFloorTile : darkFloorTile
             );
@@ -55,11 +51,11 @@ public class MapManager : MonoBehaviour
     {
         playableCells.Clear();
 
-        BoundsInt bounds = floorTilemap.cellBounds;
+        BoundsInt bounds = playgroundTilemap.cellBounds;
 
         foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            if (!floorTilemap.HasTile(pos))
+            if (!playgroundTilemap.HasTile(pos))
                 continue;
 
             bool hasWall =
@@ -71,5 +67,27 @@ public class MapManager : MonoBehaviour
 
             playableCells.Add(new Vector2Int(pos.x, pos.y));
         }
+    }
+
+    public bool IsWalkable(Vector2Int cell)
+    {
+        Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
+
+        bool hasFloor = playgroundTilemap.HasTile(tilePos);
+        bool hasWall = wallTilemap != null && wallTilemap.HasTile(tilePos);
+
+        return hasFloor && !hasWall;
+    }
+
+    public Vector3 CellToWorld(Vector2Int cell)
+    {
+        Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
+        return playgroundTilemap.GetCellCenterWorld(tilePos);
+    }
+
+    public Vector2Int WorldToCell(Vector3 worldPos)
+    {
+        Vector3Int cell = playgroundTilemap.WorldToCell(worldPos);
+        return new Vector2Int(cell.x, cell.y);
     }
 }
