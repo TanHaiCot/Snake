@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
         }
         
         mapManager.InitAndBuildMap();
+        food.RandomizedSpawn(); 
     }
 
     public void Update()

@@ -709,11 +709,11 @@ PrefabInstance:
       objectReference: {fileID: 1620676940}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -20.66
+      value: -3.3
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.34
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -759,6 +759,10 @@ PrefabInstance:
       propertyPath: energy
       value: 
       objectReference: {fileID: 991312581}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: mapManager
+      value: 
+      objectReference: {fileID: 1239357050}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: gameManager
       value: 
@@ -1031,13 +1035,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bb89509e430664d938af31f054a292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridArea: {fileID: 1242246800}
+  mapManager: {fileID: 1239357050}
   snake: {fileID: 914842887}
   opponentSnake: {fileID: 0}
   scoreManager: {fileID: 616454441}
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!1 &631863847
 GameObject:
   m_ObjectHideFlags: 0
@@ -1869,7 +1870,7 @@ Transform:
   m_GameObject: {fileID: 1230799134}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -2.5, z: 0}
+  m_LocalPosition: {x: -0.5, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

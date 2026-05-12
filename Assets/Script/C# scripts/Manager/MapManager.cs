@@ -90,4 +90,21 @@ public class MapManager : MonoBehaviour
         Vector3Int cell = playgroundTilemap.WorldToCell(worldPos);
         return new Vector2Int(cell.x, cell.y);
     }
+
+    public List<Vector2Int> GetWalkableCells()
+    {
+        List<Vector2Int> result = new();
+
+        BoundsInt bounds = playgroundTilemap.cellBounds;
+
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        {
+            Vector2Int cell = new Vector2Int(pos.x, pos.y);
+
+            if (IsWalkable(cell))
+                result.Add(cell);
+        }
+
+        return result;
+    }
 }
