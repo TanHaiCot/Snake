@@ -1258,13 +1258,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14bb89509e430664d938af31f054a292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridArea: {fileID: 1242246800}
+  mapManager: {fileID: 0}
   snake: {fileID: 914842887}
   opponentSnake: {fileID: 0}
   scoreManager: {fileID: 616454441}
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!1 &631863847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2243,10 +2240,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f484a5c233d6bd547b70a198cc92dd1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridArea: {fileID: 1242246800}
-  sortingOrder: -10
-  wallContainer: {fileID: 608004691}
-  wallMode: 0
+  playgroundTilemap: {fileID: 0}
+  wallTilemap: {fileID: 0}
+  lightFloorTile: {fileID: 0}
+  darkFloorTile: {fileID: 0}
 --- !u!1 &1242246799
 GameObject:
   m_ObjectHideFlags: 0
