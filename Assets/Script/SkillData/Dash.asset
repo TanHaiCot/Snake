@@ -19,6 +19,6 @@ MonoBehaviour:
   skillType: 0
   effectType: 0
   value: 0
-  uiPosition: {x: 150, y: 0}
+  uiPosition: {x: 170, y: 0}
   requirementGroups: []
   oppositeChoice: {fileID: 0}

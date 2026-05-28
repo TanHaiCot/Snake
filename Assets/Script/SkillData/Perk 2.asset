@@ -19,7 +19,7 @@ MonoBehaviour:
   skillType: 1
   effectType: 4
   value: 0
-  uiPosition: {x: 335, y: -130}
+  uiPosition: {x: 395, y: -130}
   requirementGroups:
   - oneOfTheseSkills:
     - {fileID: 11400000, guid: 30f23b877f385a44696796f4533958b9, type: 2}

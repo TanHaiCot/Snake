@@ -83,4 +83,28 @@ public class SkillTreeManager : MonoBehaviour
 
         skillTreeUI.RefreshAllNodes();
     }
+
+    public SkillNodeVisualState GetVisualState(SkillData skill)
+    {
+        if (IsLearned(skill))
+            return SkillNodeVisualState.Learned;
+
+        if (IsOppositeAlreadyLearned(skill))
+            return SkillNodeVisualState.Blocked;
+
+        if (CanReveal(skill))
+        {
+            if (CanLearn(skill))
+                return SkillNodeVisualState.Available;
+
+            return SkillNodeVisualState.Blocked;
+        }
+
+        return SkillNodeVisualState.Blank;
+    }
+
+    public bool CanReveal(SkillData skill)
+    {
+        return RequirementsMet(skill);
+    }
 }

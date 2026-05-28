@@ -234,9 +234,9 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
-    m_NormalColor: {r: 0.3773585, g: 0.35777858, b: 0.35777858, a: 1}
+    m_NormalColor: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
     m_HighlightedColor: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -272,3 +272,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeButton
   button: {fileID: 5571572134578657446}
+  skillText: {fileID: 2280642127209751221}
+  blankColor: {r: 0.9019608, g: 0.7490196, b: 0.34901962, a: 0.7529412}
+  availableColor: {r: 0.90196085, g: 0.7490196, b: 0.34901962, a: 1}
+  learnedColor: {r: 1, g: 1, b: 0.7, a: 1}
+  blockedColor: {r: 0.9019608, g: 0.7490196, b: 0.34901962, a: 0.7529412}
