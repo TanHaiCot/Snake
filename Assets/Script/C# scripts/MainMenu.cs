@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     public void NewGame()
     {
-        SceneManager.LoadScene("GamePlay"); 
+        SceneManagement.Instance.LoadScene("GamePlay"); 
     }
 
     public void OpenSkillTreeFromMenu()
