@@ -279,13 +279,13 @@ public class Snake : MonoBehaviour
             if(energy)
                 energy.AddEnergy(10f);
 
-            OnFoodEaten?.Invoke();
+            //OnFoodEaten?.Invoke();
+            gameManager.CheckWinStatus(); 
         }
 
         if (collision.CompareTag("Next Level Trigger"))
         {
-            gameManager.WinLevel();
-            SceneManagement.Instance.NextLevel();
+            gameManager.MoveToSkillTree();
         }
     }
 

@@ -79,7 +79,7 @@ public class Energy : MonoBehaviour
 
 
 
-    //test 
+    //change statistic methods for skill tree 
     public void IncreaseMaxEnergy(float amount)
     {
         maxEnergy += amount;

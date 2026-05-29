@@ -283,7 +283,7 @@ public class SnakeAbilities : MonoBehaviour
 
 
 
-    //test
+    //change statistic from skill tree
     public void ReduceDashCost(float amount)
     {
         dashEnergyCost = Mathf.Max(1f, dashEnergyCost - amount);
@@ -308,4 +308,5 @@ public class SnakeAbilities : MonoBehaviour
     {
         ghostModeCooldown = Mathf.Max(0.5f, ghostModeCooldown - amount);
     }
+
 }

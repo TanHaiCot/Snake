@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Snake secondSnake; 
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] Timer timer;
-    [SerializeField] DoorController door;
+    [SerializeField] DoorController doorController;
     [SerializeField] Food food;
     [SerializeField] AI_Snake ai_Snake;
     [SerializeField] BoxCollider2D gridArea; 
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
     }
 
     private void HandleFoodEaten()
-    {       
+    {         
     }
 
     private void OnDisable()
@@ -114,17 +114,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void WinLevel()
+    public void CheckWinStatus()
     {
-        if (isLevelCompleted)
+        if (isLevelCompleted || isLost)
             return;
 
         if(scoreManager.TargetReached && !timer.TimeUp)
         {
-            isLevelCompleted = true;
-            door.Open();
+            WinLevel();
         }
     }
+
+    private void WinLevel()
+    {
+        isLevelCompleted = true;
+        doorController.Open();
+        PlayerProgress.Instance.AddUpgradePoint();
+        PlayerProgress.Instance.currentLevelBuildIndex = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    public void MoveToSkillTree()
+    {
+        Time.timeScale = 1f; 
+        PlayerProgress.Instance.openedSkillTreeFromLevel = true;
+        SceneManagement.Instance.LoadScene("SkillTree");
+    }
+
+    //public void MoveToNextLevel()
+    //{
+    //    Time.timeScale = 1f;
+    //    SceneManagement.Instance.NextLevel();
+    //}
 
     public void Resume()
     {

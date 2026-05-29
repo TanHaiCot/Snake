@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillTreeManager : MonoBehaviour
@@ -8,9 +7,17 @@ public class SkillTreeManager : MonoBehaviour
     [SerializeField] private SkillTreeData database;
     [SerializeField] private SkillTreeUI skillTreeUI;
 
+    [SerializeField] private GameObject continueButton;
+    [SerializeField] private GameObject returnButton;
+
     private void Start()
     {
         skillTreeUI.BuildTree(this, database.AllSkills);
+
+        bool fromLevel = PlayerProgress.Instance != null &&
+                         PlayerProgress.Instance.openedSkillTreeFromLevel;
+
+        continueButton.SetActive(fromLevel);
     }
 
     public bool IsLearned(SkillData skill)
@@ -107,4 +114,19 @@ public class SkillTreeManager : MonoBehaviour
     {
         return RequirementsMet(skill);
     }
+
+    public void ContinueToNextLevel()
+    {
+        PlayerProgress.Instance.openedSkillTreeFromLevel = false;
+        SceneManagement.Instance.NextLevel();
+    }
+
+    public void ReturnToMenu()
+    {
+        if (PlayerProgress.Instance != null)
+            PlayerProgress.Instance.openedSkillTreeFromLevel = false;
+
+        SceneManagement.Instance.LoadScene("StartMenu");
+    }
+
 }

@@ -5,8 +5,9 @@ public class PlayerProgress : MonoBehaviour
 {
     public static PlayerProgress Instance;
 
+    public bool openedSkillTreeFromLevel;
+    public int currentLevelBuildIndex;
     public int upgradePoints;
-    public int currentLevel = 1;
 
     public List<string> chosenSkillIds = new List<string>();
 
