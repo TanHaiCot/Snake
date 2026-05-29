@@ -1,4 +1,4 @@
-using System;
+    using System;
 using System.Collections.Generic;
 using Unity.VectorGraphics;
 using UnityEngine;
@@ -100,21 +100,22 @@ public class AI_Snake : MonoBehaviour
 
     private void MoveNextStep()
     {
-        Vector2Int currentPos = pathfinding.WorldToGrid(this.transform.position);
-        previousHeadPos = currentPos;
-        hasPreviousHeadPos = true; 
+        Vector2Int currentCell = pathfinding.WorldToGrid(transform.position);
 
-        // next position of the snake head the same tick
-        int nextX = Mathf.RoundToInt(this.transform.position.x) + direction.x;
-        int nextY = Mathf.RoundToInt(this.transform.position.y) + direction.y;
+        previousHeadPos = currentCell;
+        hasPreviousHeadPos = true;
+
+        Vector2Int nextCell = currentCell + direction;
+        Vector3 nextWorldPos = pathfinding.GridToWorld(nextCell);
 
         for (int i = bodies.Count - 1; i > 0; i--)
         {
             bodies[i].position = bodies[i - 1].position;
         }
 
-        transform.position = new Vector3(nextX, nextY, 0);
+        transform.position = nextWorldPos;
     }
+
     private void UpdateAIState()
     {
         bool canSeePlayer = CanSeePlayer();
@@ -336,13 +337,44 @@ public class AI_Snake : MonoBehaviour
 
     private bool HasLineOfSight(Vector2Int fromGrid, Vector2Int toGrid)
     {
-        Vector2 from = new Vector2(fromGrid.x, fromGrid.y);
-        Vector2 to = new Vector2(toGrid.x, toGrid.y);
-        Vector2 dir = (to - from).normalized;
-        float distance = Vector2.Distance(from, to);
+        //Vector2 from = new Vector2(fromGrid.x, fromGrid.y);
+        //Vector2 to = new Vector2(toGrid.x, toGrid.y);
+        //Vector2 dir = (to - from).normalized;
+        //float distance = Vector2.Distance(from, to);
 
-        RaycastHit2D hit = Physics2D.Raycast(from, dir, distance, pathfinding.wallLayer);
-        return hit.collider == null;
+        Vector3 fromWorld = pathfinding.GridToWorld(fromGrid);
+        Vector3 toWorld = pathfinding.GridToWorld(toGrid);
+
+        Vector3 direction = toWorld - fromWorld;
+        float distance = direction.magnitude;
+
+        if (distance <= 0f)
+            return true;
+
+        direction.Normalize();
+
+        //check every quarter of a tile along the line to see if there's an obstacle
+        //smaller step size = more accurate but more expensive
+        //adjust as needed for performance vs accuracy
+        float stepSizePerCheck = 0.25f;  
+        float travelled = stepSizePerCheck;
+
+        while (travelled < distance)
+        {
+            Vector3 checkWorldPos = fromWorld + direction * travelled;
+            Vector2Int checkCell = pathfinding.WorldToGrid(checkWorldPos);
+
+            // Ignore start and target cells
+            if (checkCell != fromGrid && checkCell != toGrid)
+            {
+                if (!pathfinding.IsWalkable(checkCell, Pathfinding.PathPurpose.Patrol))
+                    return false;
+            }
+
+            travelled += stepSizePerCheck;
+        }
+
+        return true;
     }
 
 
@@ -417,25 +449,25 @@ public class AI_Snake : MonoBehaviour
         if (hasPatrolDestination)
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(new Vector3(patrolDestination.x, patrolDestination.y, 0f), Vector3.one);
-            Gizmos.DrawLine(new Vector3(myPos.x, myPos.y, 0f), new Vector3(patrolDestination.x, patrolDestination.y, 0f));
+            Gizmos.DrawWireCube(pathfinding.GridToWorld(patrolDestination), Vector3.one);
+            Gizmos.DrawLine(pathfinding.GridToWorld(myPos), pathfinding.GridToWorld(patrolDestination));
         }
 
         if (playerSnake != null)
         {
             Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
             Gizmos.color = CanSeePlayer() ? Color.green : Color.red;
-            Gizmos.DrawLine(new Vector3(myPos.x, myPos.y, 0f), new Vector3(playerPos.x, playerPos.y, 0f));
+            Gizmos.DrawLine(pathfinding.GridToWorld(myPos), pathfinding.GridToWorld(playerPos));
         }
 
         if (drawPath && currentPath != null && currentPath.Count > 0)
         {
             Gizmos.color = Color.cyan;
 
-            Vector3 prev = new Vector3(myPos.x, myPos.y, 0f);
+            Vector3 prev = pathfinding.GridToWorld(myPos);
             for (int i = 0; i < currentPath.Count; i++)
             {
-                Vector3 next = new Vector3(currentPath[i].x, currentPath[i].y, 0f);
+                Vector3 next = pathfinding.GridToWorld(currentPath[i]   );
                 Gizmos.DrawLine(prev, next);
                 Gizmos.DrawSphere(next, 0.12f);
                 prev = next;
@@ -448,7 +480,8 @@ public class AI_Snake : MonoBehaviour
     public void Restate()
     {
         direction = Vector2Int.right;
-        this.transform.position = Vector3.zero;
+        Vector2Int startCell = pathfinding.WorldToGrid(Vector3.zero);
+        transform.position = pathfinding.GridToWorld(startCell);
 
         for (int i = 1; i < bodies.Count; i++)
         {
@@ -465,13 +498,17 @@ public class AI_Snake : MonoBehaviour
 
     public bool SpotOccupied(int x, int y)
     {
+        Vector2Int targetCell = new Vector2Int(x, y);
+
         foreach (Transform body in bodies)
         {
-            if (Mathf.RoundToInt(body.position.x) == x &&
-                Mathf.RoundToInt(body.position.y) == y)
+            Vector2Int bodyCell = pathfinding.WorldToGrid(body.position);
+            
+            if (bodyCell == targetCell)
             {
                 return true;
             }
+           
         }
         return false;
     }

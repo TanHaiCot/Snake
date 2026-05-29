@@ -11,14 +11,13 @@ public class Pathfinding : MonoBehaviour
         Patrol
     }
 
-    [Header("Grid Settings")]
-    [SerializeField] private BoxCollider2D gridArea;
+    [Header("Map")]
+    [SerializeField] private MapManager mapManager;
 
     [SerializeField] public LayerMask wallLayer;
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
 
-    private int minX, maxX, minY, maxY;
     private static readonly Vector2Int[] directions = new Vector2Int[]
     {
         Vector2Int.up,   
@@ -27,31 +26,19 @@ public class Pathfinding : MonoBehaviour
         Vector2Int.right   
     };
 
-    private void Awake()
-    {
-        Bounds bound = gridArea.bounds;
-
-        minX = Mathf.RoundToInt(bound.min.x);
-        maxX = Mathf.RoundToInt(bound.max.x);
-        minY = Mathf.RoundToInt(bound.min.y);
-        maxY = Mathf.RoundToInt(bound.max.y);
-    }
-
     public Vector2Int WorldToGrid(Vector3 worldPos)
     {
-        int x = Mathf.RoundToInt(worldPos.x);
-        int y = Mathf.RoundToInt(worldPos.y);
-        return new Vector2Int(x, y);
+        return mapManager.WorldToCell(worldPos);
+    }
+
+    public Vector3 GridToWorld(Vector2Int cell)
+    {
+        return mapManager.CellToWorld(cell);
     }
 
     public bool IsWalkable(Vector2Int position, PathPurpose purpose)
     {
-        if(position.x < minX || position.x > maxX || position.y < minY || position.y > maxY)
-            return false;
-
-        Collider2D obstacles = Physics2D.OverlapBox(new Vector2(position.x, position.y), new Vector2(0.9f, 0.9f), 0, wallLayer);
-
-        if(obstacles != null)
+        if (!mapManager.IsWalkable(position))
             return false;
 
         if (purpose == PathPurpose.Patrol)
@@ -167,17 +154,22 @@ public class Pathfinding : MonoBehaviour
     {
         result = Vector2Int.zero;
 
-        for(int i = 0; i < attempts; i++)
+        List<Vector2Int> walkableCells = mapManager.GetWalkableCells();
+
+        if (walkableCells == null || walkableCells.Count == 0)
+            return false;
+
+        for (int i = 0; i < attempts; i++)
         {
-            int randomX = UnityEngine.Random.Range(minX, maxX);
-            int randomY = UnityEngine.Random.Range(minY, maxY);
-            Vector2Int randomPos = new Vector2Int(randomX, randomY);
+            Vector2Int randomPos = walkableCells[Random.Range(0, walkableCells.Count)];
+
             if (IsWalkable(randomPos, PathPurpose.Patrol))
             {
                 result = randomPos;
                 return true;
             }
         }
+
         return false; 
     }
 }
