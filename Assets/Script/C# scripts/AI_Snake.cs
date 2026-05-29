@@ -9,9 +9,9 @@ using static UnityEditor.PlayerSettings;
 public class AI_Snake : MonoBehaviour
 {
     private enum AI_snakeState { Patrol, Chase }
-    private enum AI_Mode { FoodChaser, PlayerChaser }
+    private enum AI_Mode { FoodIsTarget, PlayerIsTarget }
 
-    [SerializeField] private AI_Mode aiMode = AI_Mode.FoodChaser;
+    [SerializeField] private AI_Mode aiMode = AI_Mode.FoodIsTarget;
 
     [Header("References")]
     [SerializeField] private Pathfinding pathfinding;
@@ -65,8 +65,6 @@ public class AI_Snake : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        UpdateAIState();
-
         if (Time.time < nextMoveTime)
             return;
 
@@ -74,18 +72,22 @@ public class AI_Snake : MonoBehaviour
 
         bool gotMove = false;
 
-        if (aiMode == AI_Mode.FoodChaser)
-            FoodChaserAIUpdate();
+        if (aiMode == AI_Mode.FoodIsTarget)
+            gotMove = UpdateFoodChase();
 
-
-        switch (currentState)
+        else if (aiMode == AI_Mode.PlayerIsTarget)
         {
-            case AI_snakeState.Patrol:
-                gotMove = UpdatePatrol();
-                break;
-            case AI_snakeState.Chase:
-                gotMove = UpdatePlayerChase();
-                break;
+            UpdateAIState(); 
+            switch (currentState)
+            {
+                case AI_snakeState.Patrol:
+                    gotMove = UpdatePatrol();
+                    break;
+                case AI_snakeState.Chase:
+                    gotMove = UpdatePlayerChase();
+                    break;
+            }
+
         }
 
         UpdateHeadRotation();
@@ -94,8 +96,6 @@ public class AI_Snake : MonoBehaviour
             return;
 
         MoveNextStep(); 
-
-
     }
 
     private void MoveNextStep()
@@ -245,26 +245,34 @@ public class AI_Snake : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    private void FoodChaserAIUpdate()
+    private bool UpdateFoodChase()
     {
-        if(pathfinding == null || foodTarget == null)
+        if (pathfinding == null || foodTarget == null)
         {
             Debug.Log("Pathfinding or FoodTarget is not assigned in AI_Snake");
-            return;
+            return false;
         }
-        Vector2Int startPos = pathfinding.WorldToGrid(this.transform.position);
+
+        Vector2Int startPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int targetPos = pathfinding.WorldToGrid(foodTarget.position);
 
-        List<Vector2Int> path = pathfinding.FindPath(startPos, targetPos, Pathfinding.PathPurpose.FoodChasing);
+        currentPath = pathfinding.FindPath(
+            startPos,
+            targetPos,
+            Pathfinding.PathPurpose.FoodChasing
+        );
 
-        // path[0] is tile next to Start; path[1] is one step after that, and so on
-        // path.Count can be 0 if the snake is already on the food -> make sure path.Count > 0 to avoid error when accessing path[0] 
-        if (path != null && path.Count > 0) 
+        if (currentPath == null || currentPath.Count == 0)
         {
-            Vector2Int firstStep = path[0]; //in Pathfinding, we dont count from the start position, so the first step is path[0] 
-            Vector2Int newDirection = firstStep - startPos; //Calculate direction: right, left, up, down
-            direction = newDirection;
+            Debug.Log("No path to food: " + targetPos);
+            return false;
         }
+
+        Vector2Int firstStep = currentPath[0];
+        Vector2Int newDirection = firstStep - startPos;
+
+        direction = newDirection;
+        return true;
     }
 
     private bool UpdatePlayerChase()
