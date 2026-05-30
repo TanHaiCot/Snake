@@ -1,8 +1,5 @@
-using NUnit.Framework.Internal;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,9 +15,8 @@ public class FirstBoss : MonoBehaviour
         Die
     }
 
-    [Header("Mape Settings")]
-    [SerializeField] BoxCollider2D gridArea;
-    [SerializeField] LayerMask obstacleLayer;
+    [Header("Map Settings")]
+    [SerializeField] private MapManager mapManager;
 
     [Header("References")]
     [SerializeField] Transform player;
@@ -56,8 +52,6 @@ public class FirstBoss : MonoBehaviour
 
     private Vector2Int direction = Vector2Int.right; 
 
-    private int minX, maxX, minY, maxY;
-
     Vector2Int[] directions = new Vector2Int[]
         {
             Vector2Int.up,
@@ -79,17 +73,7 @@ public class FirstBoss : MonoBehaviour
 
     private void Start()
     {
-        Bounds bound = gridArea.bounds;
-        minX = Mathf.RoundToInt(bound.min.x);
-        maxX = Mathf.RoundToInt(bound.max.x);
-        minY = Mathf.RoundToInt(bound.min.y);
-        maxY = Mathf.RoundToInt(bound.max.y);
-
-
-        Debug.Log($"Boss movement bounds: minX={minX}, maxX={maxX}, minY={minY}, maxY={maxY}");
-
         Restate();
-        Debug.Log($"Boss start anchor={AnchorCell} walkable={IsWalkable2x2(AnchorCell)}");
     }
 
     private void Update()
@@ -416,11 +400,15 @@ public class FirstBoss : MonoBehaviour
 
     private bool IsWalkable2x2(Vector2Int anchor)
     {
-        if (anchor.x < minX || anchor.x + 1 > maxX || anchor.y < minY || anchor.y + 1 > maxY)
-            return false;
+        Vector2Int bottomLeft = anchor;
+        Vector2Int bottomRight = anchor + Vector2Int.right;
+        Vector2Int topLeft = anchor + Vector2Int.up;
+        Vector2Int topRight = anchor + Vector2Int.right + Vector2Int.up;
 
-        Vector2 center = new Vector2(anchor.x + 0.5f, anchor.y + 0.5f);
-        return Physics2D.OverlapBox(center, new Vector2(1.9f, 1.9f), 0f, obstacleLayer) == null;
+        return mapManager.IsWalkable(bottomLeft)
+            && mapManager.IsWalkable(bottomRight)
+            && mapManager.IsWalkable(topLeft)
+            && mapManager.IsWalkable(topRight);
     }
 
     private int GetDistance(Vector2Int a, Vector2Int b)
@@ -435,19 +423,24 @@ public class FirstBoss : MonoBehaviour
         //    bossBodies[i].position = bossBodies[i - 1].position;
         //}   
         Vector2Int delta = newAnchor - AnchorCell;
-        if (delta == new Vector2Int(BossCellSize, 0)) lastDir = Vector2Int.right;
-        else if (delta == new Vector2Int(-BossCellSize, 0)) lastDir = Vector2Int.left;
-        else if (delta == new Vector2Int(0, BossCellSize)) lastDir = Vector2Int.up;
-        else if (delta == new Vector2Int(0, -BossCellSize)) lastDir = Vector2Int.down;
+
+        if (delta == new Vector2Int(BossCellSize, 0)) 
+            lastDir = Vector2Int.right;
+        else if (delta == new Vector2Int(-BossCellSize, 0)) 
+            lastDir = Vector2Int.left;
+        else if (delta == new Vector2Int(0, BossCellSize)) 
+            lastDir = Vector2Int.up;
+        else if (delta == new Vector2Int(0, -BossCellSize)) 
+            lastDir = Vector2Int.down;
 
         AnchorCell = newAnchor;
-        transform.position = new Vector3(newAnchor.x + 0.5f, newAnchor.y + 0.5f, 0); 
+        transform.position = AnchorToWorld(newAnchor); //new Vector3(newAnchor.x + 0.5f, newAnchor.y + 0.5f, 0); 
     }
 
     private Vector2Int WorldToGrid(Vector3 worldPos)
-        {
-            return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
-        }
+    {
+        return mapManager.WorldToCell(worldPos);
+    }
 
     private void RecordAnchor()
         {
@@ -461,37 +454,40 @@ public class FirstBoss : MonoBehaviour
         }
 
     private void UpdateBody()
+    {
+        for (int i = 1; i < bossBodies.Count; i++)
         {
-            for (int i = 1; i < bossBodies.Count; i++)
+            if (i < anchorHistory.Count)
             {
-                if (i < anchorHistory.Count)
-                {
-                    Vector2Int a = anchorHistory[i];
-                    bossBodies[i].position = new Vector3(a.x + 0.5f, a.y + 0.5f, 0);
-                }
+                Vector2Int a = anchorHistory[i];
+                bossBodies[i].position = AnchorToWorld(a);
             }
         }
+    }
 
     private void Restate()
     {
         AnchorCell = new Vector2Int(2, -2);
-        transform.position = new Vector3(AnchorCell.x + 0.5f, AnchorCell.y + 0.5f, 0);
-    
+        transform.position = AnchorToWorld(AnchorCell);
+
         for (int i = 1; i < bossBodies.Count; i++)
+        {
             if (bossBodies[i] != null)
                 Destroy(bossBodies[i].gameObject);
-    
-    
+        }
+
         bossBodies.Clear();
         bossBodies.Add(transform);
-    
+
         anchorHistory.Clear();
         currentPath.Clear();
         pathIndex = 0;
         lastDir = Vector2Int.zero;
 
         for (int i = 0; i < initialBodySegments; i++)
-                Grow();
+        {
+            Grow();
+        }
     }
 
     private void Grow()
@@ -512,11 +508,19 @@ public class FirstBoss : MonoBehaviour
 
     private void SpawnPowerPickup()
     {
-        if(powerUpPrefab == null) return;
+        if (powerUpPrefab == null)
+            return;
 
-        GameObject powerup = Instantiate(powerUpPrefab, new Vector3(transform.position.x + 0.5f, transform.position.y + 0.5f, transform.position.z), Quaternion.identity);
+        Vector3 spawnPos = AnchorToWorld(AnchorCell);
+
+        GameObject powerup = Instantiate(
+            powerUpPrefab,
+            spawnPos,
+            Quaternion.identity
+        );
 
         var dropItem = powerup.GetComponent<BossPowerUp>();
+
         if (dropItem != null)
             dropItem.SetManager(bossFightManager);
     }
@@ -617,6 +621,13 @@ public class FirstBoss : MonoBehaviour
         return candidate;
     }
 
+    private Vector3 AnchorToWorld(Vector2Int anchor)
+    {
+        Vector3 bottomLeft = mapManager.CellToWorld(anchor);
+        Vector3 topRight = mapManager.CellToWorld(anchor + Vector2Int.right + Vector2Int.up);
+
+        return (bottomLeft + topRight) / 2f;
+    }
 
     private class ANode
     {
