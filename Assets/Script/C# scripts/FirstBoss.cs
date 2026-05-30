@@ -37,7 +37,6 @@ public class FirstBoss : MonoBehaviour
 
     [Header("Power-up Drop")]
     [SerializeField] GameObject powerUpPrefab;
-    //private float fleeDuration = 5f;      //flee time when player is empowered
 
     public BossState state = BossState.Chasing;
 
