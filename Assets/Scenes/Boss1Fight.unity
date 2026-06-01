@@ -2371,10 +2371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c8e095b873cc2439896884ca4503ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridArea: {fileID: 1242246800}
-  obstacleLayer:
-    serializedVersion: 2
-    m_Bits: 8
+  mapManager: {fileID: 1239357050}
   player: {fileID: 624845951}
   bossBodyPrefab: {fileID: 6874129864492939515, guid: 09b36ba7fcafca94b8ba486139e81db0, type: 3}
   bossFightManager: {fileID: 456882115}
@@ -24918,20 +24915,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
   m_PrefabInstance: {fileID: 6037067301012278269}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1602164144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602164143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02b30b5320beae54cbb8dbdc7e77a7f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextSceneTrigger: {fileID: 0}
-  door: {fileID: 0}
 --- !u!61 &1602164147
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -27820,9 +27803,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1602164144}
     - targetCorrespondingSourceObject: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1602164147}
