@@ -280,4 +280,33 @@ public class SnakeAbilities : MonoBehaviour
 
         lastGhostState = false;
     }
+
+
+
+    //change statistic from skill tree
+    public void ReduceDashCost(float amount)
+    {
+        dashEnergyCost = Mathf.Max(1f, dashEnergyCost - amount);
+    }
+
+    public void ReduceDashCooldown(float amount)
+    {
+        dashCooldown = Mathf.Max(0.1f, dashCooldown - amount);
+    }
+
+    public void IncreaseDashSpeed(float amount)
+    {
+        dashSpeedMultiplier += amount;
+    }
+
+    public void ReduceGhostDrain(float amount)
+    {
+        ghostModeEnergyDrainPerSecond = Mathf.Max(1f, ghostModeEnergyDrainPerSecond - amount);
+    }
+
+    public void ReduceGhostCooldown(float amount)
+    {
+        ghostModeCooldown = Mathf.Max(0.5f, ghostModeCooldown - amount);
+    }
+
 }

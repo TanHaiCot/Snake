@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Snake secondSnake; 
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] Timer timer;
-    [SerializeField] DoorController door;
+    [SerializeField] DoorController doorController;
     [SerializeField] Food food;
     [SerializeField] AI_Snake ai_Snake;
     [SerializeField] BoxCollider2D gridArea; 
@@ -31,11 +31,6 @@ public class GameManager : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
-   
-    private int wallGreyOutWave = 0;
-
-    private int scoreToStartReverseMovement = 3;
-    private bool reverseMovementStarted;
 
     void Start() 
     {
@@ -61,6 +56,7 @@ public class GameManager : MonoBehaviour
         }
         
         mapManager.InitAndBuildMap();
+        food.RandomizedSpawn(); 
     }
 
     public void Update()
@@ -92,31 +88,10 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
-        if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
-        {
-            reverseMovementStarted = true;
-            snake.SetReverseMovement(true);
-        }
-
-        if (mapManager.CurrentWallMode != MapManager.WallMode.GreyOutOnScore)
-            return;
-
-        if (current == target - 1 && wallGreyOutWave < 1)
-        {
-            mapManager.GreyOutRandomWalls(3);
-            wallGreyOutWave = 1; 
-        }
-
-        else if(current == target && wallGreyOutWave < 2)
-        {
-            mapManager.GreyOutRandomWalls(3);
-            wallGreyOutWave = 2;
-        }
     }
 
     private void HandleFoodEaten()
-    {
-        mapManager.GreyOutRandomTiles(50); 
+    {         
     }
 
     private void OnDisable()
@@ -139,18 +114,37 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void WinLevel()
+    public void CheckWinStatus()
     {
-        if (isLevelCompleted)
+        if (isLevelCompleted || isLost)
             return;
 
         if(scoreManager.TargetReached && !timer.TimeUp)
         {
-            isLevelCompleted = true;
-            door.Open();
-            mapManager.SaveMapStatus(); 
+            WinLevel();
         }
     }
+
+    private void WinLevel()
+    {
+        isLevelCompleted = true;
+        doorController.Open();
+        PlayerProgress.Instance.AddUpgradePoint();
+        PlayerProgress.Instance.currentLevelBuildIndex = SceneManager.GetActiveScene().buildIndex;
+    }
+
+    public void MoveToSkillTree()
+    {
+        Time.timeScale = 1f; 
+        PlayerProgress.Instance.openedSkillTreeFromLevel = true;
+        SceneManagement.Instance.LoadScene("SkillTree");
+    }
+
+    //public void MoveToNextLevel()
+    //{
+    //    Time.timeScale = 1f;
+    //    SceneManagement.Instance.NextLevel();
+    //}
 
     public void Resume()
     {
@@ -193,9 +187,6 @@ public class GameManager : MonoBehaviour
 
         energy.ResetEnergy();
         snakeAbilities.ResetAbilities();
-
-        reverseMovementStarted = false;
-        snake.SetReverseMovement(false);
     }
 
     public void MainMenu()

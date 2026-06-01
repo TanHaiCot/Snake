@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MapManager : MonoBehaviour
 {
@@ -10,239 +11,100 @@ public class MapManager : MonoBehaviour
         AllGreyed
     }
 
-    [Header("Grid / Map")]
-    [SerializeField] private BoxCollider2D gridArea;
-    [SerializeField] private int sortingOrder = -10;
+    [Header("Tilemaps")]
+    [SerializeField] private Tilemap playgroundTilemap;
+    [SerializeField] private Tilemap wallTilemap;
 
-    [Header("Walls")]
-    [SerializeField] private Transform wallContainer;
-    [SerializeField] private WallMode wallMode = WallMode.Original;
+    [Header("Tiles")]
+    [SerializeField] private TileBase lightFloorTile;
+    [SerializeField] private TileBase darkFloorTile;
 
-    private Texture2D mapTexture;
-    private SpriteRenderer mapRenderer;
-
-    private bool[] isGreyedTile;
-    private bool[] isLightColorTile;
-
-    private readonly List<SpriteRenderer> wallRenderers = new();
-    private readonly HashSet<SpriteRenderer> greyedWalls = new();
-
-    private static readonly Color32 LIGHT_GREEN = new(0, 226, 21, 255);
-    private static readonly Color32 DARK_GREEN = new(0, 165, 6, 255);
-    private static readonly Color32 LIGHT_GRAY = new(170, 170, 170, 220);
-    private static readonly Color32 DARK_GRAY = new(140, 140, 140, 220);
-
-    private static readonly Color32 defaultWallColor = new(120, 75, 30, 255);
-    private static readonly Color32 greyWallColor = new(75, 75, 75, 255);
-
-    private Vector3 mapOrigin;
-
-    public WallMode CurrentWallMode => wallMode;
+    private readonly List<Vector2Int> playableCells = new();
 
     public void InitAndBuildMap()
     {
         CreateMap();
-        InitWalls();
-        ApplyWallStatus();
-        ApplyMapStatus();
+        CachePlayableCells();
     }
 
     // ---------- Tiles Code ----------
     private void CreateMap()
     {
-        if (gridArea == null)
+        BoundsInt bounds = playgroundTilemap.cellBounds;
+
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            Debug.LogError("Grid Area is not assigned.");
-            return;
+            if (!playgroundTilemap.HasTile(pos))
+                continue;
+
+            bool isLight = (pos.x + pos.y) % 2 == 0;
+
+            playgroundTilemap.SetTile(
+                pos,
+                isLight ? lightFloorTile : darkFloorTile
+            );
+        
         }
-
-        Bounds bound = gridArea.bounds;
-
-        int minX = Mathf.RoundToInt(bound.min.x);
-        int minY = Mathf.RoundToInt(bound.min.y);
-
-        int mapWidth = Mathf.RoundToInt(bound.size.x) + 1;
-        int mapHeight = Mathf.RoundToInt(bound.size.y) + 1;
-
-        mapOrigin = new Vector3(minX - 0.5f, minY - 0.5f, 0f);
-
-        if (mapRenderer == null)
-        {
-            GameObject gameMap = new GameObject("GameMap");
-            gameMap.transform.SetParent(transform);
-            mapRenderer = gameMap.AddComponent<SpriteRenderer>();
-            mapRenderer.sortingOrder = sortingOrder;
-        }
-
-        mapTexture = new Texture2D(mapWidth, mapHeight);
-        isLightColorTile = new bool[mapWidth * mapHeight];
-        isGreyedTile = new bool[mapWidth * mapHeight];
-
-        for (int x = 0; x < mapWidth; x++)
-        {
-            for (int y = 0; y < mapHeight; y++)
-            {
-                int index = y * mapWidth + x;
-                if (x % 2 != 0 && y % 2 != 0 || x % 2 == 0 && y % 2 == 0)
-                {
-                    mapTexture.SetPixel(x, y, LIGHT_GREEN);
-                    isLightColorTile[index] = true;
-                }
-                else
-                {
-                    mapTexture.SetPixel(x, y, DARK_GREEN);
-                    isLightColorTile[index] = false;
-                }
-            }
-        }
-
-        mapTexture.filterMode = FilterMode.Point;
-        mapTexture.Apply();
-
-        Rect rect = new Rect(0, 0, mapWidth, mapHeight);
-        Sprite sprite = Sprite.Create(mapTexture, rect, new Vector2(0f, 0f), 1f, 0, SpriteMeshType.FullRect);
-        mapRenderer.sprite = sprite;
-
-        mapRenderer.transform.position = mapOrigin;
     }
 
-    public void GreyOutRandomTiles(int count)
+    private void CachePlayableCells()
     {
-        if (mapTexture == null) return;
+        playableCells.Clear();
 
-        if (isGreyedTile == null)
-            isGreyedTile = new bool[mapTexture.width * mapTexture.height];
+        BoundsInt bounds = playgroundTilemap.cellBounds;
 
-        int totalTiles = mapTexture.width * mapTexture.height;
-        List<int> availableTiles = new(totalTiles);
-
-        for (int i = 0; i < totalTiles; i++)
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            if (!isGreyedTile[i])
-                availableTiles.Add(i);
+            if (!playgroundTilemap.HasTile(pos))
+                continue;
+
+            bool hasWall =
+                wallTilemap != null &&
+                wallTilemap.HasTile(pos);
+
+            if (hasWall)
+                continue;
+
+            playableCells.Add(new Vector2Int(pos.x, pos.y));
         }
-
-        if(availableTiles.Count == 0) return;
-
-        int pick = Mathf.Min(count, availableTiles.Count);
-        for (int n = 0; n < pick; n++)
-        {
-            int random = Random.Range(0, availableTiles.Count);
-            int index = availableTiles[random];
-            availableTiles.RemoveAt(random);
-
-            isGreyedTile[index] = true;
-
-            int x = index % mapTexture.width; // column
-            int y = index / mapTexture.width; // row
-
-            Color32 grey = isLightColorTile[index] ? LIGHT_GRAY : DARK_GRAY;
-            mapTexture.SetPixel(x, y, grey);
-        }
-        mapTexture.Apply();
     }
 
-    // ---------- Walls Code ----------
-    private void InitWalls()
+    public bool IsWalkable(Vector2Int cell)
     {
-        wallRenderers.Clear();
-        greyedWalls.Clear();
+        Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
 
-        if (wallContainer == null) return;
+        bool hasFloor = playgroundTilemap.HasTile(tilePos);
+        bool hasWall = wallTilemap != null && wallTilemap.HasTile(tilePos);
 
-        foreach (Transform wall in wallContainer)
-        {
-            SpriteRenderer sr = wall.GetComponent<SpriteRenderer>();
-            if (sr != null)
-            {
-                wallRenderers.Add(sr);
-                sr.color = defaultWallColor;
-            }
-        }
+        return hasFloor && !hasWall;
     }
 
-    public void GreyOutRandomWalls(int count)
+    public Vector3 CellToWorld(Vector2Int cell)
     {
-        if (wallRenderers == null) return;
-
-        List<SpriteRenderer> available = new();
-        foreach (var sr in wallRenderers)
-            if (!greyedWalls.Contains(sr))
-                available.Add(sr);
-
-        if (available.Count == 0) return;
-
-        int pick = Mathf.Min(count, available.Count);
-
-        for (int n = 0; n < pick; n++)
-        {
-            int random = Random.Range(0, available.Count);
-            var chosen = available[random];
-            available.RemoveAt(random);
-
-            greyedWalls.Add(chosen);
-            chosen.color = greyWallColor;
-        }
+        Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
+        return playgroundTilemap.GetCellCenterWorld(tilePos);
     }
 
-    private void ApplyWallStatus()
+    public Vector2Int WorldToCell(Vector3 worldPos)
     {
-        if (wallMode != WallMode.AllGreyed) return;
-
-        foreach (var sr in wallRenderers)
-        {
-            sr.color = greyWallColor;
-            greyedWalls.Add(sr);
-        }
+        Vector3Int cell = playgroundTilemap.WorldToCell(worldPos);
+        return new Vector2Int(cell.x, cell.y);
     }
 
-    public void SaveMapStatus()
+    public List<Vector2Int> GetWalkableCells()
     {
-        if (MapStatus.Instance == null || mapTexture == null)
-            return;
+        List<Vector2Int> result = new();
 
-        MapStatus.Instance.SaveTiles(mapTexture.width, mapTexture.height, isGreyedTile);
+        BoundsInt bounds = playgroundTilemap.cellBounds;
 
-        MapStatus.Instance.ClearWalls();
-        //foreach (var sr in greyedWalls)  //may not be used but so far so good for now 
-        //{
-        //    Vector2Int cell = WorldToCell(sr.transform.position);
-        //    MapStatus.Instance.GreyedWallPositions.Add(cell);
-        //}
-
-    }
-
-    private void ApplyMapStatus()
-    {
-        if(MapStatus.Instance == null || mapTexture == null)
-            return;
-
-        if (MapStatus.Instance.IsTheMapValidToSave(mapTexture.width, mapTexture.height))
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            isGreyedTile = (bool[])MapStatus.Instance.greyedTiles.Clone();
+            Vector2Int cell = new Vector2Int(pos.x, pos.y);
 
-            for (int i = 0; i < isGreyedTile.Length; i++)
-            {
-                if (isGreyedTile[i])
-                {
-                    int x = i % mapTexture.width;
-                    int y = i / mapTexture.width;
-                    Color32 grey = isLightColorTile[i] ? LIGHT_GRAY : DARK_GRAY;
-                    mapTexture.SetPixel(x, y, grey);
-
-                }            
-            }
-
-            mapTexture.Apply();
+            if (IsWalkable(cell))
+                result.Add(cell);
         }
-    }
 
-    //private Vector2Int WorldToCell(Vector3 worldPos)
-    //{
-    //    // Your tiles are drawn with origin at (minX-0.5, minY-0.5)
-    //    // Convert world to tile index coordinates.
-    //    float localX = worldPos.x - mapOrigin.x;
-    //    float localY = worldPos.y - mapOrigin.y;
-    //    return new Vector2Int(Mathf.RoundToInt(localX), Mathf.RoundToInt(localY));
-    //}
+        return result;
+    }
 }

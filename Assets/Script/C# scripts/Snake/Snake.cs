@@ -12,16 +12,19 @@ public class Snake : MonoBehaviour
 
     [SerializeField] Transform bodyPrefab;
     [SerializeField] Transform bodyContainer;
-    [SerializeField] GameManager gameManager;
-    [SerializeField] ScoreManager scoreManager;
-    [SerializeField] DarknessManager darknessManager;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
+
+    [Header("Managers")]
+    [SerializeField] GameManager gameManager;
     [SerializeField] BossFightManager bossFightManager; 
+    [SerializeField] ScoreManager scoreManager;
+    [SerializeField] DarknessManager darknessManager;
+    [SerializeField] MapManager mapManager;
 
     public UnityEvent OnFoodEaten;
 
-    private float speed = 7f; 
+    private float speed = 10f; 
 
     private int initialBodyPart = 4;
 
@@ -41,6 +44,7 @@ public class Snake : MonoBehaviour
     private void Awake()
     {
         Restate();
+        //Debug.Log("Start walkable: " + mapManager.IsWalkable(new Vector2Int(-3, -10)));
     }
 
     private void Update()
@@ -145,6 +149,11 @@ public class Snake : MonoBehaviour
 
         bool nextIsWallOrDoor = false;
 
+        if (mapManager != null && !mapManager.IsWalkable(new Vector2Int(nextX, nextY)))
+        {
+            nextIsWallOrDoor = true;
+        }
+
         //check all the collision on the world space to see which one is overlap with the next position
         var hits = Physics2D.OverlapPointAll(new Vector2(nextX, nextY));
         foreach (var hit in hits)
@@ -167,7 +176,7 @@ public class Snake : MonoBehaviour
                     continue; 
                 }
 
-                if (hit.CompareTag("Wall") || hit.CompareTag("Door"))
+                if (hit.CompareTag("Door"))
                 {
                     nextIsWallOrDoor = true; 
                 }
@@ -176,7 +185,7 @@ public class Snake : MonoBehaviour
 
         if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
-            //Debug.Log("Hit wall/door");
+            Debug.Log("Hit wall/door");
             //gameManager.GameOver();
             //return;
         }
@@ -191,6 +200,7 @@ public class Snake : MonoBehaviour
         {
             bodies[i].position = bodies[i - 1].position;
         }
+
         transform.position = new Vector3(nextX, nextY, 0);
 
         snakeAbilities?.GhostModeRemaining();
@@ -269,13 +279,13 @@ public class Snake : MonoBehaviour
             if(energy)
                 energy.AddEnergy(10f);
 
-            OnFoodEaten?.Invoke();
+            //OnFoodEaten?.Invoke();
+            gameManager.CheckWinStatus(); 
         }
 
         if (collision.CompareTag("Next Level Trigger"))
         {
-            gameManager.WinLevel();
-            SceneManagement.Instance.NextLevel();
+            gameManager.MoveToSkillTree();
         }
     }
 

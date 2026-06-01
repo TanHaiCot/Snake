@@ -4,18 +4,15 @@ using UnityEngine.Events;
 
 public class Food : MonoBehaviour
 {
-    [SerializeField] BoxCollider2D gridArea;
+    [SerializeField] MapManager mapManager;
    
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
     [SerializeField] ScoreManager scoreManager;
 
-    [SerializeField] LayerMask wallLayer;
-
     private void Start()
     {
         scoreManager.OnTargetReached.AddListener(HandleTargetReached);
-        RandomizedSpawn(); 
     }
 
     private void HandleTargetReached()
@@ -25,38 +22,41 @@ public class Food : MonoBehaviour
 
     public void RandomizedSpawn()
     {
-        Bounds bounds = this.gridArea.bounds;
-
-        int minX = Mathf.RoundToInt(bounds.min.x);
-        int maxX = Mathf.RoundToInt(bounds.max.x);
-        int minY = Mathf.RoundToInt(bounds.min.y);
-        int maxY = Mathf.RoundToInt(bounds.max.y);
-        //Debug.Log($"Grid bounds: minX={minX}, maxX={maxX}, minY={minY}, maxY={maxY}");
-
-        List<Vector2Int> freeSpots = new List<Vector2Int>((maxX - minX + 1) * (maxY - minY + 1));
-        for (int y = minY; y < maxY; y++)
+        if (mapManager == null)
         {
-            for (int x = minX; x < maxX; x++)
-            {
-                bool occupiedByPlayer = snake.SpotOccupied(x, y);
-                bool occupiedByOpponent = (opponentSnake != null && opponentSnake.SpotOccupied(x, y));
+            Debug.LogError("MapManager is not assigned!");
+            return;
+        }
 
-                if (!occupiedByPlayer && !occupiedByOpponent && !IsWall(x, y))
-                {
-                    freeSpots.Add(new Vector2Int(x, y));
-                }
+        List<Vector2Int> freeSpots = new();
+        
+        foreach (Vector2Int cell in mapManager.GetWalkableCells())
+        {
+            bool occupiedByPlayer = snake.SpotOccupied(cell.x, cell.y);
+
+            bool occupiedByOpponent = (opponentSnake != null && opponentSnake.SpotOccupied(cell.x, cell.y));
+
+            if (!occupiedByPlayer && !occupiedByOpponent)
+            {
+                freeSpots.Add(cell);
             }
+            
+        }
+
+        if (freeSpots.Count == 0)
+        {
+            Debug.LogWarning("No free spot found for food.");
+            return;
         }
 
         Vector2Int chosenSpot = freeSpots[Random.Range(0, freeSpots.Count)];
-        this.transform.position = new Vector2(chosenSpot.x, chosenSpot.y);
-        Debug.Log($"Food spawned at: {chosenSpot.x}, {chosenSpot.y}");  
 
-    }
+        Debug.Log($"Chosen Food Cell: {chosenSpot} | Walkable: {mapManager.IsWalkable(chosenSpot)}");
 
-    private bool IsWall(int x, int y)
-    {
-        return Physics2D.OverlapBox(new Vector2(x, y), new Vector2(0.9f, 0.9f), 0f, wallLayer) != null;  //OverlapBox returns null if no collider found
+        transform.position = new Vector2(chosenSpot.x, chosenSpot.y);
+
+        //Debug.Log($"Food spawned at: {chosenSpot.x}, {chosenSpot.y}");  
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
