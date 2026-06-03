@@ -9,18 +9,17 @@ public class GameManager : MonoBehaviour
 {
 
     [Header("MANAGERS")]
-    [SerializeField] private UIManager uiManager;
-
+    [SerializeField] UIManager uiManager;
+    [SerializeField] ScoreManager scoreManager;
+    [SerializeField] MapManager mapManager;
+    [SerializeField] DoorController doorController;
+        
     [Header("Game Components")]
     [SerializeField] Snake snake;
     [SerializeField] Snake secondSnake; 
-    [SerializeField] ScoreManager scoreManager;
     [SerializeField] Timer timer;
-    [SerializeField] DoorController doorController;
     [SerializeField] Food food;
     [SerializeField] AI_Snake ai_Snake;
-    [SerializeField] BoxCollider2D gridArea; 
-    [SerializeField] MapManager mapManager;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
 
@@ -30,6 +29,9 @@ public class GameManager : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
+
+    private int scoreToStartReverseMovement = 3;
+    private bool reverseMovementStarted;
 
     void Start() 
     {
@@ -78,6 +80,14 @@ public class GameManager : MonoBehaviour
 
     private void HandleScoreChanged(int current, int target)
     {
+        if (!LevelData.enableReverseMovement)
+            return;
+
+        if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
+        {
+            reverseMovementStarted = true;
+            snake.SetReverseMovement(true);
+        }
     }
 
     private void HandleFoodEaten()
@@ -126,6 +136,13 @@ public class GameManager : MonoBehaviour
 
     public void MoveToSkillTree()
     {
+        if(LevelData.isSkillTreeUnlocked == false)
+        {
+            Time.timeScale = 1f;
+            SceneManagement.Instance.NextLevel();
+            return; 
+        }
+
         Time.timeScale = 1f; 
         PlayerProgress.Instance.openedSkillTreeFromLevel = true;
         SceneManagement.Instance.LoadScene("SkillTree");
@@ -178,6 +195,9 @@ public class GameManager : MonoBehaviour
 
         energy.ResetEnergy();
         snakeAbilities.ResetAbilities();
+
+        reverseMovementStarted = false;
+        snake.SetReverseMovement(false);
     }
 
     public void MainMenu()

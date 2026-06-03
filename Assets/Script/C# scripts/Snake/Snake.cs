@@ -44,7 +44,6 @@ public class Snake : MonoBehaviour
     private void Awake()
     {
         Restate();
-        //Debug.Log("Start walkable: " + mapManager.IsWalkable(new Vector2Int(-3, -10)));
     }
 
     private void Update()

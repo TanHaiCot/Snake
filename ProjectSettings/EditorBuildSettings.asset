@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/GamePlay1.1_secondNormal.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/GamePlay1.2_thirdNormal(main).unity
+    path: Assets/Scenes/GamePlay1.2_thirdNormal_thenReversed(main).unity
     guid: c545fdc1e8c0be541afe8976e3bc2be0
   - enabled: 1
     path: Assets/Scenes/GamePlay2_reversedWalls.unity

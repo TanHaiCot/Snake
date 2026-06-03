@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [Header("Menus")]
     [SerializeField] private GameObject lostMenu;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject score; 
 
     [Header("Unlock Rules")]
     [SerializeField] private int timerUnlockAfterCompletedLevels = 2;
@@ -27,7 +28,7 @@ public class UIManager : MonoBehaviour
         PlayerProgress progress = PlayerProgress.Instance;
 
         bool timerUnlocked = progress != null && progress.completedLevels >= timerUnlockAfterCompletedLevels;
-        bool dashUnlocked = progress != null && progress.HasSkill("dash_unlock");
+        bool dashUnlocked = progress != null && progress.HasSkill("1");
         bool ghostUnlocked = progress != null && progress.HasSkill("ghost_unlock");
 
         if (countdownTimerUI != null)
@@ -37,7 +38,10 @@ public class UIManager : MonoBehaviour
             energyBarUI.SetActive(dashUnlocked || ghostUnlocked);
 
         if (dashUI != null)
+        {
             dashUI.SetActive(dashUnlocked);
+            score.SetActive(!dashUnlocked);
+        }
 
         if (ghostUI != null)
             ghostUI.SetActive(ghostUnlocked);
@@ -55,6 +59,12 @@ public class UIManager : MonoBehaviour
             pauseMenu.SetActive(true);
     }
 
+    public void ShowScore()
+    {
+        if (score != null)
+            score.SetActive(true);
+    }
+
     public void HideLostMenu()
     {
         if (lostMenu != null)
@@ -67,4 +77,9 @@ public class UIManager : MonoBehaviour
             pauseMenu.SetActive(false);
     }
 
+    public void HideScore()
+    {
+        if (score != null)
+            score.SetActive(false);
+    }
 }

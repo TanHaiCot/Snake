@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75f870aa770a6c840b2761c00e112255, type: 3}
-  m_Name: LevelData
+  m_Name: LevelData1.0-1.1
   m_EditorClassIdentifier: 
-  targetScore: 5
+  targetScore: 1
   timeLimit: 40
+  enableReverseMovement: 0
