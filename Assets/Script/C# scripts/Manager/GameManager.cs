@@ -8,9 +8,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 
-    [Header("UI Components")]
-    [SerializeField] GameObject pauseMenu;
-    [SerializeField] GameObject lostMenu;
+    [Header("MANAGERS")]
+    [SerializeField] private UIManager uiManager;
 
     [Header("Game Components")]
     [SerializeField] Snake snake;
@@ -34,15 +33,6 @@ public class GameManager : MonoBehaviour
 
     void Start() 
     {
-        isLost = false;
-        lostMenu.SetActive(false);
-
-        if(pauseMenu != null)
-        {
-            isPaused = false;
-            pauseMenu.SetActive(false);
-        }
-
         if (scoreManager != null)
         {
             scoreManager.ResetScore();
@@ -130,6 +120,7 @@ public class GameManager : MonoBehaviour
         isLevelCompleted = true;
         doorController.Open();
         PlayerProgress.Instance.AddUpgradePoint();
+        PlayerProgress.Instance.completedLevels++;
         PlayerProgress.Instance.currentLevelBuildIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
@@ -148,14 +139,14 @@ public class GameManager : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenu.SetActive(false);
+        uiManager.HidePauseMenu();
         Time.timeScale = 1f;
         isPaused = false;
     }
 
     public void Pause()
     {
-        pauseMenu.SetActive(true);
+        uiManager.ShowPauseMenu();
         Time.timeScale = 0f;
         isPaused = true;
     }
@@ -178,7 +169,7 @@ public class GameManager : MonoBehaviour
         isPaused = false;
         isLost = false; 
 
-        lostMenu.SetActive(false);
+        uiManager.HideLostMenu();
 
         scoreManager.ResetScore();
         scoreManager.SetTargetScore(LevelData.targetScore);
@@ -201,7 +192,7 @@ public class GameManager : MonoBehaviour
         isLost = true;
         if (isLost == true)
         {
-            lostMenu.SetActive(true);
+            uiManager.ShowLostMenu();
         }
     }
 }

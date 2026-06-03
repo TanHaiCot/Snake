@@ -8,6 +8,12 @@ public class PlayerProgress : MonoBehaviour
     public bool openedSkillTreeFromLevel;
     public int currentLevelBuildIndex;
     public int upgradePoints;
+    public int completedLevels = 0;
+
+    public bool HasSkill(string skillId)
+    {
+        return chosenSkillIds.Contains(skillId);
+    }
 
     public List<string> chosenSkillIds = new List<string>();
 

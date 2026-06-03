@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/StartMenu.unity
     guid: 2c2e6190ce4869a43be61bd4afe83f1b
   - enabled: 1
-    path: Assets/Scenes/GamePlay1.1_normalThenReversed.unity
+    path: Assets/Scenes/GamePlay1.0_normal.unity
+    guid: dc0cae2f924bc2b4490ecc861b2d95d2
+  - enabled: 1
+    path: Assets/Scenes/GamePlay1.1_secondNormal.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/GamePlay1.2_thirdNormal(main).unity
+    guid: c545fdc1e8c0be541afe8976e3bc2be0
   - enabled: 1
     path: Assets/Scenes/GamePlay2_reversedWalls.unity
     guid: 97a59824d35da564b81d76b6a5801173
