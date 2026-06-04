@@ -18,17 +18,20 @@ EditorBuildSettings:
     path: Assets/Scenes/GamePlay1.2_thirdNormal_thenReversed(main).unity
     guid: c545fdc1e8c0be541afe8976e3bc2be0
   - enabled: 1
-    path: Assets/Scenes/GamePlay2_reversedWalls.unity
+    path: Assets/Scenes/GamePlay1.3_reversedAbitWalls.unity
+    guid: b97c6674a5ad8ed41a03acc35fbcc3f7
+  - enabled: 1
+    path: Assets/Scenes/GamePlay2_reversedLessWalls.unity
+    guid: b3f4706c6073e3a4faf6c4018f90a08d
+  - enabled: 1
+    path: Assets/Scenes/GamePlay3_reversedMoreWalls.unity
     guid: 97a59824d35da564b81d76b6a5801173
   - enabled: 1
-    path: Assets/Scenes/GamePlay3_AIgreenSnake.unity
+    path: Assets/Scenes/GamePlay4_AIgreenSnake.unity
     guid: 97fc2b0660edd6048bea2e3070c0c0d8
   - enabled: 1
     path: Assets/Scenes/GamePlay4_flashyDarkness.unity
     guid: 6a023052ad550254f95bd095b22604d7
-  - enabled: 1
-    path: Assets/Scenes/GamePlay5_reversedMovement.unity
-    guid: b3f4706c6073e3a4faf6c4018f90a08d
   - enabled: 1
     path: Assets/Scenes/GamePlay6_doubleSnakes.unity
     guid: 174b6d72fae16df4e80b1c3ab4ad4988

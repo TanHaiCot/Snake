@@ -40,7 +40,9 @@ public class UIManager : MonoBehaviour
         if (dashUI != null)
         {
             dashUI.SetActive(dashUnlocked);
-            score.SetActive(!dashUnlocked);
+
+            if (score != null)
+                score.SetActive(!dashUnlocked);
         }
 
         if (ghostUI != null)
