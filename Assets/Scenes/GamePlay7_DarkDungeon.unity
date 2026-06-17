@@ -2218,19 +2218,7 @@ MonoBehaviour:
       m_Calls: []
   OnTargetReached:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1741257627}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: WinLevel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!4 &616454442
 Transform:
   m_ObjectHideFlags: 0
@@ -21973,6 +21961,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02b30b5320beae54cbb8dbdc7e77a7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nextSceneTrigger: {fileID: 0}
+  door: {fileID: 0}
 --- !u!61 &1602164147
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -22144,17 +22134,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a74d296eb50e2144790c06a50747ffe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 1745688539}
-  lostMenu: {fileID: 1314489508}
+  uiManager: {fileID: 0}
+  scoreManager: {fileID: 616454441}
+  mapManager: {fileID: 1747881031}
+  doorController: {fileID: 0}
   snake: {fileID: 1714112884}
   secondSnake: {fileID: 0}
-  scoreManager: {fileID: 616454441}
   timer: {fileID: 2077459280}
-  door: {fileID: 1602164144}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}
-  gridArea: {fileID: 1242246800}
-  mapManager: {fileID: 1747881031}
   energy: {fileID: 1980244071}
   snakeAbilities: {fileID: 1893045663}
   LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}

@@ -18,6 +18,10 @@ public class Pathfinding : MonoBehaviour
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
 
+    [Header("Teleport")]
+    [SerializeField] private TeleportGateManager teleportGateManager;
+    [SerializeField] private int teleportMoveCost = 1;
+
     private static readonly Vector2Int[] directions = new Vector2Int[]
     {
         Vector2Int.up,   
@@ -38,7 +42,11 @@ public class Pathfinding : MonoBehaviour
 
     public bool IsWalkable(Vector2Int position, PathPurpose purpose)
     {
-        if (!mapManager.IsWalkable(position))
+        bool isTeleportCell =
+        teleportGateManager != null &&
+        teleportGateManager.IsTeleportCell(position);
+
+        if (!mapManager.IsWalkable(position) && !isTeleportCell)
             return false;
 
         if (purpose == PathPurpose.Patrol)
@@ -47,8 +55,9 @@ public class Pathfinding : MonoBehaviour
         if (snake.SpotOccupied(position.x, position.y))
             return false;
 
-        if (opponentSnake.SpotOccupied(position.x, position.y))
-            return false;
+        if(opponentSnake != null)
+            if (opponentSnake.SpotOccupied(position.x, position.y))
+                return false;
 
         return true;    
     }
@@ -57,7 +66,9 @@ public class Pathfinding : MonoBehaviour
     {
         Dictionary<Vector2Int, Node> nodes = new Dictionary<Vector2Int, Node>();
 
-        Node startNode = GetNode(nodes, startPos); 
+        Node startNode = GetNode(nodes, startPos);
+        startNode.gCost = 0;
+        startNode.hCost = GetDistance(startPos, targetPos);
 
         List<Node> openList = new List<Node>();
         HashSet<Vector2Int> closedSet = new HashSet<Vector2Int>();  
@@ -117,6 +128,39 @@ public class Pathfinding : MonoBehaviour
                     
                 }
             }
+
+            if (teleportGateManager != null && teleportGateManager.TryGetTeleportExit(currentNode.position, out Vector2Int teleportExit))
+            {
+                if (!closedSet.Contains(teleportExit))
+                {
+                    bool canTeleport = false;
+
+                    if (purpose == PathPurpose.PlayerChasing)
+                    {
+                        canTeleport = teleportExit == targetPos || IsWalkable(teleportExit, purpose);
+                    }
+                    else
+                    {
+                        canTeleport = IsWalkable(teleportExit, purpose);
+                    }
+
+                    if (canTeleport)
+                    {
+                        Node teleportNode = GetNode(nodes, teleportExit);
+                        int gCostToTeleport = currentNode.gCost + teleportMoveCost;
+
+                        if (gCostToTeleport < teleportNode.gCost || !openList.Contains(teleportNode))
+                        {
+                            teleportNode.gCost = gCostToTeleport;
+                            teleportNode.hCost = GetDistance(teleportExit, targetPos);
+                            teleportNode.parent = currentNode;
+
+                            if (!openList.Contains(teleportNode))
+                                openList.Add(teleportNode);
+                        }
+                    }
+                }
+            }
         }
         return null;
     }
@@ -133,6 +177,16 @@ public class Pathfinding : MonoBehaviour
         }
         path.Reverse();
         return path;
+    }
+
+    public bool TryGetTeleportExit(Vector2Int entryCell, out Vector2Int exitCell)
+    {
+        exitCell = Vector2Int.zero;
+
+        if (teleportGateManager == null)
+            return false;
+
+        return teleportGateManager.TryGetTeleportExit(entryCell, out exitCell);
     }
 
     private Node GetNode(Dictionary<Vector2Int, Node> nodes, Vector2Int position)
@@ -188,6 +242,8 @@ public class Node
     public Node(Vector2Int pos)
     {
         position = pos;
+        gCost = int.MaxValue;
+        hCost = 0;
     }
 
 }

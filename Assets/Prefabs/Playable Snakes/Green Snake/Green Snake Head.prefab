@@ -103,7 +103,6 @@ GameObject:
   - component: {fileID: 3440890064599934595}
   - component: {fileID: 4804098468898160126}
   - component: {fileID: 2070018229843055094}
-  - component: {fileID: 5360856021876539737}
   m_Layer: 0
   m_Name: Green Snake Head
   m_TagString: Opponent Snake
@@ -259,28 +258,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &5360856021876539737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7855528024811423261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1e518fbcb93ae942bd29acaec837188, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
-  bodyContainer: {fileID: 0}
-  gameManager: {fileID: 0}
-  scoreManager: {fileID: 0}
-  darknessManager: {fileID: 0}
-  energy: {fileID: 0}
-  snakeAbilities: {fileID: 0}
-  bossFightManager: {fileID: 0}
-  OnFoodEaten:
-    m_PersistentCalls:
-      m_Calls: []
-  keyType: 1
-  reverseMovement: 0

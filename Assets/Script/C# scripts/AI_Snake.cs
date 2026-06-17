@@ -1,10 +1,5 @@
-    using System;
 using System.Collections.Generic;
-using Unity.VectorGraphics;
 using UnityEngine;
-using UnityEngine.LightTransport;
-using UnityEngine.SceneManagement;
-using static UnityEditor.PlayerSettings;
 
 public class AI_Snake : MonoBehaviour
 {
@@ -47,6 +42,9 @@ public class AI_Snake : MonoBehaviour
 
     private int patrolPickAttempts = 30;
     private bool drawPath = true;
+
+    private Vector2Int nextPathCell;
+    private bool hasNextPathCell;
 
     private static readonly Vector2Int[] FourDirs =
     {
@@ -105,7 +103,37 @@ public class AI_Snake : MonoBehaviour
         previousHeadPos = currentCell;
         hasPreviousHeadPos = true;
 
-        Vector2Int nextCell = currentCell + direction;
+        Vector2Int nextCell;
+
+        if (hasNextPathCell/*currentPath != null && currentPath.Count > 0*/)
+        {
+            nextCell = nextPathCell;
+
+            Vector2Int diff = nextCell - currentCell;
+
+            // Normal 1-cell move
+            if (Mathf.Abs(diff.x) + Mathf.Abs(diff.y) == 1)
+            {
+                direction = diff;
+            }
+            // Teleport move: nextCell is far away, but valid
+            else if (pathfinding.TryGetTeleportExit(currentCell, out Vector2Int teleportExit) &&
+                     teleportExit == nextCell)
+            {
+                // Do nothing. Keep current direction.
+            }
+            // Invalid path step
+            else
+            {
+                hasNextPathCell = false;
+                return;
+            }
+        }
+        else
+        {
+            nextCell = currentCell + direction;
+        }
+
         Vector3 nextWorldPos = pathfinding.GridToWorld(nextCell);
 
         for (int i = bodies.Count - 1; i > 0; i--)
@@ -114,6 +142,8 @@ public class AI_Snake : MonoBehaviour
         }
 
         transform.position = nextWorldPos;
+
+        hasNextPathCell = false;
     }
 
     private void UpdateAIState()
@@ -187,8 +217,9 @@ public class AI_Snake : MonoBehaviour
             return false;
         }
 
-        Vector2Int firstStep = currentPath[0];
-        Vector2Int desiredDirection = firstStep - currentPos;
+        nextPathCell = currentPath[0];
+        hasNextPathCell = true;
+        Vector2Int desiredDirection = nextPathCell - currentPos;
 
         if (pathfinding.IsWalkable(currentPos + desiredDirection, Pathfinding.PathPurpose.Patrol))
         {
@@ -268,11 +299,23 @@ public class AI_Snake : MonoBehaviour
             return false;
         }
 
-        Vector2Int firstStep = currentPath[0];
-        Vector2Int newDirection = firstStep - startPos;
+        nextPathCell = currentPath[0];
+        hasNextPathCell = true;
 
-        direction = newDirection;
-        return true;
+        Vector2Int newDirection = nextPathCell - startPos;
+
+        if (Mathf.Abs(newDirection.x) + Mathf.Abs(newDirection.y) == 1)
+        {
+            direction = newDirection;
+            return true;
+        }
+
+        if (pathfinding.TryGetTeleportExit(startPos, out Vector2Int teleportExit) && teleportExit == nextPathCell)
+        {
+            return true; // teleport move is valid even though it is not adjacent
+        }
+
+        return false; 
     }
 
     private bool UpdatePlayerChase()
@@ -307,8 +350,9 @@ public class AI_Snake : MonoBehaviour
             return false;
         }
 
-        Vector2Int firstStep = currentPath[0];
-        Vector2Int desiredDir = firstStep - currentPos;
+        nextPathCell = currentPath[0];
+        hasNextPathCell = true;
+        Vector2Int desiredDir = nextPathCell - currentPos;
 
         if (pathfinding.IsWalkable(currentPos + desiredDir, Pathfinding.PathPurpose.PlayerChasing) || currentPos + desiredDir == targetPos)
         {
