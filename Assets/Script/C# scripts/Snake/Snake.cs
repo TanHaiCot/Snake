@@ -21,6 +21,7 @@ public class Snake : MonoBehaviour
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] DarknessManager darknessManager;
     [SerializeField] MapManager mapManager;
+    [SerializeField] TeleportGateManager teleportGateManager;
 
     public UnityEvent OnFoodEaten;
 
@@ -139,6 +140,15 @@ public class Snake : MonoBehaviour
         int nextX = Mathf.RoundToInt(this.transform.position.x) + direction.x;
         int nextY = Mathf.RoundToInt(this.transform.position.y) + direction.y;
 
+        Vector2Int nextCell = new Vector2Int(nextX, nextY);
+
+        if (teleportGateManager != null && teleportGateManager.TryGetTeleportExit(nextCell, out Vector2Int teleportExit))
+        {
+            nextCell = teleportExit;
+            nextX = nextCell.x;
+            nextY = nextCell.y;
+        }
+
         if (SpotOccupied(nextX, nextY))
         {
             Debug.Log("Hit itself");
@@ -200,7 +210,7 @@ public class Snake : MonoBehaviour
             bodies[i].position = bodies[i - 1].position;
         }
 
-        transform.position = new Vector3(nextX, nextY, 0);
+        transform.position = new Vector3(nextCell.x, nextCell.y, 0);
 
         snakeAbilities?.GhostModeRemaining();
 
