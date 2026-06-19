@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.U2D.Aseprite;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class DarknessManager : MonoBehaviour
 {
-    [SerializeField] private BoxCollider2D darkGrid;
-
+    [SerializeField] private Tilemap playgroundTilemap;
+    [SerializeField] private Tilemap wallTilemap;
     [SerializeField] private GameObject darknessTilePrefab;
     [SerializeField] private Transform snake;
-    [SerializeField] LayerMask wallLayer;
+    [SerializeField] private MapManager mapManager;
 
     private int visableRange = 5;
 
-    private Dictionary<Vector2Int, SpriteRenderer> darkTiles = new Dictionary<Vector2Int, SpriteRenderer>();
+    private Dictionary<Vector2Int, SpriteRenderer> darkTiles = new();
+
     private Vector2Int[] directions = new Vector2Int[]
     {
         Vector2Int.up,
@@ -36,51 +38,59 @@ public class DarknessManager : MonoBehaviour
             SetAlpha(tile.Value, 1f);
         }
 
-        Vector2Int startPotition = WorldToCell(snake.position); 
+        Vector2Int startPosition = mapManager.WorldToCell(snake.position); 
 
-        Queue<Vector2Int> posQueue = new Queue<Vector2Int>();
-        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+        Queue<Vector2Int> posQueue = new();
+        HashSet<Vector2Int> visited = new();
 
-        posQueue.Enqueue(startPotition);
-        visited.Add(startPotition);
+        posQueue.Enqueue(startPosition);
+        visited.Add(startPosition);
 
         while (posQueue.Count > 0)
         {
-            Vector2Int pos = posQueue.Dequeue();
+            Vector2Int currentPos = posQueue.Dequeue();
 
-            if(!darkTiles.TryGetValue(pos, out SpriteRenderer sr))
+            if(!darkTiles.TryGetValue(currentPos, out SpriteRenderer sr))
                 continue;
 
             // Limit vision by range 
-            int distance = Mathf.Abs(pos.x - startPotition.x) + Mathf.Abs(pos.y - startPotition.y);
+            int distance = Mathf.Abs(currentPos.x - startPosition.x) + Mathf.Abs(currentPos.y - startPosition.y);
             
             if (distance > visableRange)
                 continue;
             
             SetAlpha(sr, 0f);
 
-            bool isWall = Physics2D.OverlapBox(new Vector2(pos.x, pos.y), new Vector2(0.9f, 0.9f), 0, wallLayer) != null;
-            if (isWall)
+
+            if (IsWall(currentPos))
                 continue;
 
             foreach (var dir in directions)
             {
-                Vector2Int neighbor = pos + dir;
+                Vector2Int neighbor = currentPos + dir;
 
-                if(!visited.Add(neighbor))
+                if(visited.Contains(neighbor))
                     continue;
 
+                if (!darkTiles.ContainsKey(neighbor))
+                    continue;
+
+                visited.Add(neighbor);
                 posQueue.Enqueue(neighbor);
             }
 
         }
-        
     }
 
-    private Vector2Int WorldToCell(Vector3 worldPos)
+    private bool IsWall(Vector2Int cell)
     {
-        return new Vector2Int(Mathf.RoundToInt(worldPos.x), Mathf.RoundToInt(worldPos.y));
+        if (wallTilemap == null)
+            return false;
+
+        Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
+        return wallTilemap.HasTile(tilePos);
     }
+
 
     private void SetAlpha(SpriteRenderer sr, float alpha)
     {
@@ -91,26 +101,33 @@ public class DarknessManager : MonoBehaviour
 
     private void GridInit()
     {
-        Bounds bound = darkGrid.bounds;
+        darkTiles.Clear();
 
-        int minX = Mathf.RoundToInt(bound.min.x);
-        int maxX = Mathf.RoundToInt(bound.max.x);
-        int minY = Mathf.RoundToInt(bound.min.y);
-        int maxY = Mathf.RoundToInt(bound.max.y);
+        BoundsInt bounds = wallTilemap.cellBounds;
 
-        darkTiles.Clear(); 
+        darkTiles.Clear();
 
-        for (int x = minX; x <= maxX; x++)
+        foreach (Vector3Int tilePos in bounds.allPositionsWithin)
         {
-            for (int y = minY; y <= maxY; y++)
-            {
-                Vector2Int pos = new Vector2Int(x, y);
+            bool hasFloor = playgroundTilemap.HasTile(tilePos);
+            bool hasWall = wallTilemap != null && wallTilemap.HasTile(tilePos);
 
-                GameObject tile = Instantiate(darknessTilePrefab, new Vector3(x, y, 0), Quaternion.identity, transform);
-                SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+            if (!hasFloor && !hasWall)
+                continue;
 
-                darkTiles[pos] = sr;
-            }
+            Vector2Int cell = new Vector2Int(tilePos.x, tilePos.y);
+            Vector3 worldPos = mapManager.CellToWorld(cell);
+
+            GameObject tile = Instantiate(
+                darknessTilePrefab,
+                worldPos,
+                Quaternion.identity,
+                transform
+            );
+
+            SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+            darkTiles[cell] = sr;
         }
     }
+
 }

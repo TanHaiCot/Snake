@@ -2116,7 +2116,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 15
+  orthographic size: 24
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -25479,17 +25479,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a74d296eb50e2144790c06a50747ffe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pauseMenu: {fileID: 1745688539}
-  lostMenu: {fileID: 1314489508}
+  uiManager: {fileID: 0}
+  scoreManager: {fileID: 616454441}
+  mapManager: {fileID: 1239357050}
+  doorController: {fileID: 0}
   snake: {fileID: 624845952}
   secondSnake: {fileID: 0}
-  scoreManager: {fileID: 616454441}
   timer: {fileID: 1390239444}
-  doorController: {fileID: 0}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}
-  gridArea: {fileID: 1242246800}
-  mapManager: {fileID: 1239357050}
   energy: {fileID: 1907441227}
   snakeAbilities: {fileID: 1940870283}
   LevelData: {fileID: 11400000, guid: 73e68d783bbb2ed4f864f509d81e98a2, type: 2}
