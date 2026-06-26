@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f870aa770a6c840b2761c00e112255, type: 3}
   m_Name: LevelData7
   m_EditorClassIdentifier: 
-  targetScore: 8
-  timeLimit: 95
+  targetScore: 5
+  timeLimit: 120
   enableReverseMovement: 0
   isSkillTreeUnlocked: 1

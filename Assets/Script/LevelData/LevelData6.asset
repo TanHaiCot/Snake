@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: LevelData6
   m_EditorClassIdentifier: 
   targetScore: 8
-  timeLimit: 95
+  timeLimit: 105
   enableReverseMovement: 0
   isSkillTreeUnlocked: 1

@@ -23983,6 +23983,8 @@ MonoBehaviour:
     m_Bits: 8
   snake: {fileID: 77481037}
   opponentSnake: {fileID: 95846454}
+  teleportGateManager: {fileID: 0}
+  teleportMoveCost: 1
 --- !u!4 &781086731
 Transform:
   m_ObjectHideFlags: 0
@@ -25575,7 +25577,7 @@ MonoBehaviour:
   ai_Snake: {fileID: 95846454}
   energy: {fileID: 369637774}
   snakeAbilities: {fileID: 77481038}
-  LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
+  LevelData: {fileID: 11400000, guid: 6df1487a9cf948d4ba78500bd8321947, type: 2}
 --- !u!1 &1745688539
 GameObject:
   m_ObjectHideFlags: 0

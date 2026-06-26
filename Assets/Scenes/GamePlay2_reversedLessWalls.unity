@@ -1780,7 +1780,7 @@ MonoBehaviour:
   ai_Snake: {fileID: 0}
   energy: {fileID: 1570183221}
   snakeAbilities: {fileID: 404787833}
-  LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
+  LevelData: {fileID: 11400000, guid: 88e09a3d3f876a64d909a18749846bd6, type: 2}
 --- !u!1001 &1753499642
 PrefabInstance:
   m_ObjectHideFlags: 0
