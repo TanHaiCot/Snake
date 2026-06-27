@@ -9,7 +9,7 @@ public class TeleportGate : MonoBehaviour
         Blue,
         Green,
         Red,
-        Purple
+        Pink
     }
 
     [Header("Gate Info")]
