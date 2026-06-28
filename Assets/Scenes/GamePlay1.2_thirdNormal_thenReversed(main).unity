@@ -680,9 +680,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 220702245}
     m_Modifications:
+    - target: {fileID: 744581614331570591, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1741257627}
+    - target: {fileID: 744581614331570591, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 744581614331570591, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 2736379655446453219, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4242696129479841836, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1741257627}
+    - target: {fileID: 4242696129479841836, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Resume
+      objectReference: {fileID: 0}
+    - target: {fileID: 4242696129479841836, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7002652108917228240, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
       propertyPath: m_Pivot.x
@@ -785,6 +809,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7002652108917228240, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
   m_PrefabInstance: {fileID: 1014432978}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1014432981 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7861550840158916334, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
+  m_PrefabInstance: {fileID: 1014432978}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f0c5bd681fa1e46af7a01d0442210d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1239357047
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,13 +1019,13 @@ MonoBehaviour:
   uiManager: {fileID: 1014432979}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
-  doorController: {fileID: 0}
+  doorController: {fileID: 1745404496}
   snake: {fileID: 914842887}
   secondSnake: {fileID: 0}
-  timer: {fileID: 0}
+  timer: {fileID: 1014432981}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}
-  energy: {fileID: 0}
+  energy: {fileID: 1770224347}
   snakeAbilities: {fileID: 1707342483}
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
 --- !u!1 &1745404495

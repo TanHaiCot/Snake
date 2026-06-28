@@ -12,22 +12,25 @@ public class SkillTreeManager : MonoBehaviour
 
     private void Start()
     {
+        PlayerProgress progress = PlayerProgress.EnsureInstance();
+        progress.LoadSavedProgress();
+
         skillTreeUI.BuildTree(this, database.AllSkills);
 
-        bool fromLevel = PlayerProgress.Instance != null &&
-                         PlayerProgress.Instance.openedSkillTreeFromLevel;
+        bool fromLevel = progress.openedSkillTreeFromLevel;
 
-        continueButton.SetActive(fromLevel);
+        if (continueButton != null)
+            continueButton.SetActive(fromLevel);
     }
 
     public bool IsLearned(SkillData skill)
     {
-        return PlayerProgress.Instance.chosenSkillIds.Contains(skill.skillId);
+        return PlayerProgress.EnsureInstance().chosenSkillIds.Contains(skill.skillId);
     }
 
     public bool CanLearn(SkillData skill)
     {
-        if (PlayerProgress.Instance.upgradePoints <= 0)
+        if (PlayerProgress.EnsureInstance().upgradePoints <= 0)
             return false;
 
         if (IsLearned(skill))
@@ -85,8 +88,10 @@ public class SkillTreeManager : MonoBehaviour
         if (!CanLearn(skill))
             return;
 
-        PlayerProgress.Instance.chosenSkillIds.Add(skill.skillId);
-        PlayerProgress.Instance.upgradePoints--;
+        PlayerProgress progress = PlayerProgress.EnsureInstance();
+        progress.chosenSkillIds.Add(skill.skillId);
+        progress.upgradePoints--;
+        progress.SaveProgress();
 
         skillTreeUI.RefreshAllNodes();
     }
@@ -117,14 +122,13 @@ public class SkillTreeManager : MonoBehaviour
 
     public void ContinueToNextLevel()
     {
-        PlayerProgress.Instance.openedSkillTreeFromLevel = false;
+        PlayerProgress.EnsureInstance().openedSkillTreeFromLevel = false;
         SceneManagement.Instance.NextLevel();
     }
 
     public void ReturnToMenu()
     {
-        if (PlayerProgress.Instance != null)
-            PlayerProgress.Instance.openedSkillTreeFromLevel = false;
+        PlayerProgress.EnsureInstance().openedSkillTreeFromLevel = false;
 
         SceneManagement.Instance.LoadScene("StartMenu");
     }

@@ -47,12 +47,17 @@ public class SceneManagement : MonoBehaviour
 
     public void NextLevel()
     {
-        SceneManager.LoadSceneAsync(PlayerProgress.Instance.currentLevelBuildIndex + 1);
+        SceneManager.LoadSceneAsync(PlayerProgress.EnsureInstance().ContinueLevelBuildIndex);
     }
 
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadSceneAsync(sceneName);
+    }
+
+    public void LoadScene(int sceneBuildIndex)
+    {
+        SceneManager.LoadSceneAsync(sceneBuildIndex);
     }
 
 }

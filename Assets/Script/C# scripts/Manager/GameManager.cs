@@ -129,9 +129,7 @@ public class GameManager : MonoBehaviour
     {
         isLevelCompleted = true;
         doorController.Open();
-        PlayerProgress.Instance.AddUpgradePoint();
-        PlayerProgress.Instance.completedLevels++;
-        PlayerProgress.Instance.currentLevelBuildIndex = SceneManager.GetActiveScene().buildIndex;
+        PlayerProgress.EnsureInstance().CompleteLevel(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void MoveToSkillTree()
@@ -144,7 +142,7 @@ public class GameManager : MonoBehaviour
         }
 
         Time.timeScale = 1f; 
-        PlayerProgress.Instance.openedSkillTreeFromLevel = true;
+        PlayerProgress.EnsureInstance().openedSkillTreeFromLevel = true;
         SceneManagement.Instance.LoadScene("SkillTree");
     }
 
