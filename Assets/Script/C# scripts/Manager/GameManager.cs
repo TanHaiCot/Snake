@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game State")]
     private bool isLost; 
-    private bool isLevelCompleted;
+    private bool isExitOpen;
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
@@ -116,34 +116,36 @@ public class GameManager : MonoBehaviour
 
     public void CheckWinStatus()
     {
-        if (isLevelCompleted || isLost)
+        if (isExitOpen || isLost)
             return;
 
         if(scoreManager.TargetReached && !timer.TimeUp)
         {
-            WinLevel();
+            OpenLevelExit();
         }
     }
 
-    private void WinLevel()
+    private void OpenLevelExit()
     {
-        isLevelCompleted = true;
+        isExitOpen = true;
         doorController.Open();
-        PlayerProgress.EnsureInstance().CompleteLevel(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void MoveToSkillTree()
     {
-        if(LevelData.isSkillTreeUnlocked == false)
+        bool levelUnlocksSkillTree = LevelData != null && LevelData.isSkillTreeUnlocked;
+        PlayerProgress.EnsureInstance().CompleteLevel(SceneManager.GetActiveScene().buildIndex, levelUnlocksSkillTree);
+
+        if(levelUnlocksSkillTree == false)
         {
             Time.timeScale = 1f;
-            SceneManagement.Instance.NextLevel();
+            SceneManagement.EnsureInstance().NextLevel();
             return; 
         }
 
         Time.timeScale = 1f; 
         PlayerProgress.EnsureInstance().openedSkillTreeFromLevel = true;
-        SceneManagement.Instance.LoadScene("SkillTree");
+        SceneManagement.EnsureInstance().LoadScene("SkillTree");
     }
 
     //public void MoveToNextLevel()
@@ -183,6 +185,7 @@ public class GameManager : MonoBehaviour
 
         isPaused = false;
         isLost = false; 
+        isExitOpen = false;
 
         uiManager.HideLostMenu();
 

@@ -8,6 +8,7 @@ public class SaveData
     public int highestCompletedLevelBuildIndex = -1;
     public int completedLevels;
     public int upgradePoints;
+    public bool skillTreeUnlocked;
     public List<string> chosenSkillIds = new List<string>();
 }
 
@@ -15,6 +16,7 @@ public static class SaveSystem
 {
     private const string SaveFileName = "player-progress.json";
     public const int FirstGameplayLevelBuildIndex = 1;
+    private const int FirstSkillTreeUnlockLevelBuildIndex = 3;
 
     public static string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
 
@@ -42,6 +44,7 @@ public static class SaveSystem
             highestCompletedLevelBuildIndex = progress.highestCompletedLevelBuildIndex,
             completedLevels = progress.completedLevels,
             upgradePoints = progress.upgradePoints,
+            skillTreeUnlocked = progress.skillTreeUnlocked,
             chosenSkillIds = new List<string>(progress.chosenSkillIds ?? new List<string>())
         };
 
@@ -60,6 +63,7 @@ public static class SaveSystem
         progress.currentLevelBuildIndex = data.highestCompletedLevelBuildIndex;
         progress.completedLevels = data.completedLevels;
         progress.upgradePoints = data.upgradePoints;
+        progress.skillTreeUnlocked = data.skillTreeUnlocked;
         progress.chosenSkillIds = data.chosenSkillIds ?? new List<string>();
 
         Save(progress);
@@ -93,12 +97,18 @@ public static class SaveSystem
         if (data.highestCompletedLevelBuildIndex < -1)
             data.highestCompletedLevelBuildIndex = -1;
 
-        if (data.completedLevels <= 0)
-            return;
+        if (!data.skillTreeUnlocked && data.chosenSkillIds.Count > 0)
+            data.skillTreeUnlocked = true;
 
-        int completedLevelIndexFromCount = FirstGameplayLevelBuildIndex + data.completedLevels - 1;
+        if (data.completedLevels > 0)
+        {
+            int completedLevelIndexFromCount = FirstGameplayLevelBuildIndex + data.completedLevels - 1;
 
-        if (data.highestCompletedLevelBuildIndex < completedLevelIndexFromCount)
-            data.highestCompletedLevelBuildIndex = completedLevelIndexFromCount;
+            if (data.highestCompletedLevelBuildIndex < completedLevelIndexFromCount)
+                data.highestCompletedLevelBuildIndex = completedLevelIndexFromCount;
+        }
+
+        if (!data.skillTreeUnlocked && data.highestCompletedLevelBuildIndex >= FirstSkillTreeUnlockLevelBuildIndex)
+            data.skillTreeUnlocked = true;
     }
 }

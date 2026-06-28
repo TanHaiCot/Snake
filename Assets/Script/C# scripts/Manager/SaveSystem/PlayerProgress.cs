@@ -10,6 +10,7 @@ public class PlayerProgress : MonoBehaviour
     public int highestCompletedLevelBuildIndex = -1;
     public int upgradePoints;
     public int completedLevels = 0;
+    public bool skillTreeUnlocked;
     public int ContinueLevelBuildIndex => Mathf.Max(highestCompletedLevelBuildIndex + 1, SaveSystem.FirstGameplayLevelBuildIndex);
 
     public bool HasSkill(string skillId)
@@ -72,16 +73,21 @@ public class PlayerProgress : MonoBehaviour
         upgradePoints++;
     }
 
-    public bool CompleteLevel(int levelBuildIndex)
+    public bool CompleteLevel(int levelBuildIndex, bool levelUnlocksSkillTree)
     {
         currentLevelBuildIndex = levelBuildIndex;
 
         if (levelBuildIndex <= highestCompletedLevelBuildIndex)
             return false;
 
+        bool shouldAwardUpgradePoint = skillTreeUnlocked || levelUnlocksSkillTree;
+        skillTreeUnlocked = skillTreeUnlocked || levelUnlocksSkillTree;
         highestCompletedLevelBuildIndex = levelBuildIndex;
         completedLevels++;
-        AddUpgradePoint();
+
+        if (shouldAwardUpgradePoint)
+            AddUpgradePoint();
+
         SaveProgress();
 
         return true;
@@ -104,6 +110,7 @@ public class PlayerProgress : MonoBehaviour
         highestCompletedLevelBuildIndex = -1;
         upgradePoints = 0;
         completedLevels = 0;
+        skillTreeUnlocked = false;
 
         if (chosenSkillIds == null)
             chosenSkillIds = new List<string>();

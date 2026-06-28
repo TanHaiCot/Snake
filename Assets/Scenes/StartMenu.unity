@@ -290,6 +290,7 @@ MonoBehaviour:
   highestCompletedLevelBuildIndex: -1
   upgradePoints: 0
   completedLevels: 0
+  skillTreeUnlocked: 0
   chosenSkillIds: []
 --- !u!4 &288787254
 Transform:
@@ -1022,6 +1023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   continueButton: {fileID: 1093051439}
   newGameButton: {fileID: 373722536}
+  skillTreeButton: {fileID: 831490633}
 --- !u!1 &1270459322
 GameObject:
   m_ObjectHideFlags: 0

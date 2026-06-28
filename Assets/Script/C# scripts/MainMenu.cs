@@ -5,6 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject continueButton;
     [SerializeField] private GameObject newGameButton;
+    [SerializeField] private GameObject skillTreeButton;
 
     private void Start()
     {
@@ -18,6 +19,9 @@ public class MainMenu : MonoBehaviour
 
         if (newGameButton != null)
             newGameButton.SetActive(true);
+
+        if (skillTreeButton != null)
+            skillTreeButton.SetActive(progress.skillTreeUnlocked);
     }
 
     public void NewGame()
@@ -45,6 +49,13 @@ public class MainMenu : MonoBehaviour
     {
         PlayerProgress progress = PlayerProgress.EnsureInstance();
         progress.LoadSavedProgress();
+
+        if (!progress.skillTreeUnlocked)
+        {
+            Debug.LogWarning("Skill tree button was pressed, but the skill tree has not been unlocked yet.");
+            return;
+        }
+
         progress.openedSkillTreeFromLevel = false;
 
         SceneManagement.EnsureInstance().LoadScene("SkillTree");
