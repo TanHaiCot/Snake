@@ -10,17 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
-  m_Name: Perk 2
+  m_Name: 6_GhostMode
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 3
-  skillName: Dash reduce cost
-  description: 're de di nhanh vl '
+  skillId: 1
+  skillName: Dash
+  description: 'di nhanh vl '
   icon: {fileID: 0}
-  skillType: 1
-  effectType: 4
+  skillType: 0
+  effectType: 0
   value: 0
-  uiPosition: {x: 395, y: -130}
-  requirementGroups:
-  - oneOfTheseSkills:
-    - {fileID: 11400000, guid: 30f23b877f385a44696796f4533958b9, type: 2}
-  oppositeChoice: {fileID: 11400000, guid: 268f825e3370b594a8bfea909524668d, type: 2}
+  uiPosition: {x: 810, y: 0}
+  requirementGroups: []
+  oppositeChoice: {fileID: 0}
