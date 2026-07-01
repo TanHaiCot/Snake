@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
-  m_Name: Perk 1
+  m_Name: 2_Perk 1_up
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   skillId: 2
   skillName: 'Dash reduce time '
-  description: 'hoi nhanh de di nhanh vl '
+  description: 'Reduce dash cooldown time by 0.2 seconds '
   icon: {fileID: 0}
   skillType: 1
   effectType: 5
-  value: 0
+  value: 0.2
   uiPosition: {x: 395, y: 130}
   requirementGroups:
   - oneOfTheseSkills:
