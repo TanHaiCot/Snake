@@ -77,10 +77,19 @@ public class SkillTreeManager : MonoBehaviour
 
     private bool IsOppositeAlreadyLearned(SkillData skill)
     {
-        if (skill.oppositeChoice == null)
+        if (skill.oppositeChoices == null || skill.oppositeChoices.Length == 0)
             return false;
 
-        return IsLearned(skill.oppositeChoice);
+        foreach (SkillData opposite in skill.oppositeChoices)
+        {
+            if (opposite != null && IsLearned(opposite))
+            {
+                Debug.Log(skill.skillName + " blocked by learned opposite: " + opposite.skillName);
+                return true;
+            }
+        }
+
+        return false; 
     }
 
     public void TryLearnSkill(SkillData skill)
@@ -102,16 +111,21 @@ public class SkillTreeManager : MonoBehaviour
             return SkillNodeVisualState.Learned;
 
         if (IsOppositeAlreadyLearned(skill))
+        {
+            Debug.Log(skill.skillName + " is blocked because opposite is learned.");
             return SkillNodeVisualState.Blocked;
+        }
 
         if (CanReveal(skill))
         {
             if (CanLearn(skill))
                 return SkillNodeVisualState.Available;
 
+            Debug.Log(skill.skillName + " revealed but cannot learn. Points: "
+           + PlayerProgress.EnsureInstance().upgradePoints);
             return SkillNodeVisualState.Blocked;
         }
-
+        Debug.Log(skill.skillName + " is blank because requirements are not met.");
         return SkillNodeVisualState.Blank;
     }
 

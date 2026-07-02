@@ -15,4 +15,4 @@ MonoBehaviour:
   targetScore: 1
   timeLimit: 30
   enableReverseMovement: 0
-  isSkillTreeUnlocked: 0
+  isSkillTreeUnlocked: 1

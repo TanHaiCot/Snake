@@ -23,6 +23,6 @@ public class SkillData : ScriptableObject
 
     [Header("Unlock Rules")]
     public SkillRequirementGroup[] requirementGroups;
-    public SkillData oppositeChoice;
+    public SkillData[] oppositeChoices;
 }
 

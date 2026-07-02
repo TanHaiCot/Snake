@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
+  m_Name: 8_Perk 4_down_tier2
+  m_EditorClassIdentifier: Assembly-CSharp::SkillData
+  skillId: 8
+  skillName: 'Late Hunter 2 '
+  description: 'For each food eaten during the last 10 seconds of a level gives 1.7x
+    energy gain.   '
+  icon: {fileID: 0}
+  skillType: 1
+  effectType: 4
+  value: 0
+  uiPosition: {x: 1030, y: -130}
+  requirementGroups:
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 68c13ee4e4ac23547976638856c52641, type: 2}
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: ef6db69a98b35fe40b3948e1b9c46c75, type: 2}
+  oppositeChoices:
+  - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}
+  - {fileID: 11400000, guid: 3d2d98a0e4d975e45a9c9f7acba5e668, type: 2}

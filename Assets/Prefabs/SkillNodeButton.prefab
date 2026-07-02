@@ -273,7 +273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeButton
   button: {fileID: 5571572134578657446}
   skillText: {fileID: 2280642127209751221}
-  blankColor: {r: 0.9019608, g: 0.7490196, b: 0.34901962, a: 0.7529412}
-  availableColor: {r: 0.90196085, g: 0.7490196, b: 0.34901962, a: 1}
+  blankColor: {r: 0.31764707, g: 1, b: 0.12941177, a: 0.8}
+  availableColor: {r: 0.9019608, g: 0.34901962, b: 0.7618986, a: 0.7372549}
   learnedColor: {r: 1, g: 1, b: 0.7, a: 1}
-  blockedColor: {r: 0.9019608, g: 0.7490196, b: 0.34901962, a: 0.7529412}
+  blockedColor: {r: 0.9019608, g: 0.33573067, b: 0, a: 0.5921569}

@@ -10,18 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
-  m_Name: 4_Perk 3_up
+  m_Name: 8_Perk 3_up_tier2
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 4
-  skillName: 'Dash reduce time 2 '
-  description: 'Extend level timer by 5 seconds for each food eaten during first
+  skillId: 8
+  skillName: 'Buy Time 2 '
+  description: 'Extend level timer by 7 seconds for each food eaten during first
     10 seconds of a level '
   icon: {fileID: 0}
   skillType: 1
   effectType: 5
   value: 0
-  uiPosition: {x: 585, y: 130}
+  uiPosition: {x: 1030, y: -130}
   requirementGroups:
   - oneOfTheseSkills:
-    - {fileID: 11400000, guid: 30f23b877f385a44696796f4533958b9, type: 2}
-  oppositeChoice: {fileID: 11400000, guid: ec12662b4cd2086409d205ea92a3ff12, type: 2}
+    - {fileID: 11400000, guid: 68c13ee4e4ac23547976638856c52641, type: 2}
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 27231ee43d6750b488e83c191242ad29, type: 2}
+  oppositeChoices:
+  - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}
+  - {fileID: 11400000, guid: 3d2d98a0e4d975e45a9c9f7acba5e668, type: 2}

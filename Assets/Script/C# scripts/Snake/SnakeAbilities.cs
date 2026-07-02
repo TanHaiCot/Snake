@@ -17,7 +17,7 @@ public class SnakeAbilities : MonoBehaviour
     private float dashSpeedMultiplier = 4f;
     private float dashDuration = 0.15f;  
     private float dashCooldown = 1.5f;   //old value 0.8
-    private float dashEnergyCost = 15f;  //old value 10
+    private float dashEnergyCost = 15f;  //old value 10 
 
     [Header("Ghost Mode (Go Through Walls)")]
     [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;

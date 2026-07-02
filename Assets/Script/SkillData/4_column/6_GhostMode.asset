@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
   m_Name: 6_GhostMode
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 1
-  skillName: Dash
-  description: 'di nhanh vl '
+  skillId: 6
+  skillName: GhostMode
+  description: 'tao lam ma roi '
   icon: {fileID: 0}
   skillType: 0
-  effectType: 0
+  effectType: 1
   value: 0
   uiPosition: {x: 810, y: 0}
-  requirementGroups: []
+  requirementGroups:
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 27231ee43d6750b488e83c191242ad29, type: 2}
+    - {fileID: 11400000, guid: ef6db69a98b35fe40b3948e1b9c46c75, type: 2}
   oppositeChoice: {fileID: 0}
