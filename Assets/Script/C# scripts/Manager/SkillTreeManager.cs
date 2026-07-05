@@ -112,7 +112,7 @@ public class SkillTreeManager : MonoBehaviour
 
         if (IsOppositeAlreadyLearned(skill))
         {
-            Debug.Log(skill.skillName + " is blocked because opposite is learned.");
+            //Debug.Log(skill.skillName + " is blocked because opposite is learned.");
             return SkillNodeVisualState.Blocked;
         }
 
@@ -121,11 +121,11 @@ public class SkillTreeManager : MonoBehaviour
             if (CanLearn(skill))
                 return SkillNodeVisualState.Available;
 
-            Debug.Log(skill.skillName + " revealed but cannot learn. Points: "
-           + PlayerProgress.EnsureInstance().upgradePoints);
+           // Debug.Log(skill.skillName + " revealed but cannot learn. Points: "
+           //+ PlayerProgress.EnsureInstance().upgradePoints);
             return SkillNodeVisualState.Blocked;
         }
-        Debug.Log(skill.skillName + " is blank because requirements are not met.");
+        //Debug.Log(skill.skillName + " is blank because requirements are not met.");
         return SkillNodeVisualState.Blank;
     }
 
