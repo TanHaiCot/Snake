@@ -9,6 +9,7 @@ public class Timer : MonoBehaviour
     [SerializeField] float levelTimer;
 
     private float remainingTimer; 
+    private float elapsedTimer;
 
     public event Action OnTimeUp;
 
@@ -29,6 +30,7 @@ public class Timer : MonoBehaviour
     {
         if (remainingTimer > 0)
         {
+            elapsedTimer += Time.deltaTime;
             remainingTimer = Mathf.Max(remainingTimer - Time.deltaTime, 0f);
   
             if (remainingTimer == 0 && !isFired)
@@ -53,9 +55,24 @@ public class Timer : MonoBehaviour
     public void ResetTimer()
     {
         remainingTimer = levelTimer; 
+        elapsedTimer = 0f;
         isFired = false;
         UpdateUI(); 
     }
 
+    public void AddTime(float amount)
+    {
+        if (amount <= 0f)
+            return;
+
+        remainingTimer += amount;
+    }
+
     public bool TimeUp => remainingTimer <= 0f;
+
+    public float RemainingTime => remainingTimer;
+
+    public float ElapsedTime => elapsedTimer;
+
+    public float LevelTime => levelTimer;
 }

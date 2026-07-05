@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
+  m_Name: 9_Perk 5_up
+  m_EditorClassIdentifier: Assembly-CSharp::SkillData
+  skillId: 9
+  skillName: "Giam tieu ton n\u0103ng l\u01B0\u1EE3ng "
+  description: "Gi\u1EA3m thi\xEAu \u0111\u1ED1t n\u0103ng l\u01B0\u1EE3ng m\u1ED7i
+    gi\xE2y \u0111i 1 khi s\u1EED d\u1EE5ng Ghost Mode "
+  icon: {fileID: 0}
+  skillType: 1
+  effectType: 6
+  value: 1
+  uiPosition: {x: 1200, y: 130}
+  requirementGroups:
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}
+    - {fileID: 11400000, guid: 23ba554c8a60d3e48a4e55f598ba1dbd, type: 2}
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}
+    - {fileID: 11400000, guid: e85e08e00c81eb2419f88ae95806ed90, type: 2}
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 3d2d98a0e4d975e45a9c9f7acba5e668, type: 2}
+    - {fileID: 11400000, guid: 23ba554c8a60d3e48a4e55f598ba1dbd, type: 2}
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 3d2d98a0e4d975e45a9c9f7acba5e668, type: 2}
+    - {fileID: 11400000, guid: e85e08e00c81eb2419f88ae95806ed90, type: 2}
+  oppositeChoices:
+  - {fileID: 11400000, guid: 6484c22a4d82d0f41b18453e3f6e5ca4, type: 2}

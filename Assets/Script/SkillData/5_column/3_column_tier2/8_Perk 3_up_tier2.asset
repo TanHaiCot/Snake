@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
   m_Name: 8_Perk 3_up_tier2
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 8
+  skillId: 9
   skillName: 'Buy Time 2 '
   description: 'Extend level timer by 7 seconds for each food eaten during first
     10 seconds of a level '
   icon: {fileID: 0}
   skillType: 1
-  effectType: 5
-  value: 0
+  effectType: 9
+  value: 7
   uiPosition: {x: 1030, y: -130}
   requirementGroups:
   - oneOfTheseSkills:

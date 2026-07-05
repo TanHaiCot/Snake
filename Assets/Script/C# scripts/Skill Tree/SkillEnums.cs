@@ -31,5 +31,8 @@ public enum SkillEffectType
     ReduceGhostDrain,
     ReduceGhostCooldown,
 
-    IncreaseFoodEnergyGain
+    IncreaseFoodEnergyGain,
+    ExtendLevelTimerOnEarlyFood,
+    MultiplyLateFoodEnergyGain,
+    MaintainGhostModeAfterToggleOff
 }

@@ -1,81 +1,93 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SnakeAbilities : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] Energy energy;
+    [SerializeField] private Snake snake;
 
     [Header("Dash")]
     [SerializeField] private KeyCode dashKey = KeyCode.E;
     [SerializeField] private Image dashLockImage;
     [SerializeField] private Image dashLockDarkImage;
+    [FormerlySerializedAs("dashImage")]
     public Image dashCooldownImage;
-    private bool isDashingCooldown; 
     private float dashSpeedMultiplier = 4f;
     private float dashDuration = 0.15f;  
-    private float dashCooldown = 1.5f;   //old value 0.8
-    private float dashEnergyCost = 15f;  //old value 10 
+    private float dashCooldown = 1.5f;
+    private float dashEnergyCost = 15f;
 
     [Header("Ghost Mode (Go Through Walls)")]
     [SerializeField] private KeyCode ghostModeKey = KeyCode.Q;
     [SerializeField] private Image ghostModeLockImage;
     [SerializeField] private Image ghostLockDarkImage;
+    [FormerlySerializedAs("ghostModeImage")]
     public Image ghostModeCooldownImage;
-    private bool isGhostModeCooldown;
     private float ghostModeCooldown = 3.0f;
     private float ghostModeEnergyDrainPerSecond = 5.0f;
-    //private float minEnergyForGhostMode = 15.0f;
+    [SerializeField] private float ghostModeExtensionDuration = 0f;
+    private float ghostModeExtensionEndTime;
 
-    
-    //dash state
-    private float dashActiveTime;  // when dash effect ends
+    [Header("Food Perks")]
+    [SerializeField] private float earlyFoodPeriod = 10f;
+    [SerializeField] private float extraTimePerFood = 5f;
+    [SerializeField] private float lateFoodPeriod = 10f;
+    [SerializeField] private float lateFoodEnergyMultiplier = 1.5f;
+
+    private float dashActiveTime;
     private float dashReadyTime;
 
-    //ghost mode state
     private bool ghostModeRequested;
-    private int ghostModeStepsRemaining; // keeps ghost active long enough for body to follow
+    private int ghostModeStepsRemaining;
     private float ghostModeReadyTime;
 
     public bool abilitiesUnlocked;
-    private float debugTimer;
-
-    [SerializeField] private Snake snake;
+    private bool dashUnlocked;
+    private bool ghostModeUnlocked;
+    private bool earlyFoodTimeBonusEnabled;
+    private bool lateFoodEnergyBonusEnabled;
     private bool lastGhostState;
 
-    public bool GhostActive => ghostModeRequested || ghostModeStepsRemaining > 0;
+    private bool baseSettingsCached;
+    private float baseDashSpeedMultiplier;
+    private float baseDashDuration;
+    private float baseDashCooldown;
+    private float baseDashEnergyCost;
+    private float baseGhostModeCooldown;
+    private float baseGhostModeEnergyDrainPerSecond;
+    private float baseEarlyFoodPeriod;
+    private float baseExtraTimePerFood;
+    private float baseLateFoodPeriod;
+    private float baseLateFoodEnergyMultiplier;
 
-    private void Start()
+    public bool GhostActive => ghostModeRequested || ghostModeStepsRemaining > 0 || Time.time < ghostModeExtensionEndTime;
+
+    private bool CanUseDash => abilitiesUnlocked && dashUnlocked;
+    private bool CanUseGhostMode => abilitiesUnlocked && ghostModeUnlocked;
+
+    private void Awake()
     {
-        dashCooldownImage.fillAmount = 1f;
-        ghostModeCooldownImage.fillAmount = 1f;
-
-        isDashingCooldown = true;
-        isGhostModeCooldown = true;
-
-        if (SceneManager.GetActiveScene().name == "Boss1Fight")
-            abilitiesUnlocked = false;
-        else
-            abilitiesUnlocked = true;
-
+        CacheBaseSettings();
+        ResetAbilities(SceneManager.GetActiveScene().name != "Boss1Fight");
     }
 
     private void Update()
     {
         HandleDashing();
         HandleGhostMode();
-        GhostModeEnergyDrain(); 
+        DrainGhostModeEnergy();
         UpdateAbilitiesUI();
-
-        DebugEnergy();
-
         UpdateGhostVisual(); 
     }
 
     private void UpdateGhostVisual()
     {
+        if (snake == null)
+            return;
+
         bool current = GhostActive;
 
         if (current != lastGhostState)
@@ -85,125 +97,80 @@ public class SnakeAbilities : MonoBehaviour
         }
     }
 
-    private void DebugEnergy()
-    {
-        debugTimer += Time.deltaTime;
-
-        if (debugTimer >= 1f)
-        {
-            debugTimer = 0f;
-            if (energy != null)
-                Debug.Log($"Current Energy: {energy.CurrentEnergy}");
-        }
-    }
-
     private void UpdateAbilitiesUI()
     {
-        bool dashLocked = !abilitiesUnlocked || energy.CurrentEnergy < dashEnergyCost;
-        if( dashLocked) dashCooldownImage.fillAmount = 0f; 
-        dashLockImage.gameObject.SetActive(dashLocked);
-        dashLockDarkImage.gameObject.SetActive(dashLocked);
-       
+        bool dashLocked = !CanUseDash || !HasEnoughEnergy(dashEnergyCost);
+        SetLockVisible(dashLockImage, dashLocked);
+        SetLockVisible(dashLockDarkImage, dashLocked);
+        UpdateCooldownFill(dashCooldownImage, dashReadyTime, dashCooldown);
 
-        bool ghostModeLocked =!abilitiesUnlocked || energy.CurrentEnergy < ghostModeEnergyDrainPerSecond;
-        if(ghostModeLocked) ghostModeCooldownImage.fillAmount = 0f;
-        ghostModeLockImage.gameObject.SetActive(ghostModeLocked);
-        ghostLockDarkImage.gameObject.SetActive(ghostModeLocked); 
-   
-            
-    }
-
-    public void SetAbilitiesUnlocked(bool value)
-    {
-        abilitiesUnlocked = value;
-
-        if(!abilitiesUnlocked)
-        {
-            ghostModeRequested = false;
-        }
-        else
-        {
-            dashCooldownImage.fillAmount = 0f;
-            ghostModeCooldownImage.fillAmount = 0f;
-        }
+        bool ghostModeLocked = !CanUseGhostMode || !HasEnoughEnergy(ghostModeEnergyDrainPerSecond);
+        SetLockVisible(ghostModeLockImage, ghostModeLocked);
+        SetLockVisible(ghostLockDarkImage, ghostModeLocked);
+        UpdateCooldownFill(ghostModeCooldownImage, ghostModeReadyTime, ghostModeCooldown);
     }
 
     private void HandleDashing()
     {
-        if (abilitiesUnlocked && Input.GetKeyDown(dashKey) && isDashingCooldown == false && energy.CurrentEnergy >= dashEnergyCost)
-        {
+        if (CanUseDash && Input.GetKeyDown(dashKey))
             TryDash();
-            //if()
-            isDashingCooldown = true;
-            dashCooldownImage.fillAmount = 1f;
-        }
-
-        if(isDashingCooldown)
-        {
-            dashCooldownImage.fillAmount -= 1f / dashCooldown * Time.deltaTime;
-            if(dashCooldownImage.fillAmount <= 0f)
-            {
-                dashCooldownImage.fillAmount = 0f;
-                isDashingCooldown = false;
-            }
-        }
     }
 
     private void HandleGhostMode()
     {
-        if (abilitiesUnlocked && Input.GetKeyDown(ghostModeKey) && isGhostModeCooldown == false && energy.CurrentEnergy >= ghostModeEnergyDrainPerSecond) 
-        {
+        if (CanUseGhostMode && Input.GetKeyDown(ghostModeKey))
             ToggleGhostMode();
-            //isGhostModeCooldown = true;
-            ghostModeCooldownImage.fillAmount = 1f;
-        }
-
-        if(isGhostModeCooldown)
-        {
-            ghostModeCooldownImage.fillAmount -= 1f / ghostModeCooldown * Time.deltaTime;
-            if(ghostModeCooldownImage.fillAmount <= 0f)
-            {
-                ghostModeCooldownImage.fillAmount = 0f;
-                isGhostModeCooldown = false;
-            }
-        }
     }
 
     private void ToggleGhostMode()
     {
         if (!ghostModeRequested)
         {
-            if (Time.time < ghostModeReadyTime)
-                return;
-
-            if (energy != null && energy.CurrentEnergy < ghostModeEnergyDrainPerSecond)
-                return;
-            
-            ghostModeRequested = true;
+            TryStartGhostMode();
             return;
         }
 
-        ghostModeRequested = false;
-        isGhostModeCooldown = true;
-        ghostModeReadyTime = Time.time + ghostModeCooldown;
+        StopGhostMode(true, true);
     }
 
-    private void GhostModeEnergyDrain()
+    private void TryStartGhostMode()
+    {
+        if (Time.time < ghostModeReadyTime || !HasEnoughEnergy(ghostModeEnergyDrainPerSecond))
+            return;
+
+        ghostModeRequested = true;
+    }
+
+    private void StopGhostMode(bool startCooldown, bool maintainAfterStop)
+    {
+        if (!ghostModeRequested && !GhostActive)
+            return;
+
+        ghostModeRequested = false;
+
+        if (maintainAfterStop && ghostModeExtensionDuration > 0f)
+            ghostModeExtensionEndTime = Time.time + ghostModeExtensionDuration;
+        else
+            ghostModeExtensionEndTime = 0f;
+
+        if (startCooldown)
+        {
+            ghostModeReadyTime = Time.time + ghostModeCooldown;
+            UpdateCooldownFill(ghostModeCooldownImage, ghostModeReadyTime, ghostModeCooldown);
+        }
+    }
+
+    private void DrainGhostModeEnergy()
     {
         if (!ghostModeRequested || energy == null)
             return;
 
         float drain = ghostModeEnergyDrainPerSecond * Time.deltaTime;
-        bool stillHaveEnergyToSpend = energy.TryConsumeEnergy(drain);
+        if (energy.TryConsumeEnergy(drain))
+            return;
 
-        if (!stillHaveEnergyToSpend)
-        {
-            ghostModeRequested = false;
-            isGhostModeCooldown = true;
-            Debug.Log("Energy depleted, exiting ghost mode.");
-            ghostModeReadyTime = Time.time + ghostModeCooldown;
-        }
-        
+        StopGhostMode(true, false);
+        Debug.Log("Energy depleted, exiting ghost mode.");
     }
 
     public void NotifyHeadEnteredWall(int snakeLength)
@@ -218,17 +185,18 @@ public class SnakeAbilities : MonoBehaviour
             ghostModeStepsRemaining--;
     }
 
-    private void TryDash()
+    private bool TryDash()
     {
         if (Time.time < dashReadyTime)
-            return;
+            return false;
 
-        if (energy != null && dashEnergyCost > 0)
-            if (!energy.TryConsumeEnergy(dashEnergyCost))
-                return;
+        if (energy != null && dashEnergyCost > 0 && !energy.TryConsumeEnergy(dashEnergyCost))
+            return false;
 
         dashActiveTime = Time.time + dashDuration;
         dashReadyTime = Time.time + dashCooldown;
+        UpdateCooldownFill(dashCooldownImage, dashReadyTime, dashCooldown);
+        return true;
     }
 
     public float ModifySpeed(float baseSpeed)
@@ -241,39 +209,62 @@ public class SnakeAbilities : MonoBehaviour
         return baseSpeed;
     }
 
+    public float GetTotalFoodEnergyGain(float baseEnergyGain, Timer levelTimer)
+    {
+        if (lateFoodEnergyBonusEnabled && levelTimer != null && levelTimer.RemainingTime <= lateFoodPeriod)
+            return baseEnergyGain * lateFoodEnergyMultiplier;
+
+        return baseEnergyGain;
+    }
+
+    public void ApplyFoodTimerPerks(Timer levelTimer)
+    {
+        if (!earlyFoodTimeBonusEnabled || levelTimer == null)
+            return;
+
+        if (levelTimer.ElapsedTime <= earlyFoodPeriod)
+            levelTimer.AddTime(extraTimePerFood);
+    }
+
+    public void SetAbilitiesUnlocked(bool value)
+    {
+        abilitiesUnlocked = value;
+
+        if (!abilitiesUnlocked)
+            StopGhostMode(false, false);
+    }
+
+    public void SetDashUnlocked(bool value)
+    {
+        dashUnlocked = value;
+    }
+
+    public void SetGhostModeUnlocked(bool value)
+    {
+        ghostModeUnlocked = value;
+    }
+
     public void ResetAbilities(bool unlockAbilities = true)
     {
-        // Dash
-        isDashingCooldown = true;
+        CacheBaseSettings();
+        ResetSkillAdjustedStats();
+
         dashActiveTime = 0f;
         dashReadyTime = 0f;
 
-        if (dashCooldownImage != null)
-            dashCooldownImage.fillAmount = 1f;
-
-        if (dashLockImage != null)
-            dashLockImage.gameObject.SetActive(false);
-
-        if (dashLockDarkImage != null)
-            dashLockDarkImage.gameObject.SetActive(false);
-
-        // Ghost
         ghostModeRequested = false;
         ghostModeStepsRemaining = 0;
         ghostModeReadyTime = 0f;
-        isGhostModeCooldown = true;
+        ghostModeExtensionEndTime = 0f;
 
-        if (ghostModeCooldownImage != null)
-            ghostModeCooldownImage.fillAmount = 1f;
-
-        if (ghostModeLockImage != null)
-            ghostModeLockImage.gameObject.SetActive(false);
-
-        if (ghostLockDarkImage != null)
-            ghostLockDarkImage.gameObject.SetActive(false);
-
-        // Abilities state
+        dashUnlocked = false;
+        ghostModeUnlocked = false;
         abilitiesUnlocked = unlockAbilities;
+
+        SetImageFill(dashCooldownImage, 0f);
+        SetImageFill(ghostModeCooldownImage, 0f);
+
+        UpdateAbilitiesUI();
 
         if (snake != null)
             snake.SetGhostVisual(false);
@@ -281,9 +272,41 @@ public class SnakeAbilities : MonoBehaviour
         lastGhostState = false;
     }
 
+    private void CacheBaseSettings()
+    {
+        if (baseSettingsCached)
+            return;
 
+        baseDashSpeedMultiplier = dashSpeedMultiplier;
+        baseDashDuration = dashDuration;
+        baseDashCooldown = dashCooldown;
+        baseDashEnergyCost = dashEnergyCost;
+        baseGhostModeCooldown = ghostModeCooldown;
+        baseGhostModeEnergyDrainPerSecond = ghostModeEnergyDrainPerSecond;
+        baseEarlyFoodPeriod = earlyFoodPeriod;
+        baseExtraTimePerFood = extraTimePerFood;
+        baseLateFoodPeriod = lateFoodPeriod;
+        baseLateFoodEnergyMultiplier = lateFoodEnergyMultiplier;
+        baseSettingsCached = true;
+    }
 
-    //change statistic from skill tree
+    private void ResetSkillAdjustedStats()
+    {
+        dashSpeedMultiplier = baseDashSpeedMultiplier;
+        dashDuration = baseDashDuration;
+        dashCooldown = baseDashCooldown;
+        dashEnergyCost = baseDashEnergyCost;
+        ghostModeCooldown = baseGhostModeCooldown;
+        ghostModeEnergyDrainPerSecond = baseGhostModeEnergyDrainPerSecond;
+        ghostModeExtensionDuration = 0f;
+        earlyFoodPeriod = baseEarlyFoodPeriod;
+        extraTimePerFood = baseExtraTimePerFood;
+        lateFoodPeriod = baseLateFoodPeriod;
+        lateFoodEnergyMultiplier = baseLateFoodEnergyMultiplier;
+        earlyFoodTimeBonusEnabled = false;
+        lateFoodEnergyBonusEnabled = false;
+    }
+
     public void ReduceDashCost(float amount)
     {
         dashEnergyCost = Mathf.Max(1f, dashEnergyCost - amount);
@@ -309,4 +332,54 @@ public class SnakeAbilities : MonoBehaviour
         ghostModeCooldown = Mathf.Max(0.5f, ghostModeCooldown - amount);
     }
 
+    public void EnableEarlyFoodTimerBonus(float extraSecondsPerFood, float firstSeconds)
+    {
+        earlyFoodTimeBonusEnabled = true;
+        extraTimePerFood = Mathf.Max(0f, extraSecondsPerFood);
+        earlyFoodPeriod = Mathf.Max(0f, firstSeconds);
+    }
+
+    public void EnableLateFoodEnergyBonus(float energyMultiplier, float lastSeconds)
+    {
+        lateFoodEnergyBonusEnabled = true;
+        lateFoodEnergyMultiplier = Mathf.Max(1f, energyMultiplier);
+        lateFoodPeriod = Mathf.Max(0f, lastSeconds);
+    }
+
+    public void MaintainGhostModeAfterToggleOff(float duration)
+    {
+        ghostModeExtensionDuration = Mathf.Max(0f, duration);
+    }
+
+    private bool HasEnoughEnergy(float cost)
+    {
+        return energy == null || energy.CurrentEnergy >= cost;
+    }
+
+    private void UpdateCooldownFill(Image image, float readyTime, float cooldownDuration)
+    {
+        if (image == null)
+            return;
+
+        float remaining = Mathf.Max(readyTime - Time.time, 0f);
+        image.fillAmount = cooldownDuration > 0f ? remaining / cooldownDuration : 0f;
+    }
+
+    private void SetImageFill(Image image, float amount)
+    {
+        if (image != null)
+            image.fillAmount = amount;
+    }
+
+    private void SetLockVisible(Image image, bool visible)
+    {
+        if (image != null)
+            image.gameObject.SetActive(visible);
+    }
+
+    public bool IsDashUnlocked => dashUnlocked;
+    public bool IsGhostModeUnlocked => ghostModeUnlocked;
+    public bool HasEarlyFoodTimerBonus => earlyFoodTimeBonusEnabled;
+    public bool HasLateFoodEnergyBonus => lateFoodEnergyBonusEnabled;
+    public float GhostModeExtensionDuration => ghostModeExtensionDuration;
 }

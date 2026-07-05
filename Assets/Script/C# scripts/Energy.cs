@@ -1,8 +1,6 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class Energy : MonoBehaviour
 {
@@ -11,22 +9,35 @@ public class Energy : MonoBehaviour
     float currentEnergy;
     float startEnergy = 50f;
     float maxEnergy = 100f;
+    private bool baseSettingsCached;
+    private float baseStartEnergy;
+    private float baseMaxEnergy;
 
     public float CurrentEnergy => currentEnergy;
     public float MaxEnergy => maxEnergy;
 
+    private void Awake()
+    {
+        CacheBaseSettings();
+        InitializeEnergy();
+    }
+
     private void Start()
+    {
+        UpdateEnergyUI();
+    }
+
+    private void InitializeEnergy()
     {
         if (SceneManager.GetActiveScene().name == "Boss1Fight")
             startEnergy = 0; 
 
         currentEnergy = startEnergy;
-
     }
 
     private void Update()
     {
-        if (currentEnergy > maxEnergy) currentEnergy = maxEnergy;
+        currentEnergy = Mathf.Clamp(currentEnergy, 0f, maxEnergy);
 
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -40,9 +51,13 @@ public class Energy : MonoBehaviour
 
     private void UpdateEnergyUI()
     {
+        if (energyPoints == null)
+            return;
+
         for (int i = 0; i < energyPoints.Length; i++)
         {
-            energyPoints[i].enabled = !DisplayEnergyPoint(currentEnergy, i);
+            if (energyPoints[i] != null)
+                energyPoints[i].enabled = !DisplayEnergyPoint(currentEnergy, i);
         }
     }
 
@@ -53,8 +68,10 @@ public class Energy : MonoBehaviour
 
     public void AddEnergy(float amount)
     {
-        currentEnergy += amount;
-        //Debug.Log($"Energy increased by {amount}, current energy: {currentEnergy}");
+        if (amount <= 0f)
+            return;
+
+        currentEnergy = Mathf.Min(currentEnergy + amount, maxEnergy);
     }
 
     public bool TryConsumeEnergy(float amount)
@@ -73,7 +90,24 @@ public class Energy : MonoBehaviour
 
     public void ResetEnergy()
     {
-        currentEnergy = startEnergy;
+        InitializeEnergy();
+    }
+
+    public void ResetSkillAdjustedStats()
+    {
+        CacheBaseSettings();
+        startEnergy = baseStartEnergy;
+        maxEnergy = baseMaxEnergy;
+    }
+
+    private void CacheBaseSettings()
+    {
+        if (baseSettingsCached)
+            return;
+
+        baseStartEnergy = startEnergy;
+        baseMaxEnergy = maxEnergy;
+        baseSettingsCached = true;
     }
 
 

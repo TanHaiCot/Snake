@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 
 public class GameManager : MonoBehaviour
 {
-
     [Header("MANAGERS")]
     [SerializeField] UIManager uiManager;
     [SerializeField] ScoreManager scoreManager;
@@ -32,6 +28,7 @@ public class GameManager : MonoBehaviour
 
     private int scoreToStartReverseMovement = 3;
     private bool reverseMovementStarted;
+    private SkillRuntimeApplier skillRuntimeApplier;
 
     void Start() 
     {
@@ -46,6 +43,8 @@ public class GameManager : MonoBehaviour
         {
             timer.SetLevelTimer(LevelData.timeLimit);
         }
+
+        ResetAndApplySkillRuntime();
         
         mapManager.InitAndBuildMap();
         food.RandomizedSpawn(); 
@@ -91,7 +90,9 @@ public class GameManager : MonoBehaviour
     }
 
     private void HandleFoodEaten()
-    {         
+    {
+        EnsureSkillRuntime();
+        skillRuntimeApplier.ApplyFoodEatenEffects();
     }
 
     private void OnDisable()
@@ -194,8 +195,7 @@ public class GameManager : MonoBehaviour
 
         timer.SetLevelTimer(LevelData.timeLimit);
 
-        energy.ResetEnergy();
-        snakeAbilities.ResetAbilities();
+        ResetAndApplySkillRuntime();
 
         reverseMovementStarted = false;
         snake.SetReverseMovement(false);
@@ -215,5 +215,34 @@ public class GameManager : MonoBehaviour
         {
             uiManager.ShowLostMenu();
         }
+    }
+
+    private void ResetAndApplySkillRuntime()
+    {
+        if (energy != null)
+        {
+            energy.ResetSkillAdjustedStats();
+            energy.ResetEnergy();
+        }
+        
+        if (snakeAbilities != null)
+            snakeAbilities.ResetAbilities(ArePlayerAbilitiesEnabledAtLevelStart());
+
+        skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer);
+        skillRuntimeApplier.ApplyLearnedSkills();
+    }
+
+    private void EnsureSkillRuntime()
+    {
+        if (skillRuntimeApplier != null)
+            return;
+
+        skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer);
+        skillRuntimeApplier.ApplyLearnedSkills();
+    }
+
+    private bool ArePlayerAbilitiesEnabledAtLevelStart()
+    {
+        return SceneManager.GetActiveScene().name != "Boss1Fight";
     }
 }

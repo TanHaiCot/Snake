@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
   m_Name: 7_Perk 2_down_tier2
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 7
+  skillId: 8
   skillName: Dash reduce cost 2
   description: Reduces energy consumption by 4 when using dash
   icon: {fileID: 0}
