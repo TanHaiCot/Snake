@@ -12,9 +12,9 @@ public class AI_Snake : MonoBehaviour
     [SerializeField] private Pathfinding pathfinding;
     [SerializeField] private Transform playerSnake;
     [SerializeField] private Transform bodyPrefab;
-    [SerializeField] private LayerMask playerLayer; 
     [SerializeField] private Transform foodTarget;
-
+    [SerializeField] ScoreManager scoreManager;    
+    
     [Header("State")]
     [SerializeField] private AI_snakeState currentState = AI_snakeState.Patrol;
 
@@ -60,6 +60,17 @@ public class AI_Snake : MonoBehaviour
     private void Start()
     {
         Restate();
+
+        if(aiMode == AI_Mode.FoodIsTarget)
+        {
+            if(scoreManager != null) 
+            {
+                scoreManager.OnTargetReached.AddListener(() =>
+                {
+                    this.gameObject.SetActive(false);
+                });
+            }
+        }
     }
     private void FixedUpdate()
     {

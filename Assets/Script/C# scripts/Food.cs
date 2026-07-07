@@ -12,12 +12,10 @@ public class Food : MonoBehaviour
 
     private void Start()
     {
-        scoreManager.OnTargetReached.AddListener(HandleTargetReached);
-    }
-
-    private void HandleTargetReached()
-    {
-        this.gameObject.SetActive(false);
+        scoreManager.OnTargetReached.AddListener( () =>
+        {
+            this.gameObject.SetActive(false);
+        });
     }
 
     public void RandomizedSpawn()

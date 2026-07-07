@@ -643,10 +643,8 @@ MonoBehaviour:
   pathfinding: {fileID: 781086730}
   playerSnake: {fileID: 1796027304}
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
   foodTarget: {fileID: 620879145}
+  scoreManager: {fileID: 616454441}
   currentState: 1
 --- !u!1001 &101495265
 PrefabInstance:
@@ -23954,6 +23952,8 @@ MonoBehaviour:
   ai_Snake: {fileID: 95846454}
   energy: {fileID: 1781208155}
   snakeAbilities: {fileID: 77481038}
+  reverseMovementDialogue:
+    dialogueLines: []
   LevelData: {fileID: 11400000, guid: 6df1487a9cf948d4ba78500bd8321947, type: 2}
 --- !u!114 &1781208155 stripped
 MonoBehaviour:
