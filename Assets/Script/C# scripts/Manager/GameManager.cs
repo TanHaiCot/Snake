@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] AI_Snake ai_Snake;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
+    [SerializeField] Dialogue reverseMovementDialogue;
 
     [Header("Game State")]
     private bool isLost; 
@@ -85,8 +87,22 @@ public class GameManager : MonoBehaviour
         if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
         {
             reverseMovementStarted = true;
-            snake.SetReverseMovement(true);
+            StartReverseMovementDialogue();
+            //snake.SetReverseMovement(true);
         }
+    }
+
+    private void StartReverseMovementDialogue()
+    {
+        Time.timeScale = 0f;
+        snake.SetInputEnabled(false);
+
+        DialogueManager.Instance.StartDialogue(reverseMovementDialogue, () =>
+        {
+            snake.SetReverseMovement(true);
+            snake.SetInputEnabled(true);
+            Time.timeScale = 1f;
+        });
     }
 
     private void HandleFoodEaten()

@@ -33,6 +33,8 @@ public class Snake : MonoBehaviour
 
     private bool isInputLockOpened;  //work as a lock to prevent multiple direction change in one tick
 
+    private bool canReadInput = true;
+
     public enum KeyType
     {
         WASD,
@@ -47,8 +49,16 @@ public class Snake : MonoBehaviour
         Restate();
     }
 
+    public void SetInputEnabled(bool enabled)
+    {
+        canReadInput = enabled;
+    }
+
     private void Update()
     {
+        if (!canReadInput)
+            return;
+
         UpdateSnakeMovement();  
     }
 
