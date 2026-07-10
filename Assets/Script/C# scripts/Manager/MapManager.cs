@@ -37,11 +37,11 @@ public class MapManager : MonoBehaviour
             if (!playgroundTilemap.HasTile(pos))
                 continue;
 
-            bool isLight = (pos.x + pos.y) % 2 == 0;
+            bool isDark = (pos.x + pos.y) % 2 == 0;
 
             playgroundTilemap.SetTile(
                 pos,
-                isLight ? lightFloorTile : darkFloorTile
+                isDark ? darkFloorTile : lightFloorTile
             );
         
         }
