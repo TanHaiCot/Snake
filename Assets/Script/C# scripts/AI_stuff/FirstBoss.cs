@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class FirstBoss : MonoBehaviour
@@ -60,11 +58,13 @@ public class FirstBoss : MonoBehaviour
         };
 
     // pathfiding variables
-    private float repathInterval = 0.2f;
-    private int maxVisitedNodes = 20000;
+    private float repathInterval = 0.12f;
     private float repathTimer;
+    private int maxVisitedNodes = 20000;
     private readonly List<Vector2Int> currentPath = new();
     private int pathIndex;
+    private Vector2Int cachedPathPlayerCell;
+    private bool hasCachedPathPlayerCell;
 
     private Vector2Int lastDir = Vector2Int.zero;
 
@@ -93,6 +93,9 @@ public class FirstBoss : MonoBehaviour
     
         UpdateState();
 
+        if (state == BossState.Chasing || state == BossState.Fleeing)
+            repathTimer -= Time.fixedDeltaTime;
+
         if(state == BossState.Lagging || state == BossState.Stunned)
             return;
 
@@ -108,9 +111,14 @@ public class FirstBoss : MonoBehaviour
         if (moveTimer >= interval) 
         {
             moveTimer -= interval;
-            TakeAction(); 
-            RecordAnchor();
-            UpdateBody();
+            bool moved = TakeAction();
+
+            if (moved)
+            {
+                RecordAnchor();
+                UpdateBody();
+            }
+
             UpdateHeadRotation();
         }
 
@@ -122,7 +130,10 @@ public class FirstBoss : MonoBehaviour
         if(state == BossState.Fleeing)
         {
             if (bossFightManager != null && !bossFightManager.IsEmpowered)
+            {
                 state = BossState.Chasing;
+                InvalidatePath();
+            }
 
             return; 
         }
@@ -142,6 +153,7 @@ public class FirstBoss : MonoBehaviour
                 else
                 {
                     state = BossState.Chasing;
+                    InvalidatePath();
 
                     if(bossFightManager != null && bossFightManager.IsEmpowered)
                         state = BossState.Fleeing;
@@ -205,48 +217,49 @@ public class FirstBoss : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    private void TakeAction()
+    private bool TakeAction()
     {
         if (state == BossState.Lagging || state == BossState.Stunned)
-            return; // no movement during these
+            return false; // no movement during these
 
         if (state == BossState.Dashing)
         {
-            Dash();
-            return;
+            return Dash();
         }
 
         if (state == BossState.Fleeing)
         {
-            Flee();
-            return;
+            return Flee();
         }
 
-        Chase(); 
+        return Chase(); 
     }
 
-    private void Dash()
+    private bool Dash()
     {
-        currentDashDistance++;  
-    
         Vector2Int next = AnchorCell + direction * BossCellSize;
 
         if (!MoveBossAndCheckCollisionWithPlayer(next))
         {
             Stunned();
-            return;
+            return false;
         }
-   
+
+        currentDashDistance++;
         if (currentDashDistance >= maxDashDistance)
         {
             state = BossState.Chasing;
+            InvalidatePath();
         }
+
+        return true;
     }
 
     private void Stunned()
     {
         state = BossState.Stunned;
         stateTimer = stunDuration;  
+        InvalidatePath();
         SpawnPowerPickup();
     }
 
@@ -254,24 +267,23 @@ public class FirstBoss : MonoBehaviour
     {
         state = BossState.Stunned;
         stateTimer = stunByHitDuration;
-        currentPath.Clear();
-        pathIndex = 0;
+        InvalidatePath();
     }
 
-    private void Flee()
+    private bool Flee()
     {
-
         Vector2Int playerCell = WorldToGrid(player.position);
-        direction = ChooseBestWayToRunAway(playerCell);
-        TryToMove(direction);
+        UpdateFleePath(playerCell);
+        return TryFollowPathStep();
     }
 
-    private void Chase()
+    private bool Chase()
     {
         if (bossFightManager != null && bossFightManager.IsEmpowered)
         {
             state = BossState.Fleeing;
-            return;
+            InvalidatePath();
+            return false;
         }
         
         Vector2Int playerPos = WorldToGrid(player.position);
@@ -279,123 +291,22 @@ public class FirstBoss : MonoBehaviour
 
         if (CanSeePlayer(playerPos, out var dashDir))
         {
-            direction = dashDir; //ChooseBestWayTowards(playerPos);
+            direction = dashDir; 
             Lagging();
-            return;
+            InvalidatePath();
+            return false;
         }
 
-        // Pathfind to a REACHABLE anchor near player (fixes “unreachable goal” oscillation)
-        Vector2Int goalAnchor = GetBestReachableGoalAnchorNearPlayer(playerPos);
-
-      
-        UpdatePathToPlayer(goalAnchor, Time.fixedDeltaTime);
-
-        if (!TryFollowPathStep())
-        {
-            Vector2Int anyway = ChooseBestWayTowards(goalAnchor);
-            TryToMove(anyway);
-        }
-    }
-
-    private void TryToMove(Vector2Int dir)
-    {
-        Vector2Int next = AnchorCell + dir * BossCellSize;
-
-        if (MoveBossAndCheckCollisionWithPlayer(next))
-        {
-            direction = dir; // update direction
-            return;
-        }
-
-        Vector2Int otherWay = ChooseAnyWalkableWay();
-        if (otherWay != Vector2Int.zero)
-        {
-            Vector2Int fallback = AnchorCell + otherWay * BossCellSize;
-            if (MoveBossAndCheckCollisionWithPlayer(fallback))
-            {
-                direction = otherWay;
-            }
-        }
-    }
-
-    private Vector2Int ChooseAnyWalkableWay()
-    {
-        Vector2Int reverse = -lastDir;
-
-        foreach (var dir in directions)
-        {
-            if (dir == reverse) continue;
-            if (IsWalkable2x2(AnchorCell + dir * BossCellSize))
-                return dir;
-        }
-        if (reverse != Vector2Int.zero && IsWalkable2x2(AnchorCell + reverse * BossCellSize))
-            return reverse;
-
-        return Vector2Int.zero; 
+        // Pathfind only to a target this 2x2 boss can actually reach.
+        UpdatePathToPlayer(playerPos);
+        return TryFollowPathStep();
     }
 
     private void Lagging()
-        {
-            state = BossState.Lagging;
-            stateTimer = laggingDelay;
-        }
-
-    private Vector2Int ChooseBestWayTowards(Vector2Int targetPos)
-        {
-            Vector2Int bestDir = Vector2Int.zero;
-            int bestDistance = int.MaxValue;
-
-        Vector2Int reverse = -lastDir;
-
-        foreach (var dir in directions)
-            {
-            if (dir == reverse) continue;
-                Vector2Int next = AnchorCell + dir * BossCellSize;
-                if(!IsWalkable2x2(next))
-                    continue;   
-
-                int nextDistance = GetDistance(next, targetPos);
-
-                if (nextDistance < bestDistance)
-                {
-                    bestDistance = nextDistance;
-                    bestDir = dir;
-                }
-            }
-
-        if (bestDir == Vector2Int.zero && reverse != Vector2Int.zero && IsWalkable2x2(AnchorCell + reverse * BossCellSize))
-            bestDir = reverse;
-
-        return bestDir;
-        }
-
-    private Vector2Int ChooseBestWayToRunAway(Vector2Int targetCell)
-        {
-            Vector2Int bestDir = Vector2Int.zero;
-            int bestDistance = int.MinValue;
-
-        Vector2Int reverse = -lastDir;
-
-        foreach (var dir in directions)
-            {
-            if (dir == reverse) continue;
-
-                Vector2Int next = AnchorCell + dir * BossCellSize;
-                if (!IsWalkable2x2(next)) continue;
-
-                int nextDistance = GetDistance(next, targetCell);
-                if (nextDistance > bestDistance)
-                {
-                bestDistance = nextDistance;
-                    bestDir = dir;
-                }
-            }
-
-        if (bestDir == Vector2Int.zero && reverse != Vector2Int.zero && IsWalkable2x2(AnchorCell + reverse * BossCellSize))
-            bestDir = reverse;
-
-        return bestDir;
-        }
+    {
+        state = BossState.Lagging;
+        stateTimer = laggingDelay;
+    }
 
     private bool IsWalkable2x2(Vector2Int anchor)
     {
@@ -481,29 +392,53 @@ public class FirstBoss : MonoBehaviour
         anchorHistory.Clear();
         currentPath.Clear();
         pathIndex = 0;
+        repathTimer = 0f;
+        hasCachedPathPlayerCell = false;
         lastDir = Vector2Int.zero;
+        direction = Vector2Int.right;
 
         for (int i = 0; i < initialBodySegments; i++)
         {
             Grow();
         }
+
+        SeedBodyHistory();
+        UpdateBody();
     }
 
     private void Grow()
-        {
-            if (bossBodyPrefab == null) return;
+    {
+        if (bossBodyPrefab == null) return;
 
-            Transform body = Instantiate(bossBodyPrefab);
-            body.position = bossBodies[bossBodies.Count - 1].position;
-            bossBodies.Add(body); 
+        Transform body = Instantiate(bossBodyPrefab);
+        body.position = bossBodies[bossBodies.Count - 1].position;
+        bossBodies.Add(body); 
+    }
+
+    private void SeedBodyHistory()
+    {
+        anchorHistory.Clear();
+
+        for (int i = 0; i < bossBodies.Count + 5; i++)
+        {
+            anchorHistory.Add(AnchorCell - direction * BossCellSize * i);
         }
+    }
+
+    private void InvalidatePath()
+    {
+        currentPath.Clear();
+        pathIndex = 0;
+        repathTimer = 0f;
+        hasCachedPathPlayerCell = false;
+    }
 
     public void Die()
-        {
-            state = BossState.Die;
-            for (int i = 0; i < bossBodies.Count; i++)
-                if (bossBodies[i] != null) Destroy(bossBodies[i].gameObject);
-        }
+    {
+        state = BossState.Die;
+        for (int i = 0; i < bossBodies.Count; i++)
+            if (bossBodies[i] != null) Destroy(bossBodies[i].gameObject);
+    }
 
     private void SpawnPowerPickup()
     {
@@ -570,41 +505,15 @@ public class FirstBoss : MonoBehaviour
         return false; 
     }
 
-    private Vector2Int GetBestReachableGoalAnchorNearPlayer(Vector2Int playerCell)
+    private List<Vector2Int> GetGoalAnchorCandidatesNearPlayer(Vector2Int playerCell)
     {
-        // Candidate anchors that make the 2x2 overlap around the player.
-        // (Because anchor is bottom-left of 2x2)
-        var candidates = new List<Vector2Int>
+        return new List<Vector2Int>
         {
             new Vector2Int(playerCell.x, playerCell.y),
             new Vector2Int(playerCell.x-1, playerCell.y),
             new Vector2Int(playerCell.x, playerCell.y-1),
             new Vector2Int(playerCell.x-1, playerCell.y-1),
         };
-
-        Vector2Int best = ParityCheck(candidates[0]);
-        int bestDist = int.MaxValue;
-        bool found = false;
-
-        foreach (var c in candidates)
-        {
-            Vector2Int check = ParityCheck(c);
-            if (!IsWalkable2x2(check)) continue;
-
-            int d = GetDistance(check, playerCell);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = check;
-                found = true;
-            }
-        }
-
-        // If none walkable, still return a parity-snapped position near player.
-        if (!found)
-            best = ParityCheck(playerCell);
-
-        return best;
     }
 
     // Ensure (candidate - AnchorCell) is divisible by 2 in both axes,
@@ -730,21 +639,201 @@ public class FirstBoss : MonoBehaviour
         path.Reverse();
     }
 
-    private void UpdatePathToPlayer(Vector2Int goalAnchor, float dt)
+    private void UpdatePathToPlayer(Vector2Int playerCell)
     {
-        repathTimer -= dt;
-        if (repathTimer > 0f) return;
+        bool playerCellChanged = !hasCachedPathPlayerCell || cachedPathPlayerCell != playerCell;
+        bool pathCanWait = repathTimer > 0f && !playerCellChanged;
 
-        repathTimer = repathInterval;
+        if (pathCanWait)
+            return;
 
         currentPath.Clear();
         pathIndex = 0;
+        cachedPathPlayerCell = playerCell;
+        hasCachedPathPlayerCell = true;
+        repathTimer = repathInterval;
 
-        if (FindPath2x2_AStar(AnchorCell, goalAnchor, currentPath))
-        {
-            // currentPath[0] is current anchor
+        if (TryBuildPathToPlayer(playerCell, currentPath))
             pathIndex = 1; // next step
+    }
+
+    private void UpdateFleePath(Vector2Int playerCell)
+    {
+        bool playerCellChanged = !hasCachedPathPlayerCell || cachedPathPlayerCell != playerCell;
+        bool pathCanWait = repathTimer > 0f && !playerCellChanged;
+
+        if (pathCanWait)
+            return;
+
+        currentPath.Clear();
+        pathIndex = 0;
+        cachedPathPlayerCell = playerCell;
+        hasCachedPathPlayerCell = true;
+        repathTimer = repathInterval;
+
+        if (FindPathToFarthestReachableAnchor(playerCell, currentPath))
+            pathIndex = 1;
+    }
+
+    private bool TryBuildPathToPlayer(Vector2Int playerCell, List<Vector2Int> path)
+    {
+        path.Clear();
+
+        List<Vector2Int> bestPath = null;
+        int bestDistanceToPlayer = int.MaxValue;
+        int bestPathLength = int.MaxValue;
+        HashSet<Vector2Int> checkedCandidates = new();
+
+        foreach (Vector2Int candidate in GetGoalAnchorCandidatesNearPlayer(playerCell))
+        {
+            Vector2Int goalAnchor = ParityCheck(candidate);
+            if (!checkedCandidates.Add(goalAnchor) || !IsWalkable2x2(goalAnchor))
+                continue;
+
+            List<Vector2Int> candidatePath = new();
+            if (!FindPath2x2_AStar(AnchorCell, goalAnchor, candidatePath))
+                continue;
+
+            int distanceToPlayer = GetDistance(goalAnchor, playerCell);
+            if (distanceToPlayer < bestDistanceToPlayer ||
+                (distanceToPlayer == bestDistanceToPlayer && candidatePath.Count < bestPathLength))
+            {
+                bestDistanceToPlayer = distanceToPlayer;
+                bestPathLength = candidatePath.Count;
+                bestPath = candidatePath;
+            }
         }
+
+        if (bestPath != null)
+        {
+            path.AddRange(bestPath);
+            return true;
+        }
+
+        return FindPathToClosestReachableAnchor(playerCell, path);
+    }
+
+    private bool FindPathToClosestReachableAnchor(Vector2Int targetCell, List<Vector2Int> path)
+    {
+        path.Clear();
+
+        if (!IsWalkable2x2(AnchorCell))
+            return false;
+
+        Queue<Vector2Int> frontier = new();
+        HashSet<Vector2Int> visited = new();
+        Dictionary<Vector2Int, Vector2Int> cameFrom = new();
+
+        frontier.Enqueue(AnchorCell);
+        visited.Add(AnchorCell);
+
+        Vector2Int bestAnchor = AnchorCell;
+        int bestDistance = GetDistance(AnchorCell, targetCell);
+        int visitedNodes = 0;
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int current = frontier.Dequeue();
+            visitedNodes++;
+
+            if (visitedNodes > maxVisitedNodes)
+                break;
+
+            int distance = GetDistance(current, targetCell);
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                bestAnchor = current;
+            }
+
+            foreach (Vector2Int dir in directions)
+            {
+                Vector2Int next = current + dir * BossCellSize;
+                if (visited.Contains(next) || !IsWalkable2x2(next))
+                    continue;
+
+                visited.Add(next);
+                cameFrom[next] = current;
+                frontier.Enqueue(next);
+            }
+        }
+
+        Vector2Int step = bestAnchor;
+        path.Add(step);
+
+        while (step != AnchorCell)
+        {
+            step = cameFrom[step];
+            path.Add(step);
+        }
+
+        path.Reverse();
+        return path.Count > 0;
+    }
+
+    private bool FindPathToFarthestReachableAnchor(Vector2Int targetCell, List<Vector2Int> path)
+    {
+        path.Clear();
+
+        if (!IsWalkable2x2(AnchorCell))
+            return false;
+
+        Queue<Vector2Int> frontier = new();
+        HashSet<Vector2Int> visited = new();
+        Dictionary<Vector2Int, Vector2Int> cameFrom = new();
+        Dictionary<Vector2Int, int> pathLength = new();
+
+        frontier.Enqueue(AnchorCell);
+        visited.Add(AnchorCell);
+        pathLength[AnchorCell] = 0;
+
+        Vector2Int bestAnchor = AnchorCell;
+        int bestDistance = GetDistance(AnchorCell, targetCell);
+        int bestPathLength = 0;
+        int visitedNodes = 0;
+
+        while (frontier.Count > 0)
+        {
+            Vector2Int current = frontier.Dequeue();
+            visitedNodes++;
+
+            if (visitedNodes > maxVisitedNodes)
+                break;
+
+            int distance = GetDistance(current, targetCell);
+            int currentPathLength = pathLength[current];
+            if (distance > bestDistance ||
+                (distance == bestDistance && currentPathLength > bestPathLength))
+            {
+                bestDistance = distance;
+                bestPathLength = currentPathLength;
+                bestAnchor = current;
+            }
+
+            foreach (Vector2Int dir in directions)
+            {
+                Vector2Int next = current + dir * BossCellSize;
+                if (visited.Contains(next) || !IsWalkable2x2(next))
+                    continue;
+
+                visited.Add(next);
+                cameFrom[next] = current;
+                pathLength[next] = currentPathLength + 1;
+                frontier.Enqueue(next);
+            }
+        }
+
+        Vector2Int step = bestAnchor;
+        path.Add(step);
+
+        while (step != AnchorCell)
+        {
+            step = cameFrom[step];
+            path.Add(step);
+        }
+
+        path.Reverse();
+        return path.Count > 0;
     }
 
     private bool TryFollowPathStep()
@@ -757,7 +846,7 @@ public class FirstBoss : MonoBehaviour
         // derive direction from anchors
         Vector2Int delta = nextAnchor - AnchorCell;
 
-        // delta should be (±2,0) or (0,±2)
+        // delta should be (+/-2,0) or (0,+/-2)
         if (delta.x > 0) direction = Vector2Int.right;
         else if (delta.x < 0) direction = Vector2Int.left;
         else if (delta.y > 0) direction = Vector2Int.up;
@@ -765,7 +854,10 @@ public class FirstBoss : MonoBehaviour
 
         // move now (your existing mover)
         if (!MoveBossAndCheckCollisionWithPlayer(nextAnchor))
+        {
+            InvalidatePath();
             return false;
+        }
 
         pathIndex++;
         return true;
