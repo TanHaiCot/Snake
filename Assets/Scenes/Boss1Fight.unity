@@ -79063,7 +79063,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 490881445762878665, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: abilitiesUnlocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 490881445762878665, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: dashCooldownImage

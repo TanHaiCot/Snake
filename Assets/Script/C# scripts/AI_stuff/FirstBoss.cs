@@ -36,6 +36,11 @@ public class FirstBoss : MonoBehaviour
     [Header("Power-up Drop")]
     [SerializeField] GameObject powerUpPrefab;
 
+    [Header("Debug")]
+    [SerializeField] private bool drawBossGizmos = true;
+    [SerializeField] private bool drawPath = true;
+    [SerializeField] private bool drawFleeChoice = true;
+
     public BossState state = BossState.Chasing;
 
     public Vector2Int AnchorCell { get; private set; }
@@ -48,6 +53,9 @@ public class FirstBoss : MonoBehaviour
     private float stateTimer;
 
     private Vector2Int direction = Vector2Int.right; 
+    private bool debugHasFleeChoice;
+    private Vector2Int debugLastFleeBestAnchor;
+    private Vector2Int debugLastFleeNextAnchor;
 
     Vector2Int[] directions = new Vector2Int[]
         {
@@ -61,10 +69,15 @@ public class FirstBoss : MonoBehaviour
     private float repathInterval = 0.12f;
     private float repathTimer;
     private int maxVisitedNodes = 20000;
+    [SerializeField] private int fleeSafeDistance = 12;
+    [SerializeField] private int fleePanicDistance = 8;
     private readonly List<Vector2Int> currentPath = new();
     private int pathIndex;
     private Vector2Int cachedPathPlayerCell;
     private bool hasCachedPathPlayerCell;
+    private Vector2Int fleeTargetAnchor;
+    private bool hasFleeTarget;
+    private int fleeTargetDistanceFloor;
 
     private Vector2Int lastDir = Vector2Int.zero;
 
@@ -93,7 +106,7 @@ public class FirstBoss : MonoBehaviour
     
         UpdateState();
 
-        if (state == BossState.Chasing || state == BossState.Fleeing)
+        if (state == BossState.Chasing)
             repathTimer -= Time.fixedDeltaTime;
 
         if(state == BossState.Lagging || state == BossState.Stunned)
@@ -273,8 +286,7 @@ public class FirstBoss : MonoBehaviour
     private bool Flee()
     {
         Vector2Int playerCell = WorldToGrid(player.position);
-        UpdateFleePath(playerCell);
-        return TryFollowPathStep();
+        return TryFleeFromPlayer(playerCell);
     }
 
     private bool Chase()
@@ -394,6 +406,9 @@ public class FirstBoss : MonoBehaviour
         pathIndex = 0;
         repathTimer = 0f;
         hasCachedPathPlayerCell = false;
+        hasFleeTarget = false;
+        fleeTargetDistanceFloor = 0;
+        debugHasFleeChoice = false;
         lastDir = Vector2Int.zero;
         direction = Vector2Int.right;
 
@@ -431,6 +446,9 @@ public class FirstBoss : MonoBehaviour
         pathIndex = 0;
         repathTimer = 0f;
         hasCachedPathPlayerCell = false;
+        hasFleeTarget = false;
+        fleeTargetDistanceFloor = 0;
+        debugHasFleeChoice = false;
     }
 
     public void Die()
@@ -657,24 +675,6 @@ public class FirstBoss : MonoBehaviour
             pathIndex = 1; // next step
     }
 
-    private void UpdateFleePath(Vector2Int playerCell)
-    {
-        bool playerCellChanged = !hasCachedPathPlayerCell || cachedPathPlayerCell != playerCell;
-        bool pathCanWait = repathTimer > 0f && !playerCellChanged;
-
-        if (pathCanWait)
-            return;
-
-        currentPath.Clear();
-        pathIndex = 0;
-        cachedPathPlayerCell = playerCell;
-        hasCachedPathPlayerCell = true;
-        repathTimer = repathInterval;
-
-        if (FindPathToFarthestReachableAnchor(playerCell, currentPath))
-            pathIndex = 1;
-    }
-
     private bool TryBuildPathToPlayer(Vector2Int playerCell, List<Vector2Int> path)
     {
         path.Clear();
@@ -771,25 +771,52 @@ public class FirstBoss : MonoBehaviour
         return path.Count > 0;
     }
 
-    private bool FindPathToFarthestReachableAnchor(Vector2Int targetCell, List<Vector2Int> path)
+    private bool TryFleeFromPlayer(Vector2Int playerCell)
     {
-        path.Clear();
+        if (NeedsNewFleePath(playerCell) && !TryChooseRandomFleePath(playerCell))
+            return false;
 
+        return TryFollowFleePathStep(playerCell);
+    }
+
+    private bool NeedsNewFleePath(Vector2Int playerCell)
+    {
+        if (!hasFleeTarget || currentPath.Count == 0 || pathIndex >= currentPath.Count)
+            return true;
+
+        if (pathIndex > 0 && currentPath[pathIndex - 1] != AnchorCell)
+            return true;
+
+        Vector2Int nextAnchor = currentPath[pathIndex];
+
+        if (GetDistance(fleeTargetAnchor, playerCell) < fleeTargetDistanceFloor)
+            return true;
+
+        if (PlayerIsTooClose(playerCell) && !StepMovesAwayFromPlayer(nextAnchor, playerCell))
+            return true;
+
+        return !IsWalkable2x2(nextAnchor) || CrossesCellDuringMove(AnchorCell, nextAnchor, playerCell);
+    }
+
+    private bool TryChooseRandomFleePath(Vector2Int playerCell)
+    {
         if (!IsWalkable2x2(AnchorCell))
             return false;
+
+        currentPath.Clear();
+        pathIndex = 0;
+        hasFleeTarget = false;
+        debugHasFleeChoice = false;
 
         Queue<Vector2Int> frontier = new();
         HashSet<Vector2Int> visited = new();
         Dictionary<Vector2Int, Vector2Int> cameFrom = new();
-        Dictionary<Vector2Int, int> pathLength = new();
+        List<Vector2Int> safeAnchors = new();
+        List<Vector2Int> farthestAnchors = new();
+        int farthestDistance = int.MinValue;
 
         frontier.Enqueue(AnchorCell);
         visited.Add(AnchorCell);
-        pathLength[AnchorCell] = 0;
-
-        Vector2Int bestAnchor = AnchorCell;
-        int bestDistance = GetDistance(AnchorCell, targetCell);
-        int bestPathLength = 0;
         int visitedNodes = 0;
 
         while (frontier.Count > 0)
@@ -800,40 +827,163 @@ public class FirstBoss : MonoBehaviour
             if (visitedNodes > maxVisitedNodes)
                 break;
 
-            int distance = GetDistance(current, targetCell);
-            int currentPathLength = pathLength[current];
-            if (distance > bestDistance ||
-                (distance == bestDistance && currentPathLength > bestPathLength))
+            if (current != AnchorCell)
             {
-                bestDistance = distance;
-                bestPathLength = currentPathLength;
-                bestAnchor = current;
+                int distance = GetDistance(current, playerCell);
+
+                if (distance >= fleeSafeDistance)
+                    safeAnchors.Add(current);
+
+                if (distance > farthestDistance)
+                {
+                    farthestDistance = distance;
+                    farthestAnchors.Clear();
+                    farthestAnchors.Add(current);
+                }
+                else if (distance == farthestDistance)
+                {
+                    farthestAnchors.Add(current);
+                }
             }
 
             foreach (Vector2Int dir in directions)
             {
                 Vector2Int next = current + dir * BossCellSize;
-                if (visited.Contains(next) || !IsWalkable2x2(next))
+                if (visited.Contains(next) ||
+                    !IsWalkable2x2(next) ||
+                    CrossesCellDuringMove(current, next, playerCell))
+                {
                     continue;
+                }
 
                 visited.Add(next);
                 cameFrom[next] = current;
-                pathLength[next] = currentPathLength + 1;
                 frontier.Enqueue(next);
             }
         }
 
-        Vector2Int step = bestAnchor;
+        bool hasSafeChoices = safeAnchors.Count > 0;
+        List<Vector2Int> choices = hasSafeChoices ? safeAnchors : farthestAnchors;
+        if (choices.Count == 0)
+            return false;
+
+        Vector2Int targetAnchor = PickRandomFleeTarget(choices, cameFrom, playerCell);
+        BuildPathToAnchor(targetAnchor, cameFrom, currentPath);
+
+        if (currentPath.Count < 2)
+            return false;
+
+        fleeTargetAnchor = targetAnchor;
+        fleeTargetDistanceFloor = hasSafeChoices
+            ? fleeSafeDistance
+            : Mathf.Max(0, GetDistance(targetAnchor, playerCell) - BossCellSize);
+        hasFleeTarget = true;
+        pathIndex = 1;
+        debugHasFleeChoice = true;
+        debugLastFleeBestAnchor = fleeTargetAnchor;
+        debugLastFleeNextAnchor = currentPath[pathIndex];
+
+        return true;
+    }
+
+    private Vector2Int PickRandomFleeTarget(List<Vector2Int> choices, Dictionary<Vector2Int, Vector2Int> cameFrom, Vector2Int playerCell)
+    {
+        List<Vector2Int> closePlayerChoices = new();
+        List<Vector2Int> nonReverseChoices = new();
+        Vector2Int previousAnchor = AnchorCell - lastDir * BossCellSize;
+        bool playerTooClose = PlayerIsTooClose(playerCell);
+
+        foreach (Vector2Int choice in choices)
+        {
+            Vector2Int firstStep = GetFirstStepFromStart(choice, cameFrom);
+            bool reversesLastMove = lastDir != Vector2Int.zero && firstStep == previousAnchor;
+
+            if (!reversesLastMove)
+                nonReverseChoices.Add(choice);
+
+            if (playerTooClose && !reversesLastMove && StepMovesAwayFromPlayer(firstStep, playerCell))
+                closePlayerChoices.Add(choice);
+        }
+
+        if (closePlayerChoices.Count > 0)
+            return closePlayerChoices[Random.Range(0, closePlayerChoices.Count)];
+
+        List<Vector2Int> targetChoices = nonReverseChoices.Count > 0 ? nonReverseChoices : choices;
+        return targetChoices[Random.Range(0, targetChoices.Count)];
+    }
+
+    private bool PlayerIsTooClose(Vector2Int playerCell)
+    {
+        return GetDistance(AnchorCell, playerCell) <= fleePanicDistance;
+    }
+
+    private bool StepMovesAwayFromPlayer(Vector2Int nextAnchor, Vector2Int playerCell)
+    {
+        return GetDistance(nextAnchor, playerCell) > GetDistance(AnchorCell, playerCell);
+    }
+
+    private void BuildPathToAnchor(Vector2Int targetAnchor, Dictionary<Vector2Int, Vector2Int> cameFrom, List<Vector2Int> path)
+    {
+        path.Clear();
+
+        Vector2Int step = targetAnchor;
         path.Add(step);
 
-        while (step != AnchorCell)
+        while (step != AnchorCell && cameFrom.TryGetValue(step, out Vector2Int previous))
         {
-            step = cameFrom[step];
+            step = previous;
             path.Add(step);
         }
 
         path.Reverse();
-        return path.Count > 0;
+    }
+
+    private Vector2Int GetFirstStepFromStart(Vector2Int anchor, Dictionary<Vector2Int, Vector2Int> cameFrom)
+    {
+        Vector2Int step = anchor;
+        while (cameFrom.TryGetValue(step, out Vector2Int previous) && previous != AnchorCell)
+        {
+            step = previous;
+        }
+
+        return step;
+    }
+
+    private bool TryFollowFleePathStep(Vector2Int playerCell)
+    {
+        if (currentPath.Count == 0 || pathIndex >= currentPath.Count)
+            return false;
+
+        Vector2Int nextAnchor = currentPath[pathIndex];
+        if (CrossesCellDuringMove(AnchorCell, nextAnchor, playerCell))
+        {
+            InvalidatePath();
+            return false;
+        }
+
+        SetDirectionToAnchor(nextAnchor);
+
+        if (!MoveBossAndCheckCollisionWithPlayer(nextAnchor))
+        {
+            InvalidatePath();
+            return false;
+        }
+
+        pathIndex++;
+        debugLastFleeBestAnchor = fleeTargetAnchor;
+        debugLastFleeNextAnchor = pathIndex < currentPath.Count ? currentPath[pathIndex] : fleeTargetAnchor;
+
+        return true;
+    }
+
+    private void SetDirectionToAnchor(Vector2Int nextAnchor)
+    {
+        Vector2Int delta = nextAnchor - AnchorCell;
+
+        if (delta.x > 0) direction = Vector2Int.right;
+        else if (delta.x < 0) direction = Vector2Int.left;
+        else if (delta.y > 0) direction = Vector2Int.up;
+        else if (delta.y < 0) direction = Vector2Int.down;
     }
 
     private bool TryFollowPathStep()
@@ -842,15 +992,7 @@ public class FirstBoss : MonoBehaviour
         if (pathIndex >= currentPath.Count) return false;
 
         Vector2Int nextAnchor = currentPath[pathIndex];
-
-        // derive direction from anchors
-        Vector2Int delta = nextAnchor - AnchorCell;
-
-        // delta should be (+/-2,0) or (0,+/-2)
-        if (delta.x > 0) direction = Vector2Int.right;
-        else if (delta.x < 0) direction = Vector2Int.left;
-        else if (delta.y > 0) direction = Vector2Int.up;
-        else if (delta.y < 0) direction = Vector2Int.down;
+        SetDirectionToAnchor(nextAnchor);
 
         // move now (your existing mover)
         if (!MoveBossAndCheckCollisionWithPlayer(nextAnchor))
@@ -861,6 +1003,52 @@ public class FirstBoss : MonoBehaviour
 
         pathIndex++;
         return true;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (!drawBossGizmos || !Application.isPlaying || mapManager == null)
+            return;
+
+        Vector3 bossWorld = AnchorToWorld(AnchorCell);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(bossWorld, Vector3.one * BossCellSize);
+
+        Gizmos.color = Color.white;
+        Gizmos.DrawLine(bossWorld, AnchorToWorld(AnchorCell + direction * BossCellSize));
+
+        if (player != null)
+        {
+            Vector2Int playerCell = WorldToGrid(player.position);
+            Gizmos.color = CanSeePlayer(playerCell, out _) ? Color.green : Color.red;
+            Gizmos.DrawLine(bossWorld, player.position);
+            Gizmos.DrawWireCube(mapManager.CellToWorld(playerCell), Vector3.one);
+        }
+
+        if (drawPath && currentPath.Count > 0)
+        {
+            Gizmos.color = Color.cyan;
+
+            Vector3 previous = bossWorld;
+            for (int i = pathIndex; i < currentPath.Count; i++)
+            {
+                Vector3 next = AnchorToWorld(currentPath[i]);
+                Gizmos.DrawLine(previous, next);
+                Gizmos.DrawSphere(next, 0.12f);
+                previous = next;
+            }
+        }
+
+        if (drawFleeChoice && debugHasFleeChoice)
+        {
+            Gizmos.color = Color.magenta;
+            Vector3 nextStep = AnchorToWorld(debugLastFleeNextAnchor);
+            Vector3 bestAnchor = AnchorToWorld(debugLastFleeBestAnchor);
+            Gizmos.DrawLine(bossWorld, nextStep);
+            Gizmos.DrawSphere(nextStep, 0.18f);
+            Gizmos.DrawWireCube(bestAnchor, Vector3.one * BossCellSize);
+        }
     }
 }
 
