@@ -99,7 +99,7 @@ public class BossFightManager : MonoBehaviour
     {
         bossHits++;
         if (bossHits >= bossHP)
-            firstBoss?.Die();
+            firstBoss?.Dead();
     }
 
 }

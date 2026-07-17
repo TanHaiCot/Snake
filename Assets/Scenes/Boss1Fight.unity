@@ -1865,7 +1865,13 @@ MonoBehaviour:
   bossBodyPrefab: {fileID: 6874129864492939515, guid: 09b36ba7fcafca94b8ba486139e81db0, type: 3}
   bossFightManager: {fileID: 456882115}
   powerUpPrefab: {fileID: 1200333499866220205, guid: 9301f6c157bbac24a898bb9c05812ca3, type: 3}
+  fleeSafeDistance: 12
+  fleePanicDistance: 8
+  drawBossGizmos: 1
+  drawPath: 1
+  drawFleeChoice: 1
   state: 0
+  bossAnchor: {x: 0, y: 0}
 --- !u!1001 &598484380
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2899,11 +2905,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1884194131358521319, guid: 459cf59d589a2634d9995265666315b2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -25.8
+      value: -2.2
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 459cf59d589a2634d9995265666315b2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -24.87
+      value: -9.2
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 459cf59d589a2634d9995265666315b2, type: 3}
       propertyPath: m_LocalPosition.z
