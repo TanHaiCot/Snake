@@ -58,7 +58,7 @@ public class FirstBoss : MonoBehaviour
     private Vector2Int moveDir = Vector2Int.right;
     private Vector2Int lastDir = Vector2Int.zero;
 
-    private List<Transform> bossBoDeads = new();
+    private List<Transform> bossBodies = new();
     private List<Vector2Int> anchorHistory = new();
 
     private float moveTimer;
@@ -84,7 +84,7 @@ public class FirstBoss : MonoBehaviour
     private int pathIndex;
 
     private Vector2Int cachedPlayerCell;
-    private bool hascachedPlayerCell;
+    private bool hasCachedPlayerCell;
 
     private void Start()
     {
@@ -159,7 +159,7 @@ public class FirstBoss : MonoBehaviour
                 else
                 {
                     state = bossFightManager != null && bossFightManager.IsEmpowered
-                        ? BossState.Chasing : BossState.Fleeing;
+                        ? BossState.Fleeing : BossState.Chasing;
 
                     ClearPath();
                 }
@@ -218,7 +218,7 @@ public class FirstBoss : MonoBehaviour
 
     private void UpdateChasePath(Vector2Int playerCell)
     {
-        bool playerCellChanged = !hascachedPlayerCell || cachedPlayerCell != playerCell;
+        bool playerCellChanged = !hasCachedPlayerCell || cachedPlayerCell != playerCell;
 
         if (repathTimer > 0f && !playerCellChanged)
             return;
@@ -227,7 +227,7 @@ public class FirstBoss : MonoBehaviour
         pathIndex = 0;
 
         cachedPlayerCell = playerCell;
-        hascachedPlayerCell = true;
+        hasCachedPlayerCell = true;
         repathTimer = repathInterval;
 
         if (BuildChasePath(playerCell, currentPath))
@@ -475,6 +475,33 @@ public class FirstBoss : MonoBehaviour
         return !IsWalkable2x2(nextAnchor) || CrossesOthersDuringMove(bossAnchor, nextAnchor, playerCell);
     }
 
+    private Vector2Int PickRandomFleeTarget(List<Vector2Int> choices, Dictionary<Vector2Int, Vector2Int> parentAnchor, Vector2Int playerCell)
+    {
+        List<Vector2Int> closePlayerChoices = new();
+        List<Vector2Int> nonReverseChoices = new();
+        Vector2Int previousAnchor = bossAnchor - lastDir * BossCellSize;
+        bool playerTooClose = PlayerIsTooClose(playerCell);
+
+        foreach (Vector2Int choice in choices)
+        {
+            //take the first step of each choices to evaluate if that step is non reverse, or go far away from the player
+            Vector2Int firstStepOfThePath = TraceFleePath(choice, parentAnchor);                                  
+            bool reversesLastMove = lastDir != Vector2Int.zero && firstStepOfThePath == previousAnchor;
+
+            if (!reversesLastMove)
+                nonReverseChoices.Add(choice);
+
+            if (playerTooClose && !reversesLastMove && StepMovesAwayFromPlayer(firstStepOfThePath, playerCell))
+                closePlayerChoices.Add(choice);
+        }
+
+        if (closePlayerChoices.Count > 0)
+            return closePlayerChoices[Random.Range(0, closePlayerChoices.Count)];
+
+        List<Vector2Int> targetChoices = nonReverseChoices.Count > 0 ? nonReverseChoices : choices;
+        return targetChoices[Random.Range(0, targetChoices.Count)];
+    }
+
     private bool ChooseRandomFleePath(Vector2Int playerCell)
     {
         if (!IsWalkable2x2(bossAnchor))
@@ -542,7 +569,7 @@ public class FirstBoss : MonoBehaviour
             return false;
 
         Vector2Int targetAnchor = PickRandomFleeTarget(choices, parentAnchor, playerCell);
-        BuildPathToGoalAnchor(targetAnchor, parentAnchor, currentPath);
+        TraceFleePath(targetAnchor, parentAnchor, currentPath);
 
         if (currentPath.Count < 2)
             return false;
@@ -560,41 +587,29 @@ public class FirstBoss : MonoBehaviour
         return true;
     }
 
-    private Vector2Int PickRandomFleeTarget(List<Vector2Int> choices, Dictionary<Vector2Int, Vector2Int> parentAnchor, Vector2Int playerCell)
+    
+
+
+    private Vector2Int TraceFleePath(Vector2Int targetAnchor, Dictionary<Vector2Int, Vector2Int> parentAnchor, List<Vector2Int> resultPath = null)
     {
-        List<Vector2Int> closePlayerChoices = new();
-        List<Vector2Int> nonReverseChoices = new();
-        Vector2Int previousAnchor = bossAnchor - lastDir * BossCellSize;
-        bool playerTooClose = PlayerIsTooClose(playerCell);
+        resultPath?.Clear();
 
-        foreach (Vector2Int choice in choices)
+        Vector2Int step = targetAnchor;                
+        Vector2Int currentStep = targetAnchor;         
+
+        resultPath?.Add(currentStep);
+
+        while (currentStep != bossAnchor && parentAnchor.TryGetValue(currentStep, out Vector2Int previous))
         {
-            Vector2Int step = RetraceFleePath(choice, parentAnchor);
-            bool reversesLastMove = lastDir != Vector2Int.zero && step == previousAnchor;
-
-            if (!reversesLastMove)
-                nonReverseChoices.Add(choice);
-
-            if (playerTooClose && !reversesLastMove && StepMovesAwayFromPlayer(step, playerCell))
-                closePlayerChoices.Add(choice);
+            step = currentStep;
+            currentStep = previous; 
+            resultPath?.Add(step);
         }
 
-        if (closePlayerChoices.Count > 0)
-            return closePlayerChoices[Random.Range(0, closePlayerChoices.Count)];
+        resultPath.Reverse();
 
-        List<Vector2Int> targetChoices = nonReverseChoices.Count > 0 ? nonReverseChoices : choices;
-        return targetChoices[Random.Range(0, targetChoices.Count)];
-    }
-
-    private Vector2Int RetraceFleePath(Vector2Int anchor, Dictionary<Vector2Int, Vector2Int> parentAnchor)
-    {
-        Vector2Int step = anchor;
-        while (parentAnchor.TryGetValue(step, out Vector2Int previous) && previous != bossAnchor)
-        {
-            step = previous;
-        }
-
-        return step;
+        //if there was no path passed as an argument, return a first step only 
+        return step;               
     }
 
     private bool FollowFleePath(Vector2Int playerCell)
@@ -622,22 +637,6 @@ public class FirstBoss : MonoBehaviour
         debugLastFleeNextAnchor = pathIndex < currentPath.Count ? currentPath[pathIndex] : fleeTargetAnchor;
 
         return true;
-    }
-
-    private void BuildPathToGoalAnchor(Vector2Int targetAnchor, Dictionary<Vector2Int, Vector2Int> parentAnchor, List<Vector2Int> path)
-    {
-        path.Clear();
-
-        Vector2Int step = targetAnchor;
-        path.Add(step);
-
-        while (step != bossAnchor && parentAnchor.TryGetValue(step, out Vector2Int previous))
-        {
-            step = previous;
-            path.Add(step);
-        }
-
-        path.Reverse();
     }
     #endregion
 
@@ -703,7 +702,7 @@ public class FirstBoss : MonoBehaviour
     {
         anchorHistory.Insert(0, bossAnchor);
 
-        int requiredHistoryLength = bossBoDeads.Count + 5;  // extra buffer
+        int requiredHistoryLength = bossBodies.Count + 5;  // extra buffer
         if (anchorHistory.Count > requiredHistoryLength)
         {
             anchorHistory.RemoveRange(requiredHistoryLength, anchorHistory.Count - requiredHistoryLength);
@@ -712,12 +711,12 @@ public class FirstBoss : MonoBehaviour
 
     private void UpdateBody()
     {
-        for (int i = 1; i < bossBoDeads.Count; i++)
+        for (int i = 1; i < bossBodies.Count; i++)
         {
             if (i < anchorHistory.Count)
             {
                 Vector2Int a = anchorHistory[i];
-                bossBoDeads[i].position = AnchorToWorld(a);
+                bossBodies[i].position = AnchorToWorld(a);
             }
         }
     }
@@ -727,20 +726,20 @@ public class FirstBoss : MonoBehaviour
         bossAnchor = new Vector2Int(2, -2);
         transform.position = AnchorToWorld(bossAnchor);
 
-        for (int i = 1; i < bossBoDeads.Count; i++)
+        for (int i = 1; i < bossBodies.Count; i++)
         {
-            if (bossBoDeads[i] != null)
-                Destroy(bossBoDeads[i].gameObject);
+            if (bossBodies[i] != null)
+                Destroy(bossBodies[i].gameObject);
         }
 
-        bossBoDeads.Clear();
-        bossBoDeads.Add(transform);
+        bossBodies.Clear();
+        bossBodies.Add(transform);
 
         anchorHistory.Clear();
         currentPath.Clear();
         pathIndex = 0;
         repathTimer = 0f;
-        hascachedPlayerCell = false;
+        hasCachedPlayerCell = false;
         hasFleeTarget = false;
         fleeTargetDistanceFloor = 0;
         debugHasFleeChoice = false;
@@ -752,7 +751,7 @@ public class FirstBoss : MonoBehaviour
             Grow();
         }
 
-        SeedBodyHistory();
+        SaveBodyHistory();
         UpdateBody();
     }
 
@@ -761,15 +760,15 @@ public class FirstBoss : MonoBehaviour
         if (bossBodyPrefab == null) return;
 
         Transform body = Instantiate(bossBodyPrefab);
-        body.position = bossBoDeads[bossBoDeads.Count - 1].position;
-        bossBoDeads.Add(body);
+        body.position = bossBodies[bossBodies.Count - 1].position;
+        bossBodies.Add(body);
     }
 
-    private void SeedBodyHistory()
+    private void SaveBodyHistory()
     {
         anchorHistory.Clear();
 
-        for (int i = 0; i < bossBoDeads.Count + 5; i++)
+        for (int i = 0; i < bossBodies.Count; i++)
         {
             anchorHistory.Add(bossAnchor - moveDir * BossCellSize * i);
         }
@@ -778,8 +777,8 @@ public class FirstBoss : MonoBehaviour
     public void Dead()
     {
         state = BossState.Dead;
-        for (int i = 0; i < bossBoDeads.Count; i++)
-            if (bossBoDeads[i] != null) Destroy(bossBoDeads[i].gameObject);
+        for (int i = 0; i < bossBodies.Count; i++)
+            if (bossBodies[i] != null) Destroy(bossBodies[i].gameObject);
     }
 
     private void SpawnPowerPickup()
@@ -877,7 +876,7 @@ public class FirstBoss : MonoBehaviour
         hasFleeTarget = false;
         fleeTargetDistanceFloor = 0;
         repathTimer = 0f;
-        hascachedPlayerCell = false;
+        hasCachedPlayerCell = false;
         debugHasFleeChoice = false;
     }
 
@@ -958,9 +957,9 @@ public class FirstBoss : MonoBehaviour
 
     private void SetAnchor(Vector2Int newAnchor)
     {
-        //for(int i = bossBoDeads.Count - 1; i > 0 ; i--)
+        //for(int i = bossBodies.Count - 1; i > 0 ; i--)
         //{
-        //    bossBoDeads[i].position = bossBoDeads[i - 1].position;
+        //    bossBodies[i].position = bossBodies[i - 1].position;
         //}   
         Vector2Int delta = newAnchor - bossAnchor;
 
