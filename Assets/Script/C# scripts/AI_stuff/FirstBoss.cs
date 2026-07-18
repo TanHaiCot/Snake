@@ -594,8 +594,8 @@ public class FirstBoss : MonoBehaviour
     {
         resultPath?.Clear();
 
-        Vector2Int step = targetAnchor;                
         Vector2Int currentStep = targetAnchor;         
+        Vector2Int step = targetAnchor;                
 
         resultPath?.Add(currentStep);
 
@@ -603,10 +603,10 @@ public class FirstBoss : MonoBehaviour
         {
             step = currentStep;
             currentStep = previous; 
-            resultPath?.Add(step);
+            resultPath?.Add(currentStep);
         }
 
-        resultPath.Reverse();
+        resultPath?.Reverse();
 
         //if there was no path passed as an argument, return a first step only 
         return step;               
