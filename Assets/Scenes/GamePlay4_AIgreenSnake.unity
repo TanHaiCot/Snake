@@ -400,6 +400,38 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 616454441}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1967816130}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: playSFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AudioManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 8300000, guid: dedd5977d3c57c441a128c93245d8159, type: 3}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.AudioClip, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -24099,6 +24131,7 @@ Transform:
   - {fileID: 121651850}
   - {fileID: 1741257626}
   - {fileID: 616454442}
+  - {fileID: 1967816131}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1838322384
@@ -24269,19 +24302,27 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1799917962}
     m_Modifications:
+    - target: {fileID: 5323602423403186915, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5323602423403186915, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
+      propertyPath: m_Volume
+      value: 0.8
+      objectReference: {fileID: 0}
     - target: {fileID: 7141729723115906396, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
     - target: {fileID: 8742594702649286242, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1115.0375
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8742594702649286242, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 594.73206
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8742594702649286242, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
       propertyPath: m_LocalPosition.z
@@ -24331,6 +24372,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69ffecd8669183a4b96667e5bdd3db6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+--- !u!4 &1967816131 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8742594702649286242, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
+  m_PrefabInstance: {fileID: 1967816129}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1981281357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24890,4 +24936,3 @@ SceneRoots:
   - {fileID: 1799917962}
   - {fileID: 101495265}
   - {fileID: 163634998}
-  - {fileID: 1967816129}
