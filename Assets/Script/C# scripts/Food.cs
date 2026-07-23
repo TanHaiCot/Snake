@@ -49,7 +49,7 @@ public class Food : MonoBehaviour
 
         Vector2Int chosenSpot = freeSpots[Random.Range(0, freeSpots.Count)];
 
-        Debug.Log($"Chosen Food Cell: {chosenSpot} | Walkable: {mapManager.IsWalkable(chosenSpot)}");
+        //Debug.Log($"Chosen Food Cell: {chosenSpot} | Walkable: {mapManager.IsWalkable(chosenSpot)}");
 
         transform.position = new Vector2(chosenSpot.x, chosenSpot.y);
 

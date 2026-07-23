@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -36,6 +37,9 @@ public class SnakeAbilities : MonoBehaviour
     [SerializeField] private float extraTimePerFood = 5f;
     [SerializeField] private float lateFoodPeriod = 10f;
     [SerializeField] private float lateFoodEnergyMultiplier = 1.5f;
+
+    public UnityEvent OnDashUsed;
+    public UnityEvent OnGhostModeToggled;
 
     private float dashActiveTime;
     private float dashReadyTime;
@@ -138,6 +142,7 @@ public class SnakeAbilities : MonoBehaviour
         if (Time.time < ghostModeReadyTime || !HasEnoughEnergy(ghostModeEnergyDrainPerSecond))
             return;
 
+        OnGhostModeToggled?.Invoke();
         ghostModeRequested = true;
     }
 
@@ -156,6 +161,7 @@ public class SnakeAbilities : MonoBehaviour
         if (startCooldown)
         {
             ghostModeReadyTime = Time.time + ghostModeCooldown;
+            OnGhostModeToggled?.Invoke();
             UpdateCooldownFill(ghostModeCooldownImage, ghostModeReadyTime, ghostModeCooldown);
         }
     }
@@ -195,6 +201,7 @@ public class SnakeAbilities : MonoBehaviour
 
         dashActiveTime = Time.time + dashDuration;
         dashReadyTime = Time.time + dashCooldown;
+        OnDashUsed?.Invoke();
         UpdateCooldownFill(dashCooldownImage, dashReadyTime, dashCooldown);
         return true;
     }

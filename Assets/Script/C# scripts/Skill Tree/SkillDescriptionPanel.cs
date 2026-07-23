@@ -36,5 +36,6 @@ public class SkillDescriptionPanel : MonoBehaviour
 
         learnButton.onClick.RemoveAllListeners();
         learnButton.onClick.AddListener(() => ui.LearnSkill(currentSkill));
+        
     }
 }
