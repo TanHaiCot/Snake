@@ -7,12 +7,27 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
 
     [Header("Audio Clips")]
-    public AudioClip background; 
+    public AudioClip background;
     public AudioClip eating;
     public AudioClip gameOver;
     public AudioClip ghost_mode;
     public AudioClip dashing;
     public AudioClip updateSkill;
+
+    public static AudioManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {

@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
         
     [Header("Game Components")]
     [SerializeField] Snake snake;
-    [SerializeField] Snake secondSnake; 
+    //[SerializeField] Snake secondSnake; 
     [SerializeField] Timer timer;
     [SerializeField] Food food;
     [SerializeField] AI_Snake ai_Snake;
@@ -194,8 +194,8 @@ public class GameManager : MonoBehaviour
         snake.Restate();
         food.RandomizedSpawn();
 
-        if (secondSnake != null)
-            secondSnake.Restate();
+        //if (secondSnake != null)
+        //    secondSnake.Restate();
 
         if (ai_Snake != null)
             ai_Snake.Restate();

@@ -3225,7 +3225,6 @@ MonoBehaviour:
   mapManager: {fileID: 1239357050}
   doorController: {fileID: 1741487610}
   snake: {fileID: 914842887}
-  secondSnake: {fileID: 0}
   timer: {fileID: 1390239444}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}
@@ -3311,9 +3310,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1239357049}
   - {fileID: 1741257626}
   - {fileID: 602504149}
-  - {fileID: 1239357049}
   - {fileID: 616454442}
   - {fileID: 2118788745}
   m_Father: {fileID: 0}
