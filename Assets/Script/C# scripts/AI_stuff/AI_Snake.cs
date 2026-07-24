@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AI_Snake : MonoBehaviour
 {
@@ -56,6 +57,8 @@ public class AI_Snake : MonoBehaviour
 
     private Vector2Int previousHeadPos;
     private bool hasPreviousHeadPos;
+
+    public UnityEvent OnFoodEaten;
 
     private void Start()
     {
@@ -589,6 +592,7 @@ public class AI_Snake : MonoBehaviour
         if (collision.CompareTag("Food"))
         {
             Debug.Log("AI Snake ate food");
+            OnFoodEaten?.Invoke();
             Grow();
         }
     }
