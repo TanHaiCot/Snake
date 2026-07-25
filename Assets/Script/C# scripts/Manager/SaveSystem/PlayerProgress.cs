@@ -11,6 +11,8 @@ public class PlayerProgress : MonoBehaviour
     public int upgradePoints;
     public int completedLevels = 0;
     public bool skillTreeUnlocked;
+    public bool hasSavedEnergy;
+    public float savedEnergy;
     public int ContinueLevelBuildIndex => Mathf.Max(highestCompletedLevelBuildIndex + 1, SaveSystem.FirstGameplayLevelBuildIndex);
 
     public bool HasSkill(string skillId)
@@ -98,6 +100,12 @@ public class PlayerProgress : MonoBehaviour
         SaveSystem.Save(this);
     }
 
+    public void SetSavedEnergy(float energyAmount)
+    {
+        savedEnergy = Mathf.Max(0f, energyAmount);
+        hasSavedEnergy = true;
+    }
+
     public bool LoadSavedProgress()
     {
         return SaveSystem.Load(this);
@@ -111,6 +119,8 @@ public class PlayerProgress : MonoBehaviour
         upgradePoints = 0;
         completedLevels = 0;
         skillTreeUnlocked = false;
+        hasSavedEnergy = false;
+        savedEnergy = 0f;
 
         if (chosenSkillIds == null)
             chosenSkillIds = new List<string>();

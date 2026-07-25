@@ -260,6 +260,8 @@ MonoBehaviour:
   upgradePoints: 0
   completedLevels: 0
   skillTreeUnlocked: 0
+  hasSavedEnergy: 0
+  savedEnergy: 0
   chosenSkillIds: []
 --- !u!4 &330008683
 Transform:
@@ -554,7 +556,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 2
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -566,7 +568,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: playSFX
+      value: EatingSound
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -575,10 +577,10 @@ PrefabInstance:
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 8300000, guid: dedd5977d3c57c441a128c93245d8159, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.AudioClip, UnityEngine
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2759,7 +2761,6 @@ MonoBehaviour:
   mapManager: {fileID: 1239357050}
   doorController: {fileID: 1741487610}
   snake: {fileID: 914842887}
-  secondSnake: {fileID: 0}
   timer: {fileID: 1390239444}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}

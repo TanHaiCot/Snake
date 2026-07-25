@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
             timer.SetLevelTimer(LevelData.timeLimit);
         }
 
-        ResetAndApplySkillRuntime();
+        ResetAndApplySkillRuntime(true);
         
         mapManager.InitAndBuildMap();
         food.RandomizedSpawn(); 
@@ -150,6 +150,9 @@ public class GameManager : MonoBehaviour
 
     public void MoveToSkillTree()
     {
+        if (energy != null)
+            energy.StoreCurrentEnergy();
+
         bool levelUnlocksSkillTree = LevelData != null && LevelData.isSkillTreeUnlocked;
         PlayerProgress.EnsureInstance().CompleteLevel(SceneManager.GetActiveScene().buildIndex, levelUnlocksSkillTree);
 
@@ -211,7 +214,7 @@ public class GameManager : MonoBehaviour
 
         timer.SetLevelTimer(LevelData.timeLimit);
 
-        ResetAndApplySkillRuntime();
+        ResetAndApplySkillRuntime(false);
 
         reverseMovementStarted = false;
         snake.SetReverseMovement(false);
@@ -219,6 +222,12 @@ public class GameManager : MonoBehaviour
 
     public void MainMenu()
     {
+        if (energy != null)
+        {
+            energy.StoreCurrentEnergy();
+            PlayerProgress.EnsureInstance().SaveProgress();
+        }
+
         Time.timeScale = 1f; 
         SceneManager.LoadScene("StartMenu");
     }
@@ -233,7 +242,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void ResetAndApplySkillRuntime()
+    private void ResetAndApplySkillRuntime(bool restoreSavedEnergy)
     {
         if (energy != null)
         {
@@ -242,10 +251,18 @@ public class GameManager : MonoBehaviour
         }
         
         if (snakeAbilities != null)
-            snakeAbilities.ResetAbilities(ArePlayerAbilitiesEnabledAtLevelStart());
+            snakeAbilities.ResetAbilities(CanPlayerNormallyUseAbilities());
 
         skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer);
         skillRuntimeApplier.ApplyLearnedSkills();
+
+        if (energy != null)
+        {
+            if (restoreSavedEnergy)
+                energy.RestoreCurrentEnergy();
+            else
+                energy.StoreCurrentEnergy();
+        }
     }
 
     private void EnsureSkillRuntime()
@@ -257,7 +274,7 @@ public class GameManager : MonoBehaviour
         skillRuntimeApplier.ApplyLearnedSkills();
     }
 
-    private bool ArePlayerAbilitiesEnabledAtLevelStart()
+    private bool CanPlayerNormallyUseAbilities()
     {
         return SceneManager.GetActiveScene().name != "Boss1Fight";
     }

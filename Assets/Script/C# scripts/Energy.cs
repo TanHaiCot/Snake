@@ -72,6 +72,7 @@ public class Energy : MonoBehaviour
             return;
 
         currentEnergy = Mathf.Min(currentEnergy + amount, maxEnergy);
+        StoreCurrentEnergy();
     }
 
     public bool TryConsumeEnergy(float amount)
@@ -81,16 +82,35 @@ public class Energy : MonoBehaviour
         if (currentEnergy < amount)
         {
             currentEnergy = 0;
+            StoreCurrentEnergy();
             return false;
         }
 
         currentEnergy -= amount;
+        StoreCurrentEnergy();
         return true;
     }
 
     public void ResetEnergy()
     {
         InitializeEnergy();
+    }
+
+    public void RestoreCurrentEnergy()
+    {
+        PlayerProgress progress = PlayerProgress.EnsureInstance();
+
+        if (progress.hasSavedEnergy)
+            currentEnergy = Mathf.Clamp(progress.savedEnergy, 0f, maxEnergy);
+        else
+            StoreCurrentEnergy();
+
+        UpdateEnergyUI();
+    }
+
+    public void StoreCurrentEnergy()
+    {
+        PlayerProgress.EnsureInstance().SetSavedEnergy(currentEnergy);
     }
 
     public void ResetSkillAdjustedStats()

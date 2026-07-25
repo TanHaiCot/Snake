@@ -9,6 +9,8 @@ public class SaveData
     public int completedLevels;
     public int upgradePoints;
     public bool skillTreeUnlocked;
+    public bool hasSavedEnergy;
+    public float savedEnergy;
     public List<string> chosenSkillIds = new List<string>();
 }
 
@@ -45,6 +47,8 @@ public static class SaveSystem
             completedLevels = progress.completedLevels,
             upgradePoints = progress.upgradePoints,
             skillTreeUnlocked = progress.skillTreeUnlocked,
+            hasSavedEnergy = progress.hasSavedEnergy,
+            savedEnergy = progress.savedEnergy,
             chosenSkillIds = new List<string>(progress.chosenSkillIds ?? new List<string>())
         };
 
@@ -64,6 +68,8 @@ public static class SaveSystem
         progress.completedLevels = data.completedLevels;
         progress.upgradePoints = data.upgradePoints;
         progress.skillTreeUnlocked = data.skillTreeUnlocked;
+        progress.hasSavedEnergy = data.hasSavedEnergy;
+        progress.savedEnergy = data.savedEnergy;
         progress.chosenSkillIds = data.chosenSkillIds ?? new List<string>();
 
         Save(progress);
@@ -93,6 +99,8 @@ public static class SaveSystem
     {
         if (data.chosenSkillIds == null)
             data.chosenSkillIds = new List<string>();
+
+        data.savedEnergy = Mathf.Max(0f, data.savedEnergy);
 
         if (data.highestCompletedLevelBuildIndex < -1)
             data.highestCompletedLevelBuildIndex = -1;
