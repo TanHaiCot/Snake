@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip ghost_mode;
     public AudioClip dashing;
     public AudioClip updateSkill;
+    public AudioClip teleport;
 
     public static AudioManager Instance { get; private set; }
 
@@ -52,7 +53,7 @@ public class AudioManager : MonoBehaviour
         sfxSource.pitch = Random.Range(0.75f, 1.25f);
         sfxSource.PlayOneShot(
             clip,
-            collectedByPlayer ? 1f : 0.5f
+            collectedByPlayer ? 1f : 0.75f
         );
     }
 

@@ -1426,6 +1426,10 @@ PrefabInstance:
       propertyPath: aiEating
       value: 
       objectReference: {fileID: 8300000, guid: cd078bc2be03c944cae0a0cf67d97f3f, type: 3}
+    - target: {fileID: 6173932803587436032, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
+      propertyPath: teleport
+      value: 
+      objectReference: {fileID: 8300000, guid: 27c1ccd851a5cf642b2af7048a14149b, type: 3}
     - target: {fileID: 7141729723115906396, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
       propertyPath: m_Name
       value: AudioManager
@@ -20721,7 +20725,7 @@ MonoBehaviour:
   snake: {fileID: 279573098}
   timer: {fileID: 1874788993}
   food: {fileID: 620879146}
-  ai_Snake: {fileID: 0}
+  ai_Snake: {fileID: 1748671259}
   energy: {fileID: 189527194}
   snakeAbilities: {fileID: 981077078}
   reverseMovementDialogue:
@@ -20751,21 +20755,12 @@ MonoBehaviour:
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 0}
   currentState: 0
-  OnFoodEaten:
+  OnFoodEatenByPlayer:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 898478504}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: EatingSound
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+  OnTeleGateTrigger:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &1770012706
 PrefabInstance:
   m_ObjectHideFlags: 0

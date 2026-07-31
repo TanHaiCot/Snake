@@ -58,7 +58,8 @@ public class AI_Snake : MonoBehaviour
     private Vector2Int previousHeadPos;
     private bool hasPreviousHeadPos;
 
-    public UnityEvent OnFoodEaten;
+    public UnityEvent<bool> OnFoodEatenByPlayer;
+    public UnityEvent OnTeleGateTrigger;
 
     private void Start()
     {
@@ -134,6 +135,7 @@ public class AI_Snake : MonoBehaviour
             else if (pathfinding.TryGetTeleportExit(currentCell, out Vector2Int teleportExit) &&
                      teleportExit == nextCell)
             {
+                 OnTeleGateTrigger?.Invoke();
                 // Do nothing. Keep current direction.
             }
             // Invalid path step
@@ -592,7 +594,7 @@ public class AI_Snake : MonoBehaviour
         if (collision.CompareTag("Food"))
         {
             Debug.Log("AI Snake ate food");
-            OnFoodEaten?.Invoke();
+            OnFoodEatenByPlayer?.Invoke(false);
             Grow();
         }
     }

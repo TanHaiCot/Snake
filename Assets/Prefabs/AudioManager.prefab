@@ -50,10 +50,12 @@ MonoBehaviour:
   sfxSource: {fileID: 1344649072011137009}
   background: {fileID: 8300000, guid: 92de11b45c28c854ab4ab41ca2421c51, type: 3}
   eating: {fileID: 8300000, guid: dedd5977d3c57c441a128c93245d8159, type: 3}
+  aiEating: {fileID: 8300000, guid: cd078bc2be03c944cae0a0cf67d97f3f, type: 3}
   gameOver: {fileID: 8300000, guid: bb16c1decf8e43b4a8fb9ed86928a09a, type: 3}
   ghost_mode: {fileID: 8300000, guid: 7a7f6f4ab1260384786af5d282fabf8a, type: 3}
   dashing: {fileID: 8300000, guid: 55fdc584f5589ce43bc1558b3f9ae45e, type: 3}
   updateSkill: {fileID: 8300000, guid: f2eb2e67703319041ac66a3fd0133a72, type: 3}
+  teleport: {fileID: 8300000, guid: 27c1ccd851a5cf642b2af7048a14149b, type: 3}
 --- !u!1 &7943301935052384493
 GameObject:
   m_ObjectHideFlags: 0

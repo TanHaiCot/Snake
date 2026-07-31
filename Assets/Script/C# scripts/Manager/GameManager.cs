@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] MapManager mapManager;
     [SerializeField] DoorController doorController;
-        
+
     [Header("Game Components")]
     [SerializeField] Snake snake;
     //[SerializeField] Snake secondSnake; 
@@ -73,11 +73,21 @@ public class GameManager : MonoBehaviour
             timer.OnTimeUp += HandleTimeUp; 
         
         if(snake != null)
-            snake.OnFoodEaten.AddListener(HandleFoodEaten);
+        {
+            snake.OnFoodEatenByPlayer.AddListener(HandleFoodEaten);
+            snake.OnTeleGateTrigger.AddListener(HandleTeleGateTrigger);
+        }
      
-        if(scoreManager != null)
+        if(ai_Snake != null)
+        {
+            ai_Snake.OnFoodEatenByPlayer.AddListener(HandleFoodEaten);  
+            ai_Snake.OnTeleGateTrigger.AddListener(HandleTeleGateTrigger);
+        }
+
+        if (scoreManager != null)
             scoreManager.OnScoreChanged.AddListener(HandleScoreChanged);
     }
+
 
     private void HandleScoreChanged(int current, int target)
     {
@@ -105,10 +115,22 @@ public class GameManager : MonoBehaviour
         });
     }
 
-    private void HandleFoodEaten()
+    private void HandleFoodEaten(bool isEatenByPlayer)
     {
-        EnsureSkillRuntime();
-        skillRuntimeApplier.ApplyFoodEatenEffects();
+        if (isEatenByPlayer)
+        {
+            AudioManager.Instance?.EatingSound(true);
+            EnsureSkillRuntime();
+            skillRuntimeApplier.ApplyFoodEatenEffects();
+        }
+        else 
+        {
+            AudioManager.Instance?.EatingSound(false);
+        }
+    }
+    private void HandleTeleGateTrigger()
+    {
+        AudioManager.Instance?.playSFX(AudioManager.Instance.teleport);
     }
 
     private void OnDisable()
@@ -116,10 +138,19 @@ public class GameManager : MonoBehaviour
         if (timer)
             timer.OnTimeUp -= HandleTimeUp; 
         
-        if(snake != null) 
-            snake.OnFoodEaten.RemoveListener(HandleFoodEaten);
+        if(snake != null)
+        {
+            snake.OnFoodEatenByPlayer.RemoveListener(HandleFoodEaten);
+            snake.OnTeleGateTrigger.RemoveListener(HandleTeleGateTrigger);
+        }
 
-        if(scoreManager != null)
+        if(ai_Snake != null)
+        {
+            ai_Snake.OnFoodEatenByPlayer.RemoveListener(HandleFoodEaten);
+            ai_Snake.OnTeleGateTrigger.RemoveListener(HandleTeleGateTrigger);
+        }
+
+        if (scoreManager != null)
             scoreManager.OnScoreChanged.RemoveListener(HandleScoreChanged);
     }
 

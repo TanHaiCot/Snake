@@ -22,7 +22,8 @@ public class Snake : MonoBehaviour
     [SerializeField] MapManager mapManager;
     [SerializeField] TeleportGateManager teleportGateManager;
 
-    public UnityEvent OnFoodEaten;
+    public UnityEvent<bool> OnFoodEatenByPlayer;       
+    public UnityEvent OnTeleGateTrigger; 
 
     private float speed = 10f; 
 
@@ -153,6 +154,7 @@ public class Snake : MonoBehaviour
 
         if (teleportGateManager != null && teleportGateManager.TryGetTeleportExit(nextCell, out Vector2Int teleportExit))
         {
+            OnTeleGateTrigger?.Invoke();
             nextCell = teleportExit;
             nextX = nextCell.x;
             nextY = nextCell.y;
@@ -294,7 +296,7 @@ public class Snake : MonoBehaviour
             if(scoreManager)
                 scoreManager.AddScore(1);
 
-            OnFoodEaten?.Invoke();
+            OnFoodEatenByPlayer?.Invoke(true);
 
             if (gameManager != null)
                 gameManager.CheckWinStatus(); 
