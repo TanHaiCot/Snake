@@ -304,6 +304,7 @@ public class Snake : MonoBehaviour
 
         if (collision.CompareTag("Next Level Trigger"))
         {
+            AudioManager.Instance?.playSFX(AudioManager.Instance.levelCompleted);
             gameManager.MoveToSkillTree();
         }
     }

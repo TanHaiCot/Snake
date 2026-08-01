@@ -176,6 +176,7 @@ public class GameManager : MonoBehaviour
     private void OpenLevelExit()
     {
         isExitOpen = true;
+        //AudioManager.Instance?.playSFX(AudioManager.Instance.doorOpened);
         doorController.Open();
     }
 

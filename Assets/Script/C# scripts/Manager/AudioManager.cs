@@ -16,6 +16,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip dashing;
     public AudioClip updateSkill;
     public AudioClip teleport;
+    public AudioClip doorOpened;
+    public AudioClip levelCompleted;
 
     public static AudioManager Instance { get; private set; }
 
