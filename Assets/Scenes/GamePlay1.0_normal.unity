@@ -12865,6 +12865,7 @@ MonoBehaviour:
   teleport: {fileID: 8300000, guid: 27c1ccd851a5cf642b2af7048a14149b, type: 3}
   doorOpened: {fileID: 8300000, guid: 20db2add4e7c18141ad856c70856a7e2, type: 3}
   levelCompleted: {fileID: 8300000, guid: 51926c8dcadbf584eae890aaa1303135, type: 3}
+  bossDash: {fileID: 0}
 --- !u!4 &2118788745
 Transform:
   m_ObjectHideFlags: 0

@@ -92,6 +92,7 @@ public class BossFightManager : MonoBehaviour
         else
         {
             gameManager.GameOver();
+            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
             return true;
         }
     }

@@ -164,6 +164,7 @@ public class Snake : MonoBehaviour
         {
             Debug.Log("Hit itself");
             gameManager.GameOver();
+            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
             return;
         }
 
@@ -185,6 +186,7 @@ public class Snake : MonoBehaviour
                     if (bossFightManager == null)
                     {
                         gameManager.GameOver();
+                        AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
                         return; 
                     }
                     
@@ -207,6 +209,7 @@ public class Snake : MonoBehaviour
         {
             //Debug.Log("Hit wall/door");
             //gameManager.GameOver();
+            //AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
             //return;
         }
 
