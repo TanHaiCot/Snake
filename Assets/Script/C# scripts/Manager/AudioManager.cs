@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip teleport;
     public AudioClip doorOpened;
     public AudioClip levelCompleted;
+    public AudioClip bossDash;
 
     public static AudioManager Instance { get; private set; }
 

@@ -154,6 +154,7 @@ public class FirstBoss : MonoBehaviour
                 {
                     currentDashSteps = 0;
                     state = BossState.Dashing;
+                    AudioManager.Instance?.playSFX(AudioManager.Instance.bossDash);
                 }
 
                 else
@@ -170,7 +171,9 @@ public class FirstBoss : MonoBehaviour
     private bool MakeMovement()
     {
         if (state == BossState.Dashing)
+        {
             return Dash();
+        }
 
         if (state == BossState.Fleeing)
             return Flee();
@@ -674,6 +677,7 @@ public class FirstBoss : MonoBehaviour
         }
 
         currentDashSteps++;
+        //AudioManager.Instance?.playSFX(AudioManager.Instance.bossDash);
         if (currentDashSteps >= maxDashSteps)
         {
             state = BossState.Chasing;

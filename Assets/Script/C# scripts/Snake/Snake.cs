@@ -205,7 +205,7 @@ public class Snake : MonoBehaviour
 
         if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
-            Debug.Log("Hit wall/door");
+            //Debug.Log("Hit wall/door");
             //gameManager.GameOver();
             //return;
         }
