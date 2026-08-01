@@ -35,7 +35,13 @@ public class SkillDescriptionPanel : MonoBehaviour
             learnButtonText.text = "LOCKED";
 
         learnButton.onClick.RemoveAllListeners();
-        learnButton.onClick.AddListener(() => ui.LearnSkill(currentSkill));
-        
+        learnButton.onClick.AddListener(HandleLearnButtonClick);
+
+    }
+
+    private void HandleLearnButtonClick()
+    {
+        ui.LearnSkill(currentSkill);
+        AudioManager.Instance?.playSFX(AudioManager.Instance.updateSkill);
     }
 }

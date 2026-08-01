@@ -56,7 +56,8 @@ MonoBehaviour:
   dashing: {fileID: 8300000, guid: 55fdc584f5589ce43bc1558b3f9ae45e, type: 3}
   updateSkill: {fileID: 8300000, guid: f2eb2e67703319041ac66a3fd0133a72, type: 3}
   teleport: {fileID: 8300000, guid: 27c1ccd851a5cf642b2af7048a14149b, type: 3}
-  levelCompleted: {fileID: 8300000, guid: f51c916068c3ded4b944a4e895af5a5c, type: 3}
+  doorOpened: {fileID: 8300000, guid: 20db2add4e7c18141ad856c70856a7e2, type: 3}
+  levelCompleted: {fileID: 8300000, guid: 51926c8dcadbf584eae890aaa1303135, type: 3}
 --- !u!1 &7943301935052384493
 GameObject:
   m_ObjectHideFlags: 0

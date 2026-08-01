@@ -1837,6 +1837,8 @@ MonoBehaviour:
   upgradePoints: 10
   completedLevels: 0
   skillTreeUnlocked: 0
+  hasSavedEnergy: 0
+  savedEnergy: 0
   chosenSkillIds: []
 --- !u!4 &624574598
 Transform:
@@ -2724,17 +2726,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
   m_HorizontalFit: 0
   m_VerticalFit: 0
---- !u!114 &1117304990 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6173932803587436032, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
-  m_PrefabInstance: {fileID: 8847321063473752350}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69ffecd8669183a4b96667e5bdd3db6b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
 --- !u!1 &1191144089
 GameObject:
   m_ObjectHideFlags: 0
@@ -3088,19 +3079,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1342772063}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1117304990}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: playSFX
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: f2eb2e67703319041ac66a3fd0133a72, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1342772063
 MonoBehaviour:
   m_ObjectHideFlags: 0
