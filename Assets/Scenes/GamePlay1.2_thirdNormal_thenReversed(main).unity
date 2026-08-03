@@ -555,7 +555,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 18
+  orthographic size: 16
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1836,7 +1836,6 @@ MonoBehaviour:
   mapManager: {fileID: 1239357050}
   doorController: {fileID: 1745404496}
   snake: {fileID: 914842887}
-  secondSnake: {fileID: 0}
   timer: {fileID: 1014432981}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}

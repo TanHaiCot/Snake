@@ -46,6 +46,11 @@ public class GameManager : MonoBehaviour
             timer.SetLevelTimer(LevelData.timeLimit);
         }
 
+        if(LevelData != null)
+        {
+            AudioManager.Instance?.PlayMusic(LevelData.backgroundMusic);    
+        }
+
         ResetAndApplySkillRuntime(true);
         
         mapManager.InitAndBuildMap();

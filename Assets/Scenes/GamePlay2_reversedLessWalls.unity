@@ -941,7 +941,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.14901961, g: 0.32156864, b: 0.14509805, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1944,7 +1944,6 @@ MonoBehaviour:
   mapManager: {fileID: 160673948}
   doorController: {fileID: 1290789799}
   snake: {fileID: 404787834}
-  secondSnake: {fileID: 0}
   timer: {fileID: 1289009053}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}

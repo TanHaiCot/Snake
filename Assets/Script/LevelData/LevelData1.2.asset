@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetScore: 5
   timeLimit: 40
+  backgroundMusic: {fileID: 8300000, guid: 92de11b45c28c854ab4ab41ca2421c51, type: 3}
   enableReverseMovement: 1
   isSkillTreeUnlocked: 1

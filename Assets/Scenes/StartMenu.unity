@@ -1026,6 +1026,7 @@ MonoBehaviour:
   continueButton: {fileID: 1093051439}
   newGameButton: {fileID: 373722536}
   skillTreeButton: {fileID: 831490633}
+  menuMusic: {fileID: 8300000, guid: 92de11b45c28c854ab4ab41ca2421c51, type: 3}
 --- !u!1 &1270459322
 GameObject:
   m_ObjectHideFlags: 0
@@ -1250,6 +1251,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6173932803587436032, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
+      propertyPath: bossDash
+      value: 
+      objectReference: {fileID: 8300000, guid: d1fe98be405ae184bb8379cef315a8f0, type: 3}
+    - target: {fileID: 6173932803587436032, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
+      propertyPath: background
+      value: 
+      objectReference: {fileID: 8300000, guid: 92de11b45c28c854ab4ab41ca2421c51, type: 3}
     - target: {fileID: 6173932803587436032, guid: 4c6f85e27c88dcf4b87c162d59a18c91, type: 3}
       propertyPath: doorOpened
       value: 

@@ -6,6 +6,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject continueButton;
     [SerializeField] private GameObject newGameButton;
     [SerializeField] private GameObject skillTreeButton;
+    [SerializeField] private AudioClip menuMusic; 
 
     private void Start()
     {
@@ -22,6 +23,8 @@ public class MainMenu : MonoBehaviour
 
         if (skillTreeButton != null)
             skillTreeButton.SetActive(progress.skillTreeUnlocked);
+
+        AudioManager.Instance?.PlayMusic(menuMusic);
     }
 
     public void NewGame()

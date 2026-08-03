@@ -778,21 +778,12 @@ MonoBehaviour:
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 616454441}
   currentState: 1
-  OnFoodEaten:
+  OnFoodEatenByPlayer:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1967816130}
-        m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
-        m_MethodName: EatingSound
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+  OnTeleGateTrigger:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &101495265
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22557,7 +22548,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.12156863, g: 0.32156864, b: 0.14509805, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
