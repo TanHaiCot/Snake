@@ -2939,6 +2939,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 227988977}
   darknessTilePrefab: {fileID: 1907937405127853166, guid: a56abacffd9cce9488191658c4596333, type: 3}
   snake: {fileID: 1298582749}
+  door: {fileID: 6037067301012278270}
   mapManager: {fileID: 1747881031}
 --- !u!4 &1076271461
 Transform:

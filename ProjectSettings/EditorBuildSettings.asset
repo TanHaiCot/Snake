@@ -33,8 +33,14 @@ EditorBuildSettings:
     path: Assets/Scenes/GamePlay5_aiGreenSnake&teleGates.unity
     guid: 174b6d72fae16df4e80b1c3ab4ad4988
   - enabled: 1
-    path: Assets/Scenes/GamePlay6_AIgreenSnakeflashyDarkness.unity
+    path: Assets/Scenes/GamePlay6_Boss1.unity
+    guid: c367f785509215441a4cb4441f241cc0
+  - enabled: 1
+    path: Assets/Scenes/GamePlay7_AIgreenSnakeflashyDarkness.unity
     guid: 6a023052ad550254f95bd095b22604d7
+  - enabled: 1
+    path: Assets/Scenes/GamePlay8_DarkDungeon.unity
+    guid: 0f2f66409b7c79f49ab3374a18d815ee
   - enabled: 1
     path: Assets/Scenes/SkillTree.unity
     guid: 74ee29413474e3140a72b5f99fb26afc

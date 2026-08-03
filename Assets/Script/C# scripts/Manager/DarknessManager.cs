@@ -11,6 +11,7 @@ public class DarknessManager : MonoBehaviour
     [SerializeField] private Tilemap wallTilemap;
     [SerializeField] private GameObject darknessTilePrefab;
     [SerializeField] private Transform snake;
+    [SerializeField] private Transform door; 
     [SerializeField] private MapManager mapManager;
 
     private int visableRange = 5;
@@ -115,19 +116,32 @@ public class DarknessManager : MonoBehaviour
             if (!hasFloor && !hasWall)
                 continue;
 
-            Vector2Int cell = new Vector2Int(tilePos.x, tilePos.y);
-            Vector3 worldPos = mapManager.CellToWorld(cell);
+            CreateDarknessTile(new Vector2Int(tilePos.x, tilePos.y));
+        }
 
-            GameObject tile = Instantiate(
+        if (door != null)
+        {
+            Vector2Int doorCell = mapManager.WorldToCell(door.position);
+            CreateDarknessTile(doorCell);
+            CreateDarknessTile(doorCell + Vector2Int.left);
+        }
+    }
+
+    private void CreateDarknessTile(Vector2Int cell)
+    {
+        if(darkTiles.ContainsKey(cell))
+            return;
+
+        Vector3 worldPos = mapManager.CellToWorld(cell);
+
+        GameObject tile = Instantiate(
                 darknessTilePrefab,
                 worldPos,
                 Quaternion.identity,
                 transform
             );
 
-            SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
-            darkTiles[cell] = sr;
-        }
+        SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+        darkTiles[cell] = sr;
     }
-
 }
