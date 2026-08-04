@@ -1403,6 +1403,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 1870531995}
   lightFloorTile: {fileID: 11400000, guid: e07a1230d960c284880e13f9934d7269, type: 2}
   darkFloorTile: {fileID: 11400000, guid: 22c4f84813aa8b848b9d94b84705c4db, type: 2}
+  antiSnakeWallTile: {fileID: 11400000, guid: bb23387c7926d164b8447f91b97e8a85, type: 2}
 --- !u!114 &837587549 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2218659417031773349, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}

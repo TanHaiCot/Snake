@@ -36960,6 +36960,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 227988977}
   lightFloorTile: {fileID: 11400000, guid: e07a1230d960c284880e13f9934d7269, type: 2}
   darkFloorTile: {fileID: 11400000, guid: 22c4f84813aa8b848b9d94b84705c4db, type: 2}
+  antiSnakeWallTile: {fileID: 11400000, guid: bb23387c7926d164b8447f91b97e8a85, type: 2}
 --- !u!1001 &1750012693
 PrefabInstance:
   m_ObjectHideFlags: 0

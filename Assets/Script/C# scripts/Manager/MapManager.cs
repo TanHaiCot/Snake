@@ -19,6 +19,9 @@ public class MapManager : MonoBehaviour
     [SerializeField] private TileBase lightFloorTile;
     [SerializeField] private TileBase darkFloorTile;
 
+    [Header("Special Tiles")]
+    [SerializeField] private TileBase antiSnakeWallTile;
+
     private readonly List<Vector2Int> playableCells = new();
 
     public void InitAndBuildMap()
@@ -77,6 +80,12 @@ public class MapManager : MonoBehaviour
         bool hasWall = wallTilemap != null && wallTilemap.HasTile(tilePos);
 
         return hasFloor && !hasWall;
+    }
+
+    public bool IsAntiSnakeWall(Vector2Int cell)
+    {
+        Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
+        return wallTilemap != null && wallTilemap.GetTile(tilePos) == antiSnakeWallTile;
     }
 
     public Vector3 CellToWorld(Vector2Int cell)

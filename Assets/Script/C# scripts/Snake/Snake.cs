@@ -168,9 +168,18 @@ public class Snake : MonoBehaviour
             return;
         }
 
+        bool nextIsAntiSnakeWall = mapManager != null && mapManager.IsAntiSnakeWall(nextCell); 
+
+        if (nextIsAntiSnakeWall)
+        {
+            gameManager.GameOver();
+            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
+            return; 
+        }
+
         bool nextIsWallOrDoor = false;
 
-        if (mapManager != null && !mapManager.IsWalkable(new Vector2Int(nextX, nextY)))
+        if (mapManager != null && !mapManager.IsWalkable(nextCell))
         {
             nextIsWallOrDoor = true;
         }
