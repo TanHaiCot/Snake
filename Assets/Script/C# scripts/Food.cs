@@ -4,11 +4,24 @@ using UnityEngine.Events;
 
 public class Food : MonoBehaviour
 {
+    public enum FoodColors
+    {
+        Red,
+        Orange,
+        Green,
+        Blue,
+        Yellow
+    }
+
+
     [SerializeField] MapManager mapManager;
    
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
     [SerializeField] ScoreManager scoreManager;
+    [SerializeField] FoodColors foodColor;
+
+    public FoodColors FoodColor => foodColor;
 
     private void Start()
     {

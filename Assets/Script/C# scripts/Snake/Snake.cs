@@ -21,6 +21,7 @@ public class Snake : MonoBehaviour
     [SerializeField] DarknessManager darknessManager;
     [SerializeField] MapManager mapManager;
     [SerializeField] TeleportGateManager teleportGateManager;
+    [SerializeField] ColoredDoorManager coloredDoorManager; 
 
     public UnityEvent<bool> OnFoodEatenByPlayer;       
     public UnityEvent OnTeleGateTrigger; 
@@ -172,9 +173,9 @@ public class Snake : MonoBehaviour
 
         if (nextIsAntiSnakeWall)
         {
-            gameManager.GameOver();
-            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
-            return; 
+            //gameManager.GameOver();
+            //AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
+            //return; 
         }
 
         bool nextIsWallOrDoor = false;
@@ -305,7 +306,23 @@ public class Snake : MonoBehaviour
         if (collision.CompareTag("Food"))
         {
             Grow();
-            if(scoreManager)
+
+            Food collectedFood = collision.GetComponent<Food>();
+
+            bool countsAsScore = true;
+
+            if (coloredDoorManager != null && collectedFood != null)
+            {
+                countsAsScore =
+                    coloredDoorManager.CollectFood(collectedFood.FoodColor);
+            }
+
+            if (countsAsScore && scoreManager != null)
+            {
+                scoreManager.AddScore(1);
+            }
+
+            if (scoreManager)
                 scoreManager.AddScore(1);
 
             OnFoodEatenByPlayer?.Invoke(true);

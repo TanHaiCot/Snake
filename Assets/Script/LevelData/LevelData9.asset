@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 75f870aa770a6c840b2761c00e112255, type: 3}
-  m_Name: LevelData6
+  m_Name: LevelData9
   m_EditorClassIdentifier: 
-  targetScore: 8
-  timeLimit: 105
+  targetScore: 3
+  timeLimit: 240
   backgroundMusic: {fileID: 8300000, guid: 45aef78547428b84eaa8b1803f49a2ff, type: 3}
   enableReverseMovement: 0
   isSkillTreeUnlocked: 1
