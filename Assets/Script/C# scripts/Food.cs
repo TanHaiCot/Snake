@@ -15,13 +15,16 @@ public class Food : MonoBehaviour
 
 
     [SerializeField] MapManager mapManager;
+    [SerializeField] ScoreManager scoreManager;
    
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
-    [SerializeField] ScoreManager scoreManager;
     [SerializeField] FoodColors foodColor;
 
+    [SerializeField] bool foodSpawnedAfterEat = true    ;
+
     public FoodColors FoodColor => foodColor;
+    public bool FoodSpawnedAfterEat => foodSpawnedAfterEat;
 
     private void Start()
     {
@@ -74,7 +77,11 @@ public class Food : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player" || collision.CompareTag("Opponent Snake"))
         {
-            RandomizedSpawn();
+            if (foodSpawnedAfterEat)
+                RandomizedSpawn();
+
+            else
+                gameObject.SetActive(false);
         }
     }
 }

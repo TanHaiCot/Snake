@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] UIManager uiManager;
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] MapManager mapManager;
-    [SerializeField] DoorController doorController;
+    [SerializeField] DoorManager doorManager;
 
     [Header("Game Components")]
     [SerializeField] Snake snake;
@@ -54,7 +54,9 @@ public class GameManager : MonoBehaviour
         ResetAndApplySkillRuntime(true);
         
         mapManager.InitAndBuildMap();
-        food.RandomizedSpawn(); 
+
+        if(food.FoodSpawnedAfterEat)
+            food.RandomizedSpawn();
     }
 
     public void Update()
@@ -182,7 +184,7 @@ public class GameManager : MonoBehaviour
     {
         isExitOpen = true;
         AudioManager.Instance?.playSFX(AudioManager.Instance.doorOpened);
-        doorController.Open();
+        doorManager.Open();
     }
 
     public void MoveToSkillTree()
@@ -232,7 +234,9 @@ public class GameManager : MonoBehaviour
         mapManager.InitAndBuildMap(); 
 
         snake.Restate();
-        food.RandomizedSpawn();
+
+        if (food.FoodSpawnedAfterEat)
+            food.RandomizedSpawn();
 
         //if (secondSnake != null)
         //    secondSnake.Restate();

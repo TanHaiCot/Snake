@@ -12,7 +12,7 @@ public class ColoredDoor : MonoBehaviour
 
     public Food.FoodColors RequiredColor => requiredFoodColor;
 
-    public void RecordFood(Food.FoodColors foodColor)
+    public void RecordCollectedFood(Food.FoodColors foodColor)
     {
         if (foodColor == requiredFoodColor && !isDoorOpen)
         {

@@ -21,7 +21,7 @@ public class Snake : MonoBehaviour
     [SerializeField] DarknessManager darknessManager;
     [SerializeField] MapManager mapManager;
     [SerializeField] TeleportGateManager teleportGateManager;
-    [SerializeField] ColoredDoorManager coloredDoorManager; 
+    [SerializeField] DoorManager doorManager; 
 
     public UnityEvent<bool> OnFoodEatenByPlayer;       
     public UnityEvent OnTeleGateTrigger; 
@@ -191,6 +191,15 @@ public class Snake : MonoBehaviour
         {
             if (hit != null && hit.gameObject != this.gameObject)
             {
+
+                ColoredDoor coloredDoor = hit.GetComponent<ColoredDoor>();
+                if(coloredDoor != null)
+                {
+                    isInputLockOpened = false;
+                    Debug.Log("Hit colored door");
+                    return; 
+                }
+
                 if (hit.CompareTag("Opponent Snake"))
                 {
                     if (bossFightManager == null)
@@ -311,19 +320,15 @@ public class Snake : MonoBehaviour
 
             bool countsAsScore = true;
 
-            if (coloredDoorManager != null && collectedFood != null)
+            if (doorManager != null && collectedFood != null)
             {
-                countsAsScore =
-                    coloredDoorManager.CollectFood(collectedFood.FoodColor);
+                countsAsScore = doorManager.CollectFood(collectedFood.FoodColor);    // Check if the food eaten same color as the door, if not, it won't count as score.
             }
 
             if (countsAsScore && scoreManager != null)
             {
                 scoreManager.AddScore(1);
             }
-
-            if (scoreManager)
-                scoreManager.AddScore(1);
 
             OnFoodEatenByPlayer?.Invoke(true);
 

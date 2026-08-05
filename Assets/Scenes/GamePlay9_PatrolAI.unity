@@ -1267,14 +1267,17 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 216758358}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1744934036}
   - {fileID: 70336223}
-  m_Father: {fileID: 2038276897}
+  - {fileID: 6037067301012278270}
+  - {fileID: 1403205941}
+  - {fileID: 2101115343}
+  m_Father: {fileID: 1270488836}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &216758360
 MonoBehaviour:
@@ -1289,7 +1292,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 70336224}
-  door: {fileID: 1744934033}
+  mainDoor: {fileID: 1744934033}
+  coloredDoors:
+  - {fileID: 6037067301012278271}
+  - {fileID: 1403205942}
+  - {fileID: 2101115344}
+  mainDoorColor: 0
+  isColoredDoorRuleActive: 1
 --- !u!1 &220702244
 GameObject:
   m_ObjectHideFlags: 0
@@ -1565,10 +1574,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 3
+  foodSpawnedAfterEat: 0
 --- !u!61 &246995138
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1921,10 +1931,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 1
+  foodSpawnedAfterEat: 0
 --- !u!61 &325792707
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2121,11 +2132,15 @@ PrefabInstance:
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: energy
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 384613657}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: mapManager
       value: 
       objectReference: {fileID: 160291026}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: doorManager
+      value: 
+      objectReference: {fileID: 216758360}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: gameManager
       value: 
@@ -2134,6 +2149,10 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 616454441}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: coloredDoorManager
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2567,55 +2586,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
   m_PrefabInstance: {fileID: 423905671}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &425770653
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 425770654}
-  - component: {fileID: 425770655}
-  m_Layer: 0
-  m_Name: ColoredDoorManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &425770654
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425770653}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1270488836}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &425770655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 425770653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8754d23873bfec34da6adcbdec3a8525, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ColoredDoorManager
-  coloredDoors:
-  - {fileID: 6037067301012278271}
-  - {fileID: 1403205942}
-  - {fileID: 2101115344}
-  mainDoorColor: 0
 --- !u!4 &459302877 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
@@ -3472,7 +3442,7 @@ Transform:
   m_GameObject: {fileID: 620879142}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -31.1, y: 10, z: 0}
+  m_LocalPosition: {x: -31, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3491,10 +3461,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 0
+  foodSpawnedAfterEat: 0
 --- !u!4 &643357448 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
@@ -3673,7 +3644,7 @@ Transform:
   m_GameObject: {fileID: 677981486}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.1000004, y: -7, z: 0}
+  m_LocalPosition: {x: -6, y: -7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3692,10 +3663,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 0
+  foodSpawnedAfterEat: 0
 --- !u!61 &677981489
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3938,10 +3910,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 2
+  foodSpawnedAfterEat: 0
 --- !u!61 &763156232
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6391,10 +6364,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 3
+  foodSpawnedAfterEat: 0
 --- !u!61 &1149699807
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6962,8 +6936,8 @@ Transform:
   - {fileID: 1741257626}
   - {fileID: 160291025}
   - {fileID: 616454442}
-  - {fileID: 425770654}
   - {fileID: 412408928}
+  - {fileID: 216758359}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1281507327
@@ -7272,7 +7246,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2038276897}
+    m_TransformParent: {fileID: 216758359}
     m_Modifications:
     - target: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_Name
@@ -7316,15 +7290,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7395,7 +7369,7 @@ Transform:
   m_GameObject: {fileID: 1411670160}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.9, y: 13, z: 0}
+  m_LocalPosition: {x: 21, y: 13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7414,10 +7388,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 0
+  foodSpawnedAfterEat: 0
 --- !u!61 &1411670163
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7700,10 +7675,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
-  scoreManager: {fileID: 616454441}
   foodColor: 1
+  foodSpawnedAfterEat: 0
 --- !u!61 &1482955354
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -55588,7 +55564,7 @@ MonoBehaviour:
   uiManager: {fileID: 384613659}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 160291026}
-  doorController: {fileID: 216758360}
+  doorManager: {fileID: 216758360}
   snake: {fileID: 1522169290}
   timer: {fileID: 384613658}
   food: {fileID: 620879146}
@@ -57032,41 +57008,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
   m_PrefabInstance: {fileID: 388514539}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2038276896
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2038276897}
-  m_Layer: 0
-  m_Name: Door
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2038276897
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2038276896}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6037067301012278270}
-  - {fileID: 1403205941}
-  - {fileID: 2101115343}
-  - {fileID: 216758359}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2043584440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -57348,7 +57289,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2038276897}
+    m_TransformParent: {fileID: 216758359}
     m_Modifications:
     - target: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_Name
@@ -57759,7 +57700,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2038276897}
+    m_TransformParent: {fileID: 216758359}
     m_Modifications:
     - target: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_Name
@@ -57767,7 +57708,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.34999996
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalScale.y
@@ -57855,4 +57796,3 @@ SceneRoots:
   - {fileID: 1270488836}
   - {fileID: 781086731}
   - {fileID: 1645841858}
-  - {fileID: 2038276897}
