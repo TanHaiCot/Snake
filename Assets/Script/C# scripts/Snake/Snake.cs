@@ -178,26 +178,22 @@ public class Snake : MonoBehaviour
             //return; 
         }
 
-        bool nextIsWallOrDoor = false;
+        bool nextIsWall = false;
 
-        if (mapManager != null && !mapManager.IsWalkable(nextCell))
-        {
-            nextIsWallOrDoor = true;
-        }
+        bool nextIsClosedDoor = false;
 
         //check all the collision on the world space to see which one is overlap with the next position
-        var hits = Physics2D.OverlapPointAll(new Vector2(nextX, nextY));
+        Collider2D[] hits = Physics2D.OverlapBoxAll(new Vector2(nextX, nextY), new Vector2(0.8f, 0.8f), 0f);
+
         foreach (var hit in hits)
-        {
+        {       
             if (hit != null && hit.gameObject != this.gameObject)
             {
-
-                ColoredDoor coloredDoor = hit.GetComponent<ColoredDoor>();
-                if(coloredDoor != null)
+                if (hit.CompareTag("Door"))
                 {
-                    isInputLockOpened = false;
-                    Debug.Log("Hit colored door");
-                    return; 
+                    nextIsClosedDoor = true; 
+                    Debug.Log("Hit door");
+                    break; 
                 }
 
                 if (hit.CompareTag("Opponent Snake"))
@@ -217,14 +213,21 @@ public class Snake : MonoBehaviour
                     continue; 
                 }
 
-                if (hit.CompareTag("Door"))
-                {
-                    nextIsWallOrDoor = true; 
-                }
             }
         }
 
-        if (nextIsWallOrDoor && (snakeAbilities == null || !snakeAbilities.GhostActive))
+        if (nextIsClosedDoor)
+        {
+            isInputLockOpened = false;
+            return;
+        }
+
+        if (mapManager != null && !mapManager.IsWalkable(nextCell))
+        {
+            nextIsWall = true;
+        }
+
+        if (nextIsWall && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
             //Debug.Log("Hit wall/door");
             //gameManager.GameOver();
@@ -233,7 +236,7 @@ public class Snake : MonoBehaviour
         }
 
         // let player finish the move thru wall if the ghost mode is off but the bodies still not yet thru wall
-        if (nextIsWallOrDoor && snakeAbilities != null && snakeAbilities.GhostActive)
+        if (nextIsWall && snakeAbilities != null && snakeAbilities.GhostActive)
         {
             snakeAbilities.NotifyHeadEnteredWall(bodies.Count);
         }
@@ -282,7 +285,7 @@ public class Snake : MonoBehaviour
     public void Restate()
     {
         direction = Vector2Int.right;
-        this.transform.position = new Vector3(-3, -10, 0);
+        this.transform.position = new Vector3(31, -14, 0);
 
         for (int i = 1; i < bodies.Count; i++)
         {

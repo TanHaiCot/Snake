@@ -2087,11 +2087,11 @@ PrefabInstance:
       objectReference: {fileID: 384613650}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.55
+      value: 30.98
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.2
+      value: -13.93
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4250,11 +4250,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 160291026}
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 8
   snake: {fileID: 1522169290}
   opponentSnake: {fileID: 95846454}
+  foodToAvoid:
+  - {fileID: 620879146}
+  - {fileID: 677981488}
+  - {fileID: 1411670162}
+  - {fileID: 246995137}
+  - {fileID: 1149699806}
+  - {fileID: 1482955353}
+  - {fileID: 325792706}
+  - {fileID: 763156231}
   teleportGateManager: {fileID: 0}
   teleportMoveCost: 1
 --- !u!4 &781086731
@@ -7264,6 +7270,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6585986583338692842, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.34999996
@@ -7340,7 +7350,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ColoredDoor
   requiredFoodColor: 2
   requiredFoodAmount: 1
-  doorVisual: {fileID: 745968064}
 --- !u!1 &1411670160
 GameObject:
   m_ObjectHideFlags: 0
@@ -55655,6 +55664,10 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6585986583338692842, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.34999996
@@ -57307,6 +57320,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6585986583338692842, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.35
@@ -57388,7 +57405,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ColoredDoor
   requiredFoodColor: 3
   requiredFoodAmount: 2
-  doorVisual: {fileID: 2101115340}
 --- !u!1 &2115277016
 GameObject:
   m_ObjectHideFlags: 0
@@ -57706,6 +57722,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Orange Door
       objectReference: {fileID: 0}
+    - target: {fileID: 6585986583338692842, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.35
@@ -57782,7 +57802,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ColoredDoor
   requiredFoodColor: 1
   requiredFoodAmount: 2
-  doorVisual: {fileID: 1602164143}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

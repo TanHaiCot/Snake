@@ -14,9 +14,10 @@ public class Pathfinding : MonoBehaviour
     [Header("Map")]
     [SerializeField] private MapManager mapManager;
 
-    [SerializeField] public LayerMask wallLayer;
+    //[SerializeField] public LayerMask wallLayer;
     [SerializeField] Snake snake;
     [SerializeField] AI_Snake opponentSnake;
+    [SerializeField] Food[] foodToAvoid; 
 
     [Header("Teleport")]
     [SerializeField] private TeleportGateManager teleportGateManager;
@@ -40,6 +41,23 @@ public class Pathfinding : MonoBehaviour
         return mapManager.CellToWorld(cell);
     }
 
+    private bool IsFood(Vector2Int pos)
+    {
+        if (foodToAvoid == null)
+            return false; 
+
+        foreach (var food in foodToAvoid)
+        {
+            if (food == null || !food.gameObject.activeInHierarchy) continue;
+
+            Vector2Int foodPos = WorldToGrid(food.transform.position);
+
+            if (foodPos == pos)
+                return true;
+        }
+        return false;
+    }
+
     public bool IsWalkable(Vector2Int position, PathPurpose purpose)
     {
         bool isTeleportCell =
@@ -50,7 +68,12 @@ public class Pathfinding : MonoBehaviour
             return false;
 
         if (purpose == PathPurpose.Patrol)
+        {
+            if (IsFood(position))
+                return false;
+
             return true; 
+        }
 
         if (snake.SpotOccupied(position.x, position.y))
             return false;

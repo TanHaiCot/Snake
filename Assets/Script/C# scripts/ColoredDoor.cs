@@ -4,8 +4,6 @@ public class ColoredDoor : MonoBehaviour
 {
     [SerializeField] Food.FoodColors requiredFoodColor;
     [SerializeField] int requiredFoodAmount;
-    [SerializeField] GameObject doorVisual;
-    //[SerializeField] Collider2D doorCollider;
 
     private int collectedAmount; 
     private bool isDoorOpen;
@@ -27,8 +25,7 @@ public class ColoredDoor : MonoBehaviour
     private void OpenDoor()
     {
         isDoorOpen = true;
-        doorVisual.SetActive(false);
-        //doorCollider.enabled = false;
+        this.gameObject.SetActive(false);
     }
 
     public void ResetDoor()
@@ -36,11 +33,8 @@ public class ColoredDoor : MonoBehaviour
         collectedAmount = 0;
         isDoorOpen = false;
 
-        if (doorVisual != null)
-            doorVisual.SetActive(true);
+        this.gameObject.SetActive(true);
 
-        //if (doorCollider != null)
-        //    doorCollider.enabled = true;
     }
 
 }
