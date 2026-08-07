@@ -78,6 +78,9 @@ public class AI_Snake : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (aiMode == AI_Mode.PlayerIsTarget)
+            UpdateAIState(); 
+
         if (Time.time < nextMoveTime)
             return;
 
@@ -86,11 +89,11 @@ public class AI_Snake : MonoBehaviour
         bool gotMove = false;
 
         if (aiMode == AI_Mode.FoodIsTarget)
-            gotMove = UpdateFoodChase();
-
-        else if (aiMode == AI_Mode.PlayerIsTarget)
         {
-            UpdateAIState(); 
+            gotMove = UpdateFoodChase();
+        }
+        else
+        {
             switch (currentState)
             {
                 case AI_snakeState.Patrol:
@@ -105,10 +108,8 @@ public class AI_Snake : MonoBehaviour
 
         UpdateHeadRotation();
 
-        if (!gotMove)
-            return;
-
-        MoveNextStep(); 
+        if (gotMove)
+            MoveNextStep();
     }
 
     private void MoveNextStep()
@@ -168,35 +169,56 @@ public class AI_Snake : MonoBehaviour
 
         if (canSeePlayer)
         {
-            lastSeenPlayerPos = pathfinding.WorldToGrid(playerSnake.position);
-            hasLastSeenPlayerPos = true;
+            Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
+
+            if(pathfinding.IsMapWalkable(playerPos)) 
+            {
+                lastSeenPlayerPos = playerPos;
+                hasLastSeenPlayerPos = true;
+            }
+
             ChaseTimer = 0f;
 
             if (currentState != AI_snakeState.Chase)
             {
                 currentState = AI_snakeState.Chase;
                 currentPath = null;
+                hasNextPathCell = false;
                 hasPatrolDestination = false;
+
                 Debug.Log("Switch to Chase");
             }
 
             return;
         }
 
-        if (currentState == AI_snakeState.Chase)
-        {
-            ChaseTimer += Time.fixedDeltaTime;
+        if (currentState != AI_snakeState.Chase)
+            return;
+        
+        ChaseTimer += Time.fixedDeltaTime;
 
-            if (ChaseTimer >= ChasingDelay)
-            {
-                currentState = AI_snakeState.Patrol;
-                ChaseTimer = 0f;
-                hasLastSeenPlayerPos = false;
-                currentPath = null;
-                hasPatrolDestination = false;
-                Debug.Log("Switch to Patrol");
-            }
+        if (ChaseTimer >= ChasingDelay)
+        {
+            SwitchToPatrol(); 
         }
+        
+    }
+
+    private void SwitchToPatrol()
+    {
+        currentState = AI_snakeState.Patrol;
+
+        ChaseTimer = 0f;
+
+        hasLastSeenPlayerPos = false;
+        lastSeenPlayerPos = Vector2Int.zero;
+
+        currentPath = null;
+        hasNextPathCell = false;
+
+        hasPatrolDestination = false;
+
+        Debug.Log("Switch to Patrol");
     }
 
     private bool UpdatePatrol()
@@ -343,8 +365,13 @@ public class AI_Snake : MonoBehaviour
 
         if (CanSeePlayer())
         {
-            lastSeenPlayerPos = pathfinding.WorldToGrid(playerSnake.position);
-            hasLastSeenPlayerPos = true;
+            Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
+
+            if(pathfinding.IsMapWalkable(playerPos)) 
+            {
+                lastSeenPlayerPos = playerPos;
+                hasLastSeenPlayerPos = true;
+            }
         }
 
         if (!hasLastSeenPlayerPos)
@@ -352,11 +379,18 @@ public class AI_Snake : MonoBehaviour
 
         Vector2Int targetPos = lastSeenPlayerPos;
 
+        if(!CanSeePlayer() && currentPos == targetPos)
+        {
+            SwitchToPatrol(); 
+            return false;
+        }
+
         currentPath = pathfinding.FindPath(currentPos, targetPos, Pathfinding.PathPurpose.PlayerChasing);
 
         if (currentPath == null || currentPath.Count == 0)
         {
-            currentPath = null;
+            hasNextPathCell = false;    
+
             if (TryGetRecoveryDirection(currentPos, targetPos, out Vector2Int recoveryDir))
             {
                 direction = recoveryDir;
@@ -366,15 +400,32 @@ public class AI_Snake : MonoBehaviour
             return false;
         }
 
-        nextPathCell = currentPath[0];
-        hasNextPathCell = true;
-        Vector2Int desiredDir = nextPathCell - currentPos;
+        Vector2Int candidateNextCell = currentPath[0];
+        Vector2Int desiredDir = candidateNextCell - currentPos;
 
-        if (pathfinding.IsWalkable(currentPos + desiredDir, Pathfinding.PathPurpose.PlayerChasing) || currentPos + desiredDir == targetPos)
+        bool isNormalMove =
+        Mathf.Abs(desiredDir.x) +
+        Mathf.Abs(desiredDir.y) == 1;
+
+        if (isNormalMove &&
+        pathfinding.IsMapWalkable(candidateNextCell))
         {
+            nextPathCell = candidateNextCell;
+            hasNextPathCell = true;
             direction = desiredDir;
             return true;
         }
+
+        bool isTeleportMove = pathfinding.TryGetTeleportExit(currentPos, out Vector2Int teleportExit) && teleportExit == candidateNextCell;
+
+        if (isTeleportMove)
+        {
+            nextPathCell = candidateNextCell;
+            hasNextPathCell = true;
+            return true;
+        }
+
+        hasNextPathCell = false;
 
         if (TryGetRecoveryDirection(currentPos, targetPos, out Vector2Int fallbackDir))
         {
@@ -394,6 +445,9 @@ public class AI_Snake : MonoBehaviour
 
         Vector2Int myPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int playerPos = pathfinding.WorldToGrid(playerSnake.position);
+
+        if (!pathfinding.IsMapWalkable(playerPos))
+            return false;
 
         int dist = Mathf.Abs(myPos.x - playerPos.x) + Mathf.Abs(myPos.y - playerPos.y);
 

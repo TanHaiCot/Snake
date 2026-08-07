@@ -58,7 +58,12 @@ public class Pathfinding : MonoBehaviour
         return false;
     }
 
-    public bool IsWalkable(Vector2Int position, PathPurpose purpose)
+    public bool IsMapWalkable(Vector2Int position)        //check for the map only
+    {
+        return mapManager.IsWalkable(position);
+    }
+
+    public bool IsWalkable(Vector2Int position, PathPurpose purpose)        //check for all cases
     {
         bool isTeleportCell =
         teleportGateManager != null &&
@@ -132,7 +137,10 @@ public class Pathfinding : MonoBehaviour
                         break;
 
                     case PathPurpose.PlayerChasing:
-                        if (neighbourPos != targetPos && !IsWalkable(neighbourPos, purpose)) //allow the target position even if occupied
+                        if(!IsMapWalkable(neighbourPos))   //extra check for wall -> because the player chasing can be messed up due to below code
+                            continue;
+
+                        if (neighbourPos != targetPos && !IsWalkable(neighbourPos, purpose)) //allow the target position -> because this IsWalkable include the tile occupied by player snake -> skip the case
                             continue;
                         break; 
                 }
