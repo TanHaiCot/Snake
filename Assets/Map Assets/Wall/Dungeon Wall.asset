@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dungeon Wall
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: 7482667652216324306, guid: c3e352fb86fb30a48ad2b1ca4d1f1215, type: 3}
-  m_Color: {r: 0.27450982, g: 0.30588236, b: 0.34509805, a: 1}
+  m_Color: {r: 0.29803923, g: 0.34117648, b: 0.38431376, a: 1}
   m_Transform:
     e00: 1
     e01: 0

@@ -99,8 +99,10 @@ public class Pathfinding : MonoBehaviour
         startNode.hCost = GetDistance(startPos, targetPos);
 
         List<Node> openList = new List<Node>();
+        HashSet<Vector2Int> openSet = new HashSet<Vector2Int>();
         HashSet<Vector2Int> closedSet = new HashSet<Vector2Int>();  
         openList.Add(startNode);
+        openSet.Add(startPos);
 
         while(openList.Count > 0)
         {
@@ -114,6 +116,7 @@ public class Pathfinding : MonoBehaviour
                 }
             }
             openList.Remove(currentNode);
+            openSet.Remove(currentNode.position);
             closedSet.Add(currentNode.position);
 
             if(currentNode.position == targetPos)
@@ -148,14 +151,18 @@ public class Pathfinding : MonoBehaviour
                 Node neighbourNode = GetNode(nodes, neighbourPos);
                 int gCostToNeighbour = currentNode.gCost + GetDistance(currentNode.position, neighbourPos); 
               
-                if (gCostToNeighbour < neighbourNode.gCost || !openList.Contains(neighbourNode))
+                bool isOpen = openSet.Contains(neighbourPos);
+                if (gCostToNeighbour < neighbourNode.gCost || !isOpen)
                 {
                     neighbourNode.gCost = gCostToNeighbour;
                     neighbourNode.hCost = GetDistance(neighbourPos, targetPos);
                     neighbourNode.parent = currentNode;
 
-                    if (!openList.Contains(neighbourNode))
+                    if (!isOpen)
+                    {
                         openList.Add(neighbourNode);
+                        openSet.Add(neighbourPos);
+                    }
                     
                 }
             }
@@ -180,14 +187,18 @@ public class Pathfinding : MonoBehaviour
                         Node teleportNode = GetNode(nodes, teleportExit);
                         int gCostToTeleport = currentNode.gCost + teleportMoveCost;
 
-                        if (gCostToTeleport < teleportNode.gCost || !openList.Contains(teleportNode))
+                        bool teleportIsOpen = openSet.Contains(teleportExit);
+                        if (gCostToTeleport < teleportNode.gCost || !teleportIsOpen)
                         {
                             teleportNode.gCost = gCostToTeleport;
                             teleportNode.hCost = GetDistance(teleportExit, targetPos);
                             teleportNode.parent = currentNode;
 
-                            if (!openList.Contains(teleportNode))
+                            if (!teleportIsOpen)
+                            {
                                 openList.Add(teleportNode);
+                                openSet.Add(teleportExit);
+                            }
                         }
                     }
                 }
