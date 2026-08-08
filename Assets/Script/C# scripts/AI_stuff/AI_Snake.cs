@@ -123,7 +123,7 @@ public class AI_Snake : MonoBehaviour
 
         Vector2Int nextCell;
 
-        if (hasNextPathCell/*currentPath != null && currentPath.Count > 0*/)
+        if (hasNextPathCell)
         {
             nextCell = nextPathCell;
 
@@ -139,7 +139,6 @@ public class AI_Snake : MonoBehaviour
                      teleportExit == nextCell)
             {
                  OnTeleGateTrigger?.Invoke();
-                // Do nothing. Keep current direction.
             }
             // Invalid path step
             else
