@@ -2099,6 +2099,7 @@ Transform:
   - {fileID: 970528967}
   - {fileID: 2105124381}
   - {fileID: 898478505}
+  - {fileID: 1777971961}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1215213009
@@ -25295,7 +25296,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 50}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1565137837
@@ -25964,9 +25965,10 @@ MonoBehaviour:
   themeTitleText: {fileID: 1507855690}
   themeImage: {fileID: 672799964}
   levelData: {fileID: 11400000, guid: 307f18f7299b19249af86ac05b153584, type: 2}
+  introSound: {fileID: 8300000, guid: dad3dfb7533283a4190802f21f5c8b72, type: 3}
   initialBlackDuration: 0.5
-  fadeInDuration: 2
-  displayDuration: 2
+  fadeInDuration: 6
+  displayDuration: 2.5
   fadeOutDuration: 2
   finalBlackDuration: 0.5
 --- !u!4 &1777971961
@@ -25977,12 +25979,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1777971959}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1154653238}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1782255190
 GameObject:
@@ -26853,4 +26855,3 @@ SceneRoots:
   - {fileID: 1962900603}
   - {fileID: 1831936488}
   - {fileID: 356032827}
-  - {fileID: 1777971961}

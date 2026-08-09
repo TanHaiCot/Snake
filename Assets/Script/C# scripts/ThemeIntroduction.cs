@@ -13,6 +13,7 @@ public class ThemeIntroduction : MonoBehaviour
 
     [Header("Theme Information")]
     [SerializeField] LevelData levelData;
+    [SerializeField] AudioClip introSound;
 
     [Header("Timing")]
     [SerializeField, Min(0f)] private float initialBlackDuration = 0.5f;
@@ -23,7 +24,7 @@ public class ThemeIntroduction : MonoBehaviour
 
     private float previousTimeScale;
     private bool pausedByIntroduction;
-    
+
     private void Awake()
     {
         if(!ShouldShowIntroduction())
@@ -87,8 +88,11 @@ public class ThemeIntroduction : MonoBehaviour
     {
         if (!ShouldShowIntroduction())
             yield break;
-  
+
         yield return new WaitForSecondsRealtime(initialBlackDuration);
+        
+        if (introSound != null)
+            AudioManager.Instance?.playSFX(introSound);
 
         // Picture changes from black tint to its full colors.
         // Text fades in at the same time.
