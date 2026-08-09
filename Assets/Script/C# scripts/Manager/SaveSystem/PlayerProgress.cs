@@ -13,6 +13,10 @@ public class PlayerProgress : MonoBehaviour
     public bool skillTreeUnlocked;
     public bool hasSavedEnergy;
     public float savedEnergy;
+    
+    public List<string> chosenSkillIds = new List<string>();
+    public List<string> seenThemeIntroductionIds = new List<string>();
+
     public int ContinueLevelBuildIndex => Mathf.Max(highestCompletedLevelBuildIndex + 1, SaveSystem.FirstGameplayLevelBuildIndex);
 
     public bool HasSkill(string skillId)
@@ -23,7 +27,6 @@ public class PlayerProgress : MonoBehaviour
         return chosenSkillIds.Contains(skillId);
     }
 
-    public List<string> chosenSkillIds = new List<string>();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
@@ -66,6 +69,9 @@ public class PlayerProgress : MonoBehaviour
 
         if (chosenSkillIds == null)
             chosenSkillIds = new List<string>();
+
+        if (seenThemeIntroductionIds == null)
+            seenThemeIntroductionIds = new List<string>();
 
         LoadSavedProgress();
     }
@@ -125,6 +131,34 @@ public class PlayerProgress : MonoBehaviour
         if (chosenSkillIds == null)
             chosenSkillIds = new List<string>();
 
+        if (seenThemeIntroductionIds == null)
+            seenThemeIntroductionIds = new List<string>();
+
         chosenSkillIds.Clear();
+        seenThemeIntroductionIds.Clear();
+    }
+
+    public bool HasSeenThemeIntroduction(string themeId)
+    {
+        if (string.IsNullOrWhiteSpace(themeId))
+            return true;
+
+        return seenThemeIntroductionIds != null && 
+               seenThemeIntroductionIds.Contains(themeId);
+    }
+
+    public void MarkThemeIntroductionSeen(string themeId)
+    {
+        if (string.IsNullOrWhiteSpace(themeId))
+            return;
+
+        if (seenThemeIntroductionIds == null)
+            seenThemeIntroductionIds = new List<string>();
+
+        if (seenThemeIntroductionIds.Contains(themeId))
+            return;
+
+        seenThemeIntroductionIds.Add(themeId);
+        SaveProgress();
     }
 }
