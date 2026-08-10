@@ -97,8 +97,8 @@ public class ThemeIntroduction : MonoBehaviour
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
 
-        
         introductionPanel.SetActive(false);
+
         yield return new WaitForSecondsRealtime(waitingTimeBeforeStart);
 
         ResumeGame();

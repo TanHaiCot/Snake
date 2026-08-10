@@ -1261,9 +1261,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 786049859}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 279573098}
   opponentSnake: {fileID: 0}
-  scoreManager: {fileID: 616454441}
+  foodColor: 0
+  foodSpawnedAfterEat: 1
 --- !u!1001 &735088853
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1559,11 +1561,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6263938801152978663, guid: 264a200bfee8abd4b901935f9132276b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.83385
+      value: 22.58
       objectReference: {fileID: 0}
     - target: {fileID: 6263938801152978663, guid: 264a200bfee8abd4b901935f9132276b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.21
+      value: -2.02
       objectReference: {fileID: 0}
     - target: {fileID: 6263938801152978663, guid: 264a200bfee8abd4b901935f9132276b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -25299,11 +25301,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.99495
+      value: -4.34
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.97119
+      value: 9.19
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -25357,6 +25359,18 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 616454441}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.x
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.y
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.y
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: teleportGateManager
       value: 
@@ -25526,7 +25540,7 @@ MonoBehaviour:
   uiManager: {fileID: 586960786}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 786049859}
-  doorController: {fileID: 1962900602}
+  doorManager: {fileID: 0}
   snake: {fileID: 279573098}
   timer: {fileID: 1874788993}
   food: {fileID: 620879146}
@@ -25559,7 +25573,9 @@ MonoBehaviour:
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 0}
+  startPosition: {x: 23, y: -2, z: 0}
   currentState: 0
+  chaseRepathInterval: 0.25
   OnFoodEatenByPlayer:
     m_PersistentCalls:
       m_Calls: []
@@ -25677,11 +25693,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Pathfinding
   mapManager: {fileID: 786049859}
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 8
   snake: {fileID: 279573098}
   opponentSnake: {fileID: 1748671259}
+  foodToAvoid: []
   teleportGateManager: {fileID: 2105124382}
   teleportMoveCost: 1
 --- !u!1001 &1811173065
@@ -25918,7 +25932,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 759811116}
-  door: {fileID: 1602164143}
+  mainDoor: {fileID: 0}
+  coloredDoors: []
+  mainDoorColor: 0
+  isColoredDoorRuleActive: 0
 --- !u!4 &1962900603
 Transform:
   m_ObjectHideFlags: 0
