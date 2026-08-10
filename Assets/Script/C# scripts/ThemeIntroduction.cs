@@ -21,6 +21,9 @@ public class ThemeIntroduction : MonoBehaviour
     [SerializeField, Min(0f)] private float displayDuration = 2f;
     [SerializeField, Min(0f)] private float fadeOutDuration = 2f;
     [SerializeField, Min(0f)] private float finalBlackDuration = 0.5f;
+    [SerializeField, Min(0f)] private float waitingTimeBeforeStart = 1f; 
+
+
 
     private float previousTimeScale;
     private bool pausedByIntroduction;
@@ -54,35 +57,6 @@ public class ThemeIntroduction : MonoBehaviour
         Canvas.ForceUpdateCanvases();
 
     }
-
-    //private IEnumerator Start()
-    //{
-    //    if (!ShouldShowIntroduction())
-    //        yield break;
-
-    //    //canvasGroup.alpha = 0f;
-
-    //    yield return new WaitForSecondsRealtime(initialBlackDuration);
-
-    //    yield return Fade(0f, 1f, fadeInDuration);
-
-    //    yield return new WaitForSecondsRealtime(displayDuration);
-
-    //    yield return Fade(1f, 0f, fadeOutDuration);
-
-    //    yield return new WaitForSecondsRealtime(finalBlackDuration);
-
-    //    // Save only after the introduction has finished playing.
-    //    //PlayerProgress progress = PlayerProgress.EnsureInstance();
-    //    //progress.MarkThemeIntroductionSeen(levelData.themeIntroductionId);
-
-    //    canvasGroup.blocksRaycasts = false;
-    //    canvasGroup.interactable = false;
-
-    //    ResumeGame();
-
-    //    introductionPanel.SetActive(false);
-    //}
 
     private IEnumerator Start()
     {
@@ -123,9 +97,11 @@ public class ThemeIntroduction : MonoBehaviour
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
 
-        ResumeGame();
-            
+        
         introductionPanel.SetActive(false);
+        yield return new WaitForSecondsRealtime(waitingTimeBeforeStart);
+
+        ResumeGame();
     }
 
     private bool ShouldShowIntroduction()
@@ -136,38 +112,6 @@ public class ThemeIntroduction : MonoBehaviour
         //return !PlayerProgress.EnsureInstance().HasSeenThemeIntroduction(levelData.themeIntroductionId);
         return true; 
     }
-
-    //private IEnumerator Fade(float startAlpha, float endAlpha, float duration)
-    //{
-    //    if (duration <= 0f)
-    //    {
-    //        canvasGroup.alpha = endAlpha;
-    //        yield break;
-    //    }
-
-    //    float elapsed = 0f;
-
-    //    while (elapsed < duration)
-    //    {
-    //        elapsed += Time.unscaledDeltaTime;
-
-    //        float progress = Mathf.Clamp01(elapsed / duration);
-
-    //        // Slow at beginning, faster in middle,
-    //        // slow again near the end.
-    //        progress = Mathf.SmoothStep(0f, 1f, progress);
-
-    //        canvasGroup.alpha = Mathf.Lerp(
-    //            startAlpha,
-    //            endAlpha,
-    //            progress
-    //        );
-
-    //        yield return null;
-    //    }
-
-    //    canvasGroup.alpha = endAlpha;
-    //}
     private IEnumerator FadeTheme(
     Color imageStartColor,
     Color imageEndColor,
