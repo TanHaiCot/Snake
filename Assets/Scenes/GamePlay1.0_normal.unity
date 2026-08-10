@@ -340,6 +340,7 @@ MonoBehaviour:
   hasSavedEnergy: 0
   savedEnergy: 0
   chosenSkillIds: []
+  seenThemeIntroductionIds: []
 --- !u!4 &330008683
 Transform:
   m_ObjectHideFlags: 0
@@ -605,11 +606,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.3
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -664,9 +665,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1741257627}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerPos.x
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerPos.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 616454441}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.x
+      value: -17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -952,9 +973,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 1239357050}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 914842887}
   opponentSnake: {fileID: 0}
-  scoreManager: {fileID: 616454441}
+  foodColor: 0
+  foodSpawnedAfterEat: 1
 --- !u!114 &762643862 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4014602107315588675, guid: 2bd4bc1780bc2664ebfbb0d2c5f646a7, type: 3}
@@ -1435,6 +1458,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 1317960301}
   lightFloorTile: {fileID: 11400000, guid: aaaa847863dcc674cbf5bb3f1244a2fb, type: 2}
   darkFloorTile: {fileID: 11400000, guid: 8c52d3edd1b312e46b9f453077961e18, type: 2}
+  antiSnakeWallTile: {fileID: 0}
 --- !u!114 &1254368876 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3350848268838311341, guid: f169e39439ec7e64eadea27fc7dc46e6, type: 3}
@@ -3225,7 +3249,7 @@ MonoBehaviour:
   uiManager: {fileID: 1344073966}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
-  doorController: {fileID: 1741487610}
+  doorManager: {fileID: 0}
   snake: {fileID: 914842887}
   timer: {fileID: 1390239444}
   food: {fileID: 620879146}
@@ -3265,7 +3289,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1259431944}
-  door: {fileID: 1602164143}
+  mainDoor: {fileID: 0}
+  coloredDoors: []
+  mainDoorColor: 0
+  isColoredDoorRuleActive: 0
 --- !u!4 &1741487611
 Transform:
   m_ObjectHideFlags: 0

@@ -8,7 +8,11 @@ public class LevelData : ScriptableObject
     public float timeLimit; // in seconds
 
     [Header("Level Audio")]
-    public AudioClip backgroundMusic;   
+    public AudioClip backgroundMusic;
+
+    [Header("Theme Introduction")]
+    public string themeIntroductionId;
+    public string themeIntroductionTitle;
 
     public bool enableReverseMovement;
     public bool isSkillTreeUnlocked; // Whether the skill tree is unlocked after completing this level

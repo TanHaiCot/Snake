@@ -10,12 +10,13 @@ public class AI_Snake : MonoBehaviour
     [SerializeField] private AI_Mode aiMode = AI_Mode.FoodIsTarget;
 
     [Header("References")]
-    [SerializeField] private Pathfinding pathfinding;
-    [SerializeField] private Transform playerSnake;
-    [SerializeField] private Transform bodyPrefab;
-    [SerializeField] private Transform foodTarget;
-    [SerializeField] ScoreManager scoreManager;    
-    
+    [SerializeField] Pathfinding pathfinding;
+    [SerializeField] Transform playerSnake;
+    [SerializeField] Transform bodyPrefab;
+    [SerializeField] Transform foodTarget;
+    [SerializeField] ScoreManager scoreManager;
+    [SerializeField] Vector3 startPosition;
+
     [Header("State")]
     [SerializeField] private AI_snakeState currentState = AI_snakeState.Patrol;
 
@@ -619,7 +620,7 @@ public class AI_Snake : MonoBehaviour
     public void Restate()
     {
         direction = Vector2Int.right;
-        Vector2Int startCell = pathfinding.WorldToGrid(Vector3.zero);
+        Vector2Int startCell = pathfinding.WorldToGrid(startPosition);
         transform.position = pathfinding.GridToWorld(startCell);
 
         for (int i = 1; i < bodies.Count; i++)

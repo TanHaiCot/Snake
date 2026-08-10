@@ -5,14 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class Snake : MonoBehaviour
 {
-    private Vector2Int direction = Vector2Int.right;    //using Vector2Int for grid-based game 
-    
+    [SerializeField] Vector2Int startDirection = Vector2Int.right;    //using Vector2Int for grid-based game 
+    private Vector2Int direction; 
+
     private List<Transform> bodies = new List<Transform>();
 
     [SerializeField] Transform bodyPrefab;
     [SerializeField] Transform bodyContainer;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
+    [SerializeField] Vector3 playerStartPos;
 
     [Header("Managers")]
     [SerializeField] GameManager gameManager;
@@ -47,6 +49,11 @@ public class Snake : MonoBehaviour
 
     private void Awake()
     {
+        if(startDirection == Vector2Int.zero)
+        {
+            startDirection = Vector2Int.right;
+        }
+
         Restate();
     }
 
@@ -284,8 +291,8 @@ public class Snake : MonoBehaviour
 
     public void Restate()
     {
-        direction = Vector2Int.right;
-        this.transform.position = new Vector3(31, -14, 0);
+        direction = startDirection;
+        this.transform.position = playerStartPos;
 
         for (int i = 1; i < bodies.Count; i++)
         {

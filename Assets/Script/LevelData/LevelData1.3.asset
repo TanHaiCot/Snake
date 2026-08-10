@@ -15,5 +15,7 @@ MonoBehaviour:
   targetScore: 5
   timeLimit: 60
   backgroundMusic: {fileID: 8300000, guid: 92de11b45c28c854ab4ab41ca2421c51, type: 3}
+  themeIntroductionId: forest
+  themeIntroductionTitle: Rung Ram VL
   enableReverseMovement: 0
   isSkillTreeUnlocked: 1

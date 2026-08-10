@@ -12,6 +12,7 @@ public class SaveData
     public bool hasSavedEnergy;
     public float savedEnergy;
     public List<string> chosenSkillIds = new List<string>();
+    public List<string> seenThemeIntroductionIds = new List<string>();
 }
 
 public static class SaveSystem
@@ -49,7 +50,8 @@ public static class SaveSystem
             skillTreeUnlocked = progress.skillTreeUnlocked,
             hasSavedEnergy = progress.hasSavedEnergy,
             savedEnergy = progress.savedEnergy,
-            chosenSkillIds = new List<string>(progress.chosenSkillIds ?? new List<string>())
+            chosenSkillIds = new List<string>(progress.chosenSkillIds ?? new List<string>()),
+            seenThemeIntroductionIds = new List<string>(progress.seenThemeIntroductionIds ?? new List<string>())
         };
 
         string json = JsonUtility.ToJson(data, true);
@@ -71,6 +73,7 @@ public static class SaveSystem
         progress.hasSavedEnergy = data.hasSavedEnergy;
         progress.savedEnergy = data.savedEnergy;
         progress.chosenSkillIds = data.chosenSkillIds ?? new List<string>();
+        progress.seenThemeIntroductionIds = data.seenThemeIntroductionIds ?? new List<string>();
 
         Save(progress);
         return true;
@@ -99,6 +102,9 @@ public static class SaveSystem
     {
         if (data.chosenSkillIds == null)
             data.chosenSkillIds = new List<string>();
+
+        if (data.seenThemeIntroductionIds == null)
+            data.seenThemeIntroductionIds = new List<string>();
 
         data.savedEnergy = Mathf.Max(0f, data.savedEnergy);
 

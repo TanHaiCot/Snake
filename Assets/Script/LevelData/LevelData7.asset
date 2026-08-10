@@ -15,5 +15,7 @@ MonoBehaviour:
   targetScore: 8
   timeLimit: 105
   backgroundMusic: {fileID: 8300000, guid: 45aef78547428b84eaa8b1803f49a2ff, type: 3}
+  themeIntroductionId: Dungeon
+  themeIntroductionTitle: DUN DIN VL
   enableReverseMovement: 0
   isSkillTreeUnlocked: 1
