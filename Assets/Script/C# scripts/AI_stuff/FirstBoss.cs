@@ -49,6 +49,7 @@ public class FirstBoss : MonoBehaviour
     [SerializeField] private bool drawFleeChoice = true;
 
     [Header("Boss Settings")]
+    [SerializeField] Vector2Int startAnchor;
     private int initialBodySegments = 3;
     private const int BossCellSize = 2;
     public BossState state = BossState.Chasing;
@@ -727,7 +728,7 @@ public class FirstBoss : MonoBehaviour
 
     private void Restate()
     {
-        bossAnchor = new Vector2Int(2, -2);
+        bossAnchor = startAnchor;
         transform.position = AnchorToWorld(bossAnchor);
 
         for (int i = 1; i < bossBodies.Count; i++)
@@ -932,8 +933,6 @@ public class FirstBoss : MonoBehaviour
         }
 
         return true;
-
-
     }
 
     private int GetDistance(Vector2Int a, Vector2Int b)          //Mahattan distance heuristic for A* pathfinding

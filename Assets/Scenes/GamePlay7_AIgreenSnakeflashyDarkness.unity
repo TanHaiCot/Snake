@@ -1587,11 +1587,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6263938801152978663, guid: 264a200bfee8abd4b901935f9132276b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.83385
+      value: 22.94
       objectReference: {fileID: 0}
     - target: {fileID: 6263938801152978663, guid: 264a200bfee8abd4b901935f9132276b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.21
+      value: -1.67
       objectReference: {fileID: 0}
     - target: {fileID: 6263938801152978663, guid: 264a200bfee8abd4b901935f9132276b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -25363,11 +25363,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.99495
+      value: -4.72
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.97119
+      value: 10.32
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -25421,6 +25421,22 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 616454441}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.y
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: teleportGateManager
       value: 
@@ -25623,6 +25639,7 @@ MonoBehaviour:
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 0}
+  startPosition: {x: 23, y: -2, z: 0}
   currentState: 0
   chaseRepathInterval: 0.25
   OnFoodEatenByPlayer:
@@ -25733,9 +25750,9 @@ MonoBehaviour:
   levelData: {fileID: 11400000, guid: 307f18f7299b19249af86ac05b153584, type: 2}
   introSound: {fileID: 8300000, guid: dad3dfb7533283a4190802f21f5c8b72, type: 3}
   initialBlackDuration: 0.5
-  fadeInDuration: 6
+  fadeInDuration: 6.5
   displayDuration: 2.5
-  fadeOutDuration: 2
+  fadeOutDuration: 3
   finalBlackDuration: 0.5
 --- !u!4 &1777971961
 Transform:
@@ -26627,6 +26644,14 @@ PrefabInstance:
     - target: {fileID: 7372914258874996078, guid: e64b0fed48bb2884e8e88cd3937aa42e, type: 3}
       propertyPath: m_Name
       value: Intro
+      objectReference: {fileID: 0}
+    - target: {fileID: 7372914258874996078, guid: e64b0fed48bb2884e8e88cd3937aa42e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7401503651216751019, guid: e64b0fed48bb2884e8e88cd3937aa42e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

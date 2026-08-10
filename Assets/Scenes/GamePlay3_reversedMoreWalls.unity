@@ -1232,9 +1232,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 1881202310}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1280033605}
   opponentSnake: {fileID: 0}
-  scoreManager: {fileID: 616454441}
+  foodColor: 0
+  foodSpawnedAfterEat: 1
 --- !u!1 &627785483
 GameObject:
   m_ObjectHideFlags: 0
@@ -2005,11 +2007,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.57911
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.7567
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2066,6 +2068,18 @@ PrefabInstance:
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: reverseMovement
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.x
+      value: -6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.y
+      value: -7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.x
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: OnFoodEaten.m_PersistentCalls.m_Calls.Array.size
@@ -2363,7 +2377,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1844405824}
-  door: {fileID: 1602164143}
+  mainDoor: {fileID: 0}
+  coloredDoors: []
+  mainDoorColor: 0
+  isColoredDoorRuleActive: 0
 --- !u!4 &1454960557
 Transform:
   m_ObjectHideFlags: 0
@@ -23595,7 +23612,7 @@ MonoBehaviour:
   uiManager: {fileID: 356007209}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1881202310}
-  doorController: {fileID: 1454960556}
+  doorManager: {fileID: 0}
   snake: {fileID: 1280033605}
   timer: {fileID: 1496541187}
   food: {fileID: 620879146}
@@ -23779,6 +23796,7 @@ MonoBehaviour:
   wallTilemap: {fileID: 1627638583}
   lightFloorTile: {fileID: 11400000, guid: aaaa847863dcc674cbf5bb3f1244a2fb, type: 2}
   darkFloorTile: {fileID: 11400000, guid: 8c52d3edd1b312e46b9f453077961e18, type: 2}
+  antiSnakeWallTile: {fileID: 0}
 --- !u!4 &1881202312
 Transform:
   m_ObjectHideFlags: 0

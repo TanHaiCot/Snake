@@ -2135,9 +2135,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mapManager: {fileID: 1747881031}
+  scoreManager: {fileID: 616454441}
   snake: {fileID: 1714112884}
   opponentSnake: {fileID: 0}
-  scoreManager: {fileID: 616454441}
+  foodColor: 0
+  foodSpawnedAfterEat: 1
 --- !u!1001 &627456822
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2565,7 +2567,7 @@ GameObject:
   - component: {fileID: 976661293}
   - component: {fileID: 976661292}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2584,7 +2586,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1385121245}
-  door: {fileID: 1602164143}
+  mainDoor: {fileID: 1602164143}
+  coloredDoors: []
+  mainDoorColor: 0
+  isColoredDoorRuleActive: 0
 --- !u!4 &976661293
 Transform:
   m_ObjectHideFlags: 0
@@ -2593,14 +2598,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 976661291}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6037067301012278270}
   - {fileID: 1058955551}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1833735822}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &988965813
 GameObject:
@@ -35829,11 +35834,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.89513
+      value: 0.79
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.16869
+      value: -10.56
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -35895,6 +35900,18 @@ PrefabInstance:
       propertyPath: darknessManager
       value: 
       objectReference: {fileID: 1076271460}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.y
+      value: -11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.x
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: teleportGateManager
       value: 
@@ -36902,7 +36919,7 @@ MonoBehaviour:
   uiManager: {fileID: 488773416}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1747881031}
-  doorController: {fileID: 976661292}
+  doorManager: {fileID: 976661292}
   snake: {fileID: 1714112884}
   timer: {fileID: 488773415}
   food: {fileID: 620879146}
@@ -37136,6 +37153,7 @@ Transform:
   - {fileID: 1076271461}
   - {fileID: 1325704554}
   - {fileID: 1993206611}
+  - {fileID: 976661293}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1893045663 stripped
@@ -37738,5 +37756,4 @@ SceneRoots:
   - {fileID: 608004691}
   - {fileID: 1833735822}
   - {fileID: 1134756931}
-  - {fileID: 976661293}
   - {fileID: 474997290}

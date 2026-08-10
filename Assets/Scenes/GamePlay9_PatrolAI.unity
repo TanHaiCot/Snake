@@ -726,7 +726,7 @@ Transform:
   m_GameObject: {fileID: 95846448}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.67, y: -7.53, z: 0}
+  m_LocalPosition: {x: -21.69, y: 13.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -751,7 +751,9 @@ MonoBehaviour:
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 0}
+  startPosition: {x: -22, y: 13, z: 0}
   currentState: 0
+  chaseRepathInterval: 0.25
   OnFoodEatenByPlayer:
     m_PersistentCalls:
       m_Calls: []
@@ -2087,11 +2089,11 @@ PrefabInstance:
       objectReference: {fileID: 384613650}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30.98
+      value: 25.98
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -13.93
+      value: 1.41
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2149,6 +2151,18 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 616454441}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.x
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: playerStartPos.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: startDirection.x
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: coloredDoorManager
       value: 
