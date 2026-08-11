@@ -704,11 +704,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -20.59
+      value: -15.73
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.14
+      value: 2.66
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -759,6 +759,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1239357050}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      propertyPath: doorManager
+      value: 
+      objectReference: {fileID: 1745404496}
+    - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1741257627}
@@ -776,11 +780,11 @@ PrefabInstance:
       objectReference: {fileID: 616454441}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: playerStartPos.x
-      value: 17
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: playerStartPos.y
-      value: -5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: startDirection.x
@@ -1868,10 +1872,28 @@ MonoBehaviour:
     dialogueLines:
     - character:
         name: ???
-      line: 'STOP...!!! '
+      line: 'HA HA HA!!! Look at you... '
     - character:
         name: Me
       line: 'Who''s that? Who''s talking? '
+    - character:
+        name: ???
+      line: It doesn't matter... just to let you know that you are being poisoned
+    - character:
+        name: Me
+      line: WHAT!? HOW!??
+    - character:
+        name: ???
+      line: All your movements will be reversed under the influence of the poison
+    - character:
+        name: ???
+      line: Let's see what you can do... hahaha
+    - character:
+        name: Me
+      line: Wait... Damn it, he's gone
+    - character:
+        name: Me
+      line: What is happening to my body, i cannot control it anymore...
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
 --- !u!1 &1745404495
 GameObject:
@@ -1884,7 +1906,7 @@ GameObject:
   - component: {fileID: 1745404497}
   - component: {fileID: 1745404496}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1915,14 +1937,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745404495}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1339192754}
   - {fileID: 1602164150}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1790016287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1770224347 stripped
 MonoBehaviour:
@@ -1970,6 +1992,7 @@ Transform:
   - {fileID: 616454442}
   - {fileID: 213921609}
   - {fileID: 2092627201}
+  - {fileID: 1745404497}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1799720106 stripped
@@ -2349,4 +2372,3 @@ SceneRoots:
   - {fileID: 220702245}
   - {fileID: 1790016287}
   - {fileID: 8574477500074948452}
-  - {fileID: 1745404497}
