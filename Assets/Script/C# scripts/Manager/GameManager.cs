@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
     [SerializeField] Dialogue reverseMovementDialogue;
+    [SerializeField] LevelSummaryUI levelSummaryUI;
 
     [Header("Game State")]
     private bool isLost; 
@@ -178,9 +179,17 @@ public class GameManager : MonoBehaviour
         if (isExitOpen || isLost)
             return;
 
-        if(scoreManager.TargetReached && !timer.TimeUp)
+        if(scoreManager.TargetReached/* && !timer.TimeUp*/)
         {
-            OpenLevelExit();
+            if(LevelData != null && LevelData.isShowingLevelSummary)
+            {
+                Debug.Log("Level Summary is showing");
+                ShowLevelSummary();
+            }
+            else if(LevelData != null && !LevelData.isShowingLevelSummary && !timer.TimeUp)
+            {
+                OpenLevelExit();
+            }
         }
     }
 
@@ -199,23 +208,60 @@ public class GameManager : MonoBehaviour
         bool levelUnlocksSkillTree = LevelData != null && LevelData.isSkillTreeUnlocked;
         PlayerProgress.EnsureInstance().CompleteLevel(SceneManager.GetActiveScene().buildIndex, levelUnlocksSkillTree);
 
-        if(levelUnlocksSkillTree == false)
-        {
-            Time.timeScale = 1f;
-            SceneManagement.EnsureInstance().NextLevel();
-            return; 
-        }
+        //if(levelUnlocksSkillTree == false)
+        //{
+        //    Time.timeScale = 1f;
+        //    SceneManagement.EnsureInstance().NextLevel();
+        //    return; 
+        //}
 
         Time.timeScale = 1f; 
         PlayerProgress.EnsureInstance().openedSkillTreeFromLevel = true;
         SceneManagement.EnsureInstance().LoadScene("SkillTree");
     }
 
-    //public void MoveToNextLevel()
-    //{
-    //    Time.timeScale = 1f;
-    //    SceneManagement.Instance.NextLevel();
-    //}
+    public void ShowLevelSummary()
+    {
+        if (levelSummaryUI != null && LevelData.isShowingLevelSummary && timer != null && levelSummaryUI != null)
+        {
+            timer.StopTimer(); 
+            snake.SetInputEnabled(false);
+
+            float resultTime = timer.ElapsedTime;
+            string grade = CalculateGrade(resultTime);
+
+            levelSummaryUI.ShowSummary(resultTime, grade);
+
+            Time.timeScale = 0f;
+            return; 
+        }
+    }
+
+    public void ContinueToNextLevelAfterSummary()
+    {
+        //if (!summaryIsShowing)
+        //    return;
+        Time.timeScale = 1f;
+        SceneManagement.EnsureInstance().NextLevel();
+        return;
+    }
+
+    private string CalculateGrade(float elapsedTime)
+    {
+        if (elapsedTime <= LevelData.gradeSTime)
+            return "S";
+
+        if (elapsedTime <= LevelData.gradeATime)
+            return "A";
+
+        if (elapsedTime <= LevelData.gradeBTime)
+            return "B";
+
+        if (elapsedTime <= LevelData.gradeCTime)
+            return "C";
+
+        return "D";
+    }
 
     public void Resume()
     {
