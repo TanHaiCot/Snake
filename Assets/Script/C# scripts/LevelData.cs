@@ -14,6 +14,13 @@ public class LevelData : ScriptableObject
     public string themeIntroductionId;
     public string themeIntroductionTitle;
 
+    [Header("Level Scoreboard")]
+    [Min(0f)] public float gradeSTime = 5f;
+    [Min(0f)] public float gradeATime = 10f;
+    [Min(0f)] public float gradeBTime = 12f;
+    [Min(0f)] public float gradeCTime = 15f;
+
+    public bool isShowingLevelSummary; 
     public bool enableReverseMovement;
     public bool isSkillTreeUnlocked; // Whether the skill tree is unlocked after completing this level
 }

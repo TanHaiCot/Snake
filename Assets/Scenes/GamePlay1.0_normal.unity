@@ -3249,7 +3249,7 @@ MonoBehaviour:
   uiManager: {fileID: 1344073966}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
-  doorManager: {fileID: 0}
+  doorManager: {fileID: 1741487610}
   snake: {fileID: 914842887}
   timer: {fileID: 1390239444}
   food: {fileID: 620879146}

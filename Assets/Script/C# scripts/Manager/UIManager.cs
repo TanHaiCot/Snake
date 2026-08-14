@@ -31,8 +31,8 @@ public class UIManager : MonoBehaviour
         bool dashUnlocked = SkillRuntimeApplier.HasLearnedEffect(SkillEffectType.UnlockDash);
         bool ghostUnlocked = SkillRuntimeApplier.HasLearnedEffect(SkillEffectType.UnlockGhost);
 
-        if (countdownTimerUI != null)
-            countdownTimerUI.SetActive(timerUnlocked);
+        //if (countdownTimerUI != null)
+        //    countdownTimerUI.SetActive(timerUnlocked);
 
         if (energyBarUI != null)
             energyBarUI.SetActive(dashUnlocked || ghostUnlocked);

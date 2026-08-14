@@ -43,7 +43,11 @@ public class GameManager : MonoBehaviour
 
         if(timer != null && LevelData != null)
         {
-            timer.SetLevelTimer(LevelData.timeLimit);
+            if(LevelData.isShowingLevelSummary)
+                timer.StartStopwatch();
+
+            else 
+                timer.StartCountdown(LevelData.timeLimit);
         }
 
         if(LevelData != null)
@@ -253,7 +257,11 @@ public class GameManager : MonoBehaviour
         scoreManager.ResetScore();
         scoreManager.SetTargetScore(LevelData.targetScore);
 
-        timer.SetLevelTimer(LevelData.timeLimit);
+        if (LevelData.isShowingLevelSummary)
+            timer.StartStopwatch();
+
+        else
+            timer.StartCountdown(LevelData.timeLimit);
 
         ResetAndApplySkillRuntime(false);
 

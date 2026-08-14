@@ -13,29 +13,28 @@ public class Timer : MonoBehaviour
 
     public event Action OnTimeUp;
 
-    bool isFired; //check to make sure the code only run once  
+    private bool timeIsUp;        //check to make sure the time up code only run once  
+    private bool isRunning;
+    private bool countUp; 
 
-    private void Awake()
-    {
-        ResetTimer(); 
-    }
-
-    public void SetLevelTimer(float timeLimit)
-    {
-        levelTimer = timeLimit;
-        ResetTimer();
-    }
 
     private void Update()
     {
-        if (remainingTimer > 0)
+        if (!isRunning)
+            return; 
+
+        if(countUp)
+        {
+            elapsedTimer += Time.deltaTime;
+        }
+        else if (remainingTimer > 0)
         {
             elapsedTimer += Time.deltaTime;
             remainingTimer = Mathf.Max(remainingTimer - Time.deltaTime, 0f);
   
-            if (remainingTimer == 0 && !isFired)
+            if (remainingTimer == 0 && !timeIsUp)
             {
-                isFired = true;
+                timeIsUp = true;
                 OnTimeUp?.Invoke();
             }
         }
@@ -45,19 +44,40 @@ public class Timer : MonoBehaviour
 
     void UpdateUI()
     {
-        int minute = Mathf.FloorToInt(remainingTimer / 60);
-        int second = Mathf.FloorToInt(remainingTimer % 60);
+        float displayTime = countUp ? elapsedTimer : remainingTimer;
+
+        int minute = Mathf.FloorToInt(displayTime / 60);
+        int second = Mathf.FloorToInt(displayTime % 60);
+
         if (timerText)
             timerText.text = string.Format("{0:00}:{1:00}", minute, second);  //0:00 mean 1st argument, 2 digits (0 is the priority of the argument, : is the format specifier, 00 means show two digits
                                                                               //1:00 is the same but 1 is for 2nd argument 
     }
 
-    public void ResetTimer()
+    public void StartStopwatch()
     {
-        remainingTimer = levelTimer; 
-        elapsedTimer = 0f;
-        isFired = false;
+        countUp = true;
+        remainingTimer = 0;
+        elapsedTimer = 0;
+        timeIsUp = false;
+        isRunning = true;
         UpdateUI(); 
+    }
+
+    public void StartCountdown(float timeLimit)
+    {
+        countUp = false;
+        remainingTimer = levelTimer;
+        levelTimer = timeLimit; 
+        elapsedTimer = 0f;
+        timeIsUp = false;
+        isRunning = false; 
+        UpdateUI(); 
+    }
+
+    public void StopTimer()
+    {
+        isRunning = false;
     }
 
     public void AddTime(float amount)

@@ -15,5 +15,12 @@ MonoBehaviour:
   targetScore: 1
   timeLimit: 30
   backgroundMusic: {fileID: 8300000, guid: 92de11b45c28c854ab4ab41ca2421c51, type: 3}
+  themeIntroductionId: 
+  themeIntroductionTitle: 
+  gradeSTime: 5
+  gradeATime: 10
+  gradeBTime: 12
+  gradeCTime: 15
+  isShowingLevelSummary: 1
   enableReverseMovement: 0
   isSkillTreeUnlocked: 0
