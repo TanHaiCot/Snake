@@ -241,6 +241,9 @@ public class GameManager : MonoBehaviour
     {
         //if (!summaryIsShowing)
         //    return;
+
+        PlayerProgress.EnsureInstance().CompleteLevel(SceneManager.GetActiveScene().buildIndex, false);
+
         Time.timeScale = 1f;
         SceneManagement.EnsureInstance().NextLevel();
         return;

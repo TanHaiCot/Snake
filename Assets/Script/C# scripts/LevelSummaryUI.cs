@@ -12,11 +12,11 @@ public class LevelSummaryUI : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(elapsedTime / 60);
         int seconds = Mathf.FloorToInt(elapsedTime % 60);
-        int milliseconds =
-            Mathf.FloorToInt((elapsedTime % 1f) * 100f);
+        //int milliseconds =
+        //    Mathf.FloorToInt((elapsedTime % 1f) * 100f);
             
         if (timeText != null)
-            timeText.text = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+            timeText.text = string.Format("Finish Time: {0:00}:{1:00}", minutes, seconds/*, milliseconds*/);
         
         if (gradeText != null)
             gradeText.text = string.Format("Grade: {0}", grade);
