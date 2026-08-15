@@ -1894,7 +1894,9 @@ MonoBehaviour:
     - character:
         name: Me
       line: What is happening to my body, i cannot control it anymore...
+  levelSummaryUI: {fileID: 0}
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
+  readyDelay: 0.5
 --- !u!1 &1745404495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1925,7 +1927,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1339192755}
-  mainDoor: {fileID: 0}
+  mainDoor: {fileID: 1602164143}
   coloredDoors: []
   mainDoorColor: 0
   isColoredDoorRuleActive: 0

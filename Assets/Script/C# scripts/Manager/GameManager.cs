@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     private bool isPaused;
 
     [SerializeField] LevelData LevelData;
+    [SerializeField] float readyDelay = 1f;
 
     private SkillRuntimeApplier skillRuntimeApplier;
 
@@ -61,9 +62,30 @@ public class GameManager : MonoBehaviour
         if(food.FoodSpawnedAfterEat)
             food.RandomizedSpawn();
 
-        if (LevelData != null && LevelData.enableReverseMovement)
-            StartReverseMovementDialogue();
+        StartCoroutine(BeginLevelSequence());
         
+    }
+
+    private IEnumerator BeginLevelSequence()
+    {
+        snake.SetInputEnabled(false);
+        Time.timeScale = 0f;
+
+        // Wait one rendered frame so all instantiated body sprites appear.
+        yield return null;
+
+        // Wait in real time because the game is paused.
+        yield return new WaitForSecondsRealtime(readyDelay);
+
+        if (LevelData != null && LevelData.enableReverseMovement)
+        {
+            StartReverseMovementDialogue();
+        }
+        else
+        {
+            snake.SetInputEnabled(true);
+            Time.timeScale = 1f;
+        }
     }
 
     public void Update()    

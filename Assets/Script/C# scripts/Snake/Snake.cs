@@ -301,9 +301,15 @@ public class Snake : MonoBehaviour
         bodies.Clear();
         bodies.Add(this.transform); 
 
-        for (int i = 0; i < initialBodyPart - 1;  i++)   //not count the Head 
+        for (int i = 1; i < initialBodyPart;  i++)   //not count the Head 
         {
-            Grow(); 
+            Grow();
+
+            Transform newBody = bodies[bodies.Count - 1];
+
+            Vector3 offset = new Vector3(direction.x * i, direction.y * i, 0f);
+
+            newBody.position = transform.position - offset;
         }
     }
 
