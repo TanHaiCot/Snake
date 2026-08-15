@@ -29,8 +29,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] LevelData LevelData;
 
-    private int scoreToStartReverseMovement = 3;
-    private bool reverseMovementStarted;
     private SkillRuntimeApplier skillRuntimeApplier;
 
     void Start() 
@@ -62,9 +60,13 @@ public class GameManager : MonoBehaviour
 
         if(food.FoodSpawnedAfterEat)
             food.RandomizedSpawn();
+
+        if (LevelData != null && LevelData.enableReverseMovement)
+            StartReverseMovementDialogue();
+        
     }
 
-    public void Update()
+    public void Update()    
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
@@ -94,25 +96,22 @@ public class GameManager : MonoBehaviour
         {
             ai_Snake.OnFoodEatenByPlayer.AddListener(HandleFoodEaten);  
             ai_Snake.OnTeleGateTrigger.AddListener(HandleTeleGateTrigger);
-        }
-
-        if (scoreManager != null)
-            scoreManager.OnScoreChanged.AddListener(HandleScoreChanged);
+        }   
     }
 
 
-    private void HandleScoreChanged(int current, int target)
-    {
-        if (!LevelData.enableReverseMovement)
-            return;
+    //private void HandleScoreChanged(int current, int target)
+    //{
+    //    if (!LevelData.enableReverseMovement)
+    //        return;
 
-        if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
-        {
-            reverseMovementStarted = true;
-            StartReverseMovementDialogue();
-            //snake.SetReverseMovement(true);
-        }
-    }
+    //    if (!reverseMovementStarted && current >= scoreToStartReverseMovement)
+    //    {
+    //        reverseMovementStarted = true;
+    //        StartReverseMovementDialogue();
+    //        //snake.SetReverseMovement(true);
+    //    }
+    //}
 
     private void StartReverseMovementDialogue()
     {
@@ -161,9 +160,6 @@ public class GameManager : MonoBehaviour
             ai_Snake.OnFoodEatenByPlayer.RemoveListener(HandleFoodEaten);
             ai_Snake.OnTeleGateTrigger.RemoveListener(HandleTeleGateTrigger);
         }
-
-        if (scoreManager != null)
-            scoreManager.OnScoreChanged.RemoveListener(HandleScoreChanged);
     }
 
     private void HandleTimeUp()
@@ -314,8 +310,12 @@ public class GameManager : MonoBehaviour
 
         ResetAndApplySkillRuntime(false);
 
-        reverseMovementStarted = false;
         snake.SetReverseMovement(false);
+
+        if (LevelData != null && LevelData.enableReverseMovement)
+        {
+            StartReverseMovementDialogue();
+        }
     }
 
     public void MainMenu()
