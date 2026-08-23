@@ -1868,32 +1868,7 @@ MonoBehaviour:
   ai_Snake: {fileID: 0}
   energy: {fileID: 1770224347}
   snakeAbilities: {fileID: 1707342483}
-  reverseMovementDialogue:
-    dialogueLines:
-    - character:
-        name: ???
-      line: 'HA HA HA!!! Look at you... '
-    - character:
-        name: Me
-      line: 'Who''s that? Who''s talking? '
-    - character:
-        name: ???
-      line: It doesn't matter... just to let you know that you are being poisoned
-    - character:
-        name: Me
-      line: WHAT!? HOW!??
-    - character:
-        name: ???
-      line: All your movements will be reversed under the influence of the poison
-    - character:
-        name: ???
-      line: Let's see what you can do... hahaha
-    - character:
-        name: Me
-      line: Wait... Damn it, he's gone
-    - character:
-        name: Me
-      line: What is happening to my body, i cannot control it anymore...
+  reverseMovementDialogue: {fileID: 11400000, guid: 107c3cf305d6ca5409fd231fd6196dc6, type: 2}
   levelSummaryUI: {fileID: 0}
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
   readyDelay: 0.5

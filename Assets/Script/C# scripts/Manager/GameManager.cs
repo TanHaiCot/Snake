@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] AI_Snake ai_Snake;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
-    [SerializeField] Dialogue reverseMovementDialogue;
+    [SerializeField] DialogueData reverseMovementDialogue;
     [SerializeField] LevelSummaryUI levelSummaryUI;
 
     [Header("Game State")]

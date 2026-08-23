@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26ba94ea1050584093ae403546834e9, type: 3}
+  m_Name: reverseMovementDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  dialogueID: 1
+  dialogueLines:
+  - character:
+      name: ???
+    line: HA HA HA!!! Look at you...
+  - character:
+      name: Me
+    line: Who's that? Who's talking?
+  - character:
+      name: '??? '
+    line: 'It doesn''t matter... jusy to let you know that you are being poisoned '
+  - character:
+      name: Me
+    line: WH...WHATTT!? HOWWW!??
+  - character:
+      name: ???
+    line: 'All of your movement will be reversed under the influence of the poison '
+  - character:
+      name: ???
+    line: Let's see what you can do... Hahaha
+  - character:
+      name: Me
+    line: 'Waittt...Whatt?? Damn it, he''s gone '
+  - character:
+      name: 'Me '
+    line: What is happening to my body, I cannot control it anymore...

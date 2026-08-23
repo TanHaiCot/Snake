@@ -18,8 +18,9 @@ public class DialogueLine
     public string line;
 }
 
-[System.Serializable]
-public class Dialogue
+[CreateAssetMenu(fileName = "Dialogue", menuName = "Scriptable Objects/Dialogue")]
+public class DialogueData : ScriptableObject
 {
+    public string dialogueID;    //might use to store the dialogue ID for future reference, like saving/loading 
     public List<DialogueLine> dialogueLines = new List<DialogueLine>();
 }

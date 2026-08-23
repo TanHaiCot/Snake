@@ -54,7 +54,7 @@ public class DialogueManager : MonoBehaviour
         //}
     }
 
-    public void StartDialogue(Dialogue dialogue, Action onFinished = null)
+    public void StartDialogue(DialogueData dialogue, Action onFinished = null)
     {
         isDialogueActive = true;
         onDialogueFinished = onFinished;
