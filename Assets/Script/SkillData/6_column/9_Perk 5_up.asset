@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
   m_Name: 9_Perk 5_up
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 9
+  skillId: 11
   skillName: "Giam tieu ton n\u0103ng l\u01B0\u1EE3ng "
   description: "Gi\u1EA3m thi\xEAu \u0111\u1ED1t n\u0103ng l\u01B0\u1EE3ng m\u1ED7i
     gi\xE2y \u0111i 1 khi s\u1EED d\u1EE5ng Ghost Mode "
@@ -21,6 +21,7 @@ MonoBehaviour:
   effectType: 6
   value: 1
   uiPosition: {x: 1200, y: 130}
+  requirementGroupMode: 1
   requirementGroups:
   - oneOfTheseSkills:
     - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}

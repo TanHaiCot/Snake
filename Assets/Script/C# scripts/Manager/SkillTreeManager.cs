@@ -55,24 +55,34 @@ public class SkillTreeManager : MonoBehaviour
         if (skill.requirementGroups == null || skill.requirementGroups.Length == 0)
             return true;
 
+        bool requireAllGroups = skill.requirementGroupMode == RequirementGroupMode.AllGroups;
+
         foreach (SkillRequirementGroup group in skill.requirementGroups)
         {
-            bool groupPassed = false;
+            bool groupPassed = RequirementGroupMet(group);
 
-            foreach (SkillData requiredSkill in group.oneOfTheseSkills)
-            {
-                if (requiredSkill != null && IsLearned(requiredSkill))
-                {
-                    groupPassed = true;
-                    break;
-                }
-            }
-
-            if (!groupPassed)
+            if (requireAllGroups && !groupPassed)
                 return false;
+
+            if (!requireAllGroups && groupPassed)
+                return true;
         }
 
-        return true;
+        return requireAllGroups;
+    }
+
+    private bool RequirementGroupMet(SkillRequirementGroup group)
+    {
+        if (group == null || group.oneOfTheseSkills == null)
+            return false;
+
+        foreach (SkillData requiredSkill in group.oneOfTheseSkills)
+        {
+            if (requiredSkill != null && IsLearned(requiredSkill))
+                return true;
+        }
+
+        return false;
     }
 
     private bool IsOppositeAlreadyLearned(SkillData skill)

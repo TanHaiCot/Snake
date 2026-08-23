@@ -7,6 +7,12 @@ public class SkillRequirementGroup
     public SkillData[] oneOfTheseSkills;
 }
 
+public enum RequirementGroupMode
+{
+    AllGroups,
+    AnyGroup
+}
+
 [CreateAssetMenu(fileName = "SkillData", menuName = "Scriptable Objects/SkillData")]
 public class SkillData : ScriptableObject
 {
@@ -22,6 +28,8 @@ public class SkillData : ScriptableObject
     public Vector2 uiPosition;
 
     [Header("Unlock Rules")]
+    [Tooltip("All Groups = every group must pass (AND). Any Group = at least one group must pass (OR). Skills inside each group are always OR choices.")]
+    public RequirementGroupMode requirementGroupMode = RequirementGroupMode.AllGroups;
     public SkillRequirementGroup[] requirementGroups;
     public SkillData[] oppositeChoices;
 }

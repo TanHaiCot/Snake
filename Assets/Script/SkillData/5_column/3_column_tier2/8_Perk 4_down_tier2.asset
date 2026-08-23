@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
   m_Name: 8_Perk 4_down_tier2
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  skillId: 11
+  skillId: 10
   skillName: 'Late Hunter 2 '
   description: 'For each food eaten during the last 10 seconds of a level gives 1.7x
     energy gain.   '
@@ -21,6 +21,7 @@ MonoBehaviour:
   effectType: 10
   value: 1.7
   uiPosition: {x: 1030, y: -130}
+  requirementGroupMode: 0
   requirementGroups:
   - oneOfTheseSkills:
     - {fileID: 11400000, guid: 68c13ee4e4ac23547976638856c52641, type: 2}
