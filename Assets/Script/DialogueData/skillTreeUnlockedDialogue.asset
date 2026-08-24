@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26ba94ea1050584093ae403546834e9, type: 3}
   m_Name: skillTreeUnlockedDialogue
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
-  dialogueID: 2
+  dialogueID: 3
   dialogueLines:
   - character:
       name: Me

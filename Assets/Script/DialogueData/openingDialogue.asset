@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f26ba94ea1050584093ae403546834e9, type: 3}
+  m_Name: openingDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  dialogueID: 1
+  dialogueLines:
+  - character:
+      name: 'Me '
+    line: I wonder what is the world out there looks like, Dad?
+  - character:
+      name: 'Dad '
+    line: It must be really beautiful, son!!!
+  - character:
+      name: 'Me '
+    line: Have you ever seen it?
+  - character:
+      name: 'Dad '
+    line: No... not yet, but I will go see it tomorrow, and I will tell you
+  - character:
+      name: 'Dad '
+    line: And one day, I hope you can see it as well
+  - character:
+      name: 'Me '
+    line: YAYYYYYY......
+  - character:
+      name: 'Me '
+    line: .................................
+  - character:
+      name: 'Me '
+    line: Where's Dad, Mom? Why did not he come home?

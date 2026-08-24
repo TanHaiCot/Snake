@@ -1,4 +1,5 @@
 using NUnit.Framework.Interfaces;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,8 +30,13 @@ public class GameManager : MonoBehaviour
     private bool isExitOpen;
     private bool isPaused;
 
+    [Header("Game Opening")]
+    [SerializeField] GameObject blackScreen;
+    [SerializeField] DialogueData openingDialogue;
+
+
     [SerializeField] LevelData LevelData;
-    [SerializeField] float readyDelay = 1f;
+    private float readyDelay = 0.75f;
 
     private SkillRuntimeApplier skillRuntimeApplier;
 
@@ -78,8 +84,14 @@ public class GameManager : MonoBehaviour
 
         // Wait in real time because the game is paused.
         yield return new WaitForSecondsRealtime(readyDelay);
+       
+        if (LevelData.isShowingOpeningDialogue)
+        {
+            StartOpeningDialogue(); 
+        }
+        
 
-        if (LevelData != null && LevelData.enableReverseMovement)
+        else if (LevelData != null && LevelData.enableReverseMovement)
         {
             StartReverseMovementDialogue();
         }
@@ -137,6 +149,29 @@ public class GameManager : MonoBehaviour
     //    }
     //}
 
+    private void StartOpeningDialogue()
+    {
+        if (openingDialogue == null || DialogueManager.Instance == null)
+            return;
+      
+        //blackScreen.SetActive(true);
+
+        DialogueManager.Instance.StartDialogue(openingDialogue, () =>
+        {
+            StartCoroutine(FinishOpeningDialogue());
+        });
+    }
+
+    private IEnumerator FinishOpeningDialogue()
+    {
+        blackScreen.SetActive(false);
+        
+        yield return new WaitForSecondsRealtime(readyDelay);
+
+        snake.SetInputEnabled(true);
+        Time.timeScale = 1f;
+    }
+
     private void StartReverseMovementDialogue()
     {
         Time.timeScale = 0f;
@@ -144,10 +179,17 @@ public class GameManager : MonoBehaviour
 
         DialogueManager.Instance.StartDialogue(reverseMovementDialogue, () =>
         {
-            snake.SetReverseMovement(true);
-            snake.SetInputEnabled(true);
-            Time.timeScale = 1f;
+            StartCoroutine(FinishReverseMovementDialogue());
         });
+    }
+
+    private IEnumerator FinishReverseMovementDialogue()
+    {
+        yield return new WaitForSecondsRealtime(readyDelay);
+
+        snake.SetReverseMovement(true);
+        snake.SetInputEnabled(true);
+        Time.timeScale = 1f;
     }
 
     private void HandleFoodEaten(bool isEatenByPlayer)

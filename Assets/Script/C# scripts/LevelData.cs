@@ -23,4 +23,5 @@ public class LevelData : ScriptableObject
     public bool isShowingLevelSummary; 
     public bool enableReverseMovement;
     public bool isSkillTreeUnlocked; // Whether the skill tree is unlocked after completing this level
+    public bool isShowingOpeningDialogue; 
 }

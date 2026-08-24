@@ -24,3 +24,4 @@ MonoBehaviour:
   isShowingLevelSummary: 1
   enableReverseMovement: 0
   isSkillTreeUnlocked: 0
+  isShowingOpeningDialogue: 1
