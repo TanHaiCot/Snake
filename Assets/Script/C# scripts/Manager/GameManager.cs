@@ -1,3 +1,4 @@
+using NUnit.Framework.Interfaces;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,8 +20,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] AI_Snake ai_Snake;
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
-    [SerializeField] DialogueData reverseMovementDialogue;
     [SerializeField] LevelSummaryUI levelSummaryUI;
+    [SerializeField] DialogueData reverseMovementDialogue;
+    [SerializeField] DialogueData skillTreeUnlockedDialogue; 
 
     [Header("Game State")]
     private bool isLost; 
@@ -214,8 +216,31 @@ public class GameManager : MonoBehaviour
     private void OpenLevelExit()
     {
         isExitOpen = true;
+
+        bool isSkiilTreeUnlockedForTheFirstTime = LevelData != null && LevelData.isSkillTreeUnlocked && !PlayerProgress.EnsureInstance().skillTreeUnlocked;
+
         AudioManager.Instance?.playSFX(AudioManager.Instance.doorOpened);
         doorManager.Open();
+
+        if(isSkiilTreeUnlockedForTheFirstTime)
+        {
+            SkillTreeUnlockedDialogue(); 
+        }
+    }
+
+    private void SkillTreeUnlockedDialogue()
+    {
+        if(skillTreeUnlockedDialogue == null || DialogueManager.Instance == null)
+            return;
+ 
+        Time.timeScale = 0f;
+        snake.SetInputEnabled(false);
+
+        DialogueManager.Instance.StartDialogue(skillTreeUnlockedDialogue, () =>
+        {
+            snake.SetInputEnabled(true);
+            Time.timeScale = 1f;
+        });
     }
 
     public void MoveToSkillTree()
