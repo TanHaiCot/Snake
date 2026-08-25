@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 290815738}
   - component: {fileID: 290815737}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -192,7 +192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1330243836}
-  mainDoor: {fileID: 0}
+  mainDoor: {fileID: 1602164143}
   coloredDoors: []
   mainDoorColor: 0
   isColoredDoorRuleActive: 0
@@ -204,14 +204,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290815736}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.85686, y: -0.54681, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1602164150}
   - {fileID: 57873543}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1790016287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &395920509 stripped
 MonoBehaviour:
@@ -1364,7 +1364,7 @@ MonoBehaviour:
   uiManager: {fileID: 482530063}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
-  doorManager: {fileID: 0}
+  doorManager: {fileID: 290815737}
   snake: {fileID: 914842887}
   timer: {fileID: 482530062}
   food: {fileID: 620879146}
@@ -1374,6 +1374,7 @@ MonoBehaviour:
   levelSummaryUI: {fileID: 0}
   reverseMovementDialogue: {fileID: 0}
   skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
   blackScreen: {fileID: 0}
   openingDialogue: {fileID: 0}
   LevelData: {fileID: 11400000, guid: e786acc2405b13a4cad623247df37033, type: 2}
@@ -1574,6 +1575,7 @@ Transform:
   - {fileID: 616454442}
   - {fileID: 547648379}
   - {fileID: 1578215482}
+  - {fileID: 290815738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2085761709
@@ -5242,11 +5244,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 27.68686
+      value: 21.8
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.95319
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5311,11 +5313,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 28.13136
+      value: 22.3
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.95319
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5364,4 +5366,3 @@ SceneRoots:
   - {fileID: 220702245}
   - {fileID: 1790016287}
   - {fileID: 2085761709}
-  - {fileID: 290815738}

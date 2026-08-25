@@ -176,6 +176,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
+--- !u!1 &30191631 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
+  m_PrefabInstance: {fileID: 30191630}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &220702244
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +272,7 @@ GameObject:
   - component: {fileID: 309177942}
   - component: {fileID: 309177941}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,7 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1927576603}
-  mainDoor: {fileID: 0}
+  mainDoor: {fileID: 30191631}
   coloredDoors: []
   mainDoorColor: 0
   isColoredDoorRuleActive: 0
@@ -298,14 +303,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 309177940}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -12.20642, y: -3.06529, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 792006779}
   - {fileID: 1927576602}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 466705285}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &362861996 stripped
 MonoBehaviour:
@@ -541,6 +546,7 @@ Transform:
   - {fileID: 1229610153}
   - {fileID: 1476439654}
   - {fileID: 581384045}
+  - {fileID: 309177942}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &489186159
@@ -26341,7 +26347,7 @@ MonoBehaviour:
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 0}
-  startPosition: {x: 17, y: 10}
+  startPosition: {x: 17, y: 10, z: 0}
   currentState: 1
   chaseRepathInterval: 0.25
   OnFoodEatenByPlayer:
@@ -26709,15 +26715,19 @@ MonoBehaviour:
   uiManager: {fileID: 410971583}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1229610154}
-  doorManager: {fileID: 0}
+  doorManager: {fileID: 309177941}
   snake: {fileID: 1009226330}
   timer: {fileID: 410971582}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 1545361519}
   energy: {fileID: 1408310576}
   snakeAbilities: {fileID: 493980542}
-  reverseMovementDialogue:
-    dialogueLines: []
+  levelSummaryUI: {fileID: 0}
+  reverseMovementDialogue: {fileID: 0}
+  skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
+  openingDialogue: {fileID: 0}
   LevelData: {fileID: 11400000, guid: 610b4f533d8293a488e8d9ab0eb28040, type: 2}
 --- !u!1 &1782566701
 GameObject:
@@ -26940,6 +26950,5 @@ SceneRoots:
   - {fileID: 220702245}
   - {fileID: 466705285}
   - {fileID: 764087678}
-  - {fileID: 309177942}
   - {fileID: 1647889748}
   - {fileID: 751471103}

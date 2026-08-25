@@ -789,6 +789,7 @@ MonoBehaviour:
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
   foodTarget: {fileID: 620879145}
   scoreManager: {fileID: 616454441}
+  startPosition: {x: 0, y: 0, z: 0}
   currentState: 1
   chaseRepathInterval: 0.25
   OnFoodEatenByPlayer:
@@ -24896,7 +24897,7 @@ GameObject:
   - component: {fileID: 163634998}
   - component: {fileID: 163634997}
   m_Layer: 0
-  m_Name: Door Controller
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24915,7 +24916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 2110840563}
-  mainDoor: {fileID: 0}
+  mainDoor: {fileID: 1602164143}
   coloredDoors: []
   mainDoorColor: 0
   isColoredDoorRuleActive: 0
@@ -24927,14 +24928,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 163634996}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2110840562}
   - {fileID: 6037067301012278270}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1799917962}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &210747445
 PrefabInstance:
@@ -26959,15 +26960,19 @@ MonoBehaviour:
   uiManager: {fileID: 1994076162}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 121651849}
-  doorManager: {fileID: 0}
+  doorManager: {fileID: 163634997}
   snake: {fileID: 77481037}
   timer: {fileID: 955658672}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 95846454}
   energy: {fileID: 1781208155}
   snakeAbilities: {fileID: 77481038}
-  reverseMovementDialogue:
-    dialogueLines: []
+  levelSummaryUI: {fileID: 0}
+  reverseMovementDialogue: {fileID: 0}
+  skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
+  openingDialogue: {fileID: 0}
   LevelData: {fileID: 11400000, guid: 6df1487a9cf948d4ba78500bd8321947, type: 2}
 --- !u!114 &1781208155 stripped
 MonoBehaviour:
@@ -27018,6 +27023,7 @@ Transform:
   - {fileID: 1741257626}
   - {fileID: 616454442}
   - {fileID: 1967816131}
+  - {fileID: 163634998}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1838322384
@@ -27507,7 +27513,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.33500007
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalScale.y
@@ -27825,4 +27831,3 @@ SceneRoots:
   - {fileID: 781086731}
   - {fileID: 1799917962}
   - {fileID: 101495265}
-  - {fileID: 163634998}

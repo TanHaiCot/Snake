@@ -3547,10 +3547,10 @@ MonoBehaviour:
   levelSummaryUI: {fileID: 1685035674}
   reverseMovementDialogue: {fileID: 0}
   skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
   blackScreen: {fileID: 882887649}
   openingDialogue: {fileID: 11400000, guid: fd4e0945aad50d84db1b82ed61b197b8, type: 2}
   LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}
-  readyDelay: 1
 --- !u!1 &1741487609
 GameObject:
   m_ObjectHideFlags: 0
@@ -3562,7 +3562,7 @@ GameObject:
   - component: {fileID: 1741487611}
   - component: {fileID: 1741487610}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: 'DoorManager '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3600,7 +3600,7 @@ Transform:
   m_Children:
   - {fileID: 1602164150}
   - {fileID: 1259431943}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1790016287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1790016286
 GameObject:
@@ -3637,6 +3637,7 @@ Transform:
   - {fileID: 616454442}
   - {fileID: 2118788745}
   - {fileID: 268799531}
+  - {fileID: 1741487611}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1804997533
@@ -13919,7 +13920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.335
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 6328928717369189761, guid: 03d75df9106c6c6449e754c898fe6678, type: 3}
       propertyPath: m_LocalScale.y
@@ -14080,6 +14081,5 @@ SceneRoots:
   - {fileID: 620879145}
   - {fileID: 220702245}
   - {fileID: 1790016287}
-  - {fileID: 1741487611}
   - {fileID: 1230799136}
   - {fileID: 330008683}

@@ -82042,7 +82042,7 @@ GameObject:
   - component: {fileID: 1054517725}
   - component: {fileID: 1054517724}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82061,7 +82061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 7852819120062008131}
-  mainDoor: {fileID: 0}
+  mainDoor: {fileID: 1602164143}
   coloredDoors: []
   mainDoorColor: 0
   isColoredDoorRuleActive: 0
@@ -82073,14 +82073,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1054517723}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1602164150}
   - {fileID: 2036745880}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1790016287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1076313556 stripped
 Transform:
@@ -84099,7 +84099,7 @@ MonoBehaviour:
   uiManager: {fileID: 1084494096}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
-  doorManager: {fileID: 0}
+  doorManager: {fileID: 1054517724}
   snake: {fileID: 624845952}
   timer: {fileID: 1084494088}
   food: {fileID: 620879146}
@@ -84215,6 +84215,7 @@ Transform:
   - {fileID: 677930651}
   - {fileID: 91857123}
   - {fileID: 29793229}
+  - {fileID: 1054517725}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1802859265 stripped
@@ -86138,5 +86139,4 @@ SceneRoots:
   - {fileID: 1790016287}
   - {fileID: 749880306}
   - {fileID: 833690737}
-  - {fileID: 1054517725}
   - {fileID: 144417225}

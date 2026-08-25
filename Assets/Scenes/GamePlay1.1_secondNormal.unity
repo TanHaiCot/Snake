@@ -2806,9 +2806,12 @@ MonoBehaviour:
   ai_Snake: {fileID: 0}
   energy: {fileID: 991312581}
   snakeAbilities: {fileID: 1707342483}
-  reverseMovementDialogue:
-    dialogueLines: []
   levelSummaryUI: {fileID: 991241813}
+  reverseMovementDialogue: {fileID: 0}
+  skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
+  openingDialogue: {fileID: 0}
   LevelData: {fileID: 11400000, guid: b4ed89f7cfbeaf94e942e8d70bbd6fe5, type: 2}
 --- !u!1 &1741487609
 GameObject:
@@ -2821,7 +2824,7 @@ GameObject:
   - component: {fileID: 1741487611}
   - component: {fileID: 1741487610}
   m_Layer: 0
-  m_Name: DoorController
+  m_Name: DoorManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2859,7 +2862,7 @@ Transform:
   m_Children:
   - {fileID: 1602164150}
   - {fileID: 1259431943}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1790016287}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1790016286
 GameObject:
@@ -2895,6 +2898,7 @@ Transform:
   - {fileID: 1239357049}
   - {fileID: 616454442}
   - {fileID: 278402822}
+  - {fileID: 1741487611}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1828549919
@@ -12807,6 +12811,5 @@ SceneRoots:
   - {fileID: 620879145}
   - {fileID: 220702245}
   - {fileID: 1790016287}
-  - {fileID: 1741487611}
   - {fileID: 1230799136}
   - {fileID: 330008683}

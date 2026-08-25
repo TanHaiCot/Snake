@@ -1270,6 +1270,7 @@ Transform:
   - {fileID: 1741257626}
   - {fileID: 616454442}
   - {fileID: 26422495}
+  - {fileID: 1454960557}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &637297912
@@ -2358,7 +2359,7 @@ GameObject:
   - component: {fileID: 1454960557}
   - component: {fileID: 1454960556}
   m_Layer: 0
-  m_Name: 'DoorController '
+  m_Name: 'DoorManager '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2377,7 +2378,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorController
   nextSceneTrigger: {fileID: 1844405824}
-  mainDoor: {fileID: 0}
+  mainDoor: {fileID: 1602164143}
   coloredDoors: []
   mainDoorColor: 0
   isColoredDoorRuleActive: 0
@@ -2389,14 +2390,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1454960555}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 5.008474, y: -4.482142, z: 0.18760136}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1602164150}
   - {fileID: 1844405825}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 627785484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1496541187 stripped
 MonoBehaviour:
@@ -23612,15 +23613,19 @@ MonoBehaviour:
   uiManager: {fileID: 356007209}
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1881202310}
-  doorManager: {fileID: 0}
+  doorManager: {fileID: 1454960556}
   snake: {fileID: 1280033605}
   timer: {fileID: 1496541187}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 0}
   energy: {fileID: 1892225890}
   snakeAbilities: {fileID: 1280033604}
-  reverseMovementDialogue:
-    dialogueLines: []
+  levelSummaryUI: {fileID: 0}
+  reverseMovementDialogue: {fileID: 0}
+  skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
+  openingDialogue: {fileID: 0}
   LevelData: {fileID: 11400000, guid: c568a670a84b8414cb600d01eb89c968, type: 2}
 --- !u!1001 &1753499642
 PrefabInstance:
@@ -24612,4 +24617,3 @@ SceneRoots:
   - {fileID: 85069639}
   - {fileID: 627785484}
   - {fileID: 1513003225}
-  - {fileID: 1454960557}
