@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f26ba94ea1050584093ae403546834e9, type: 3}
-  m_Name: reverseMovementDialogue
+  m_Name: 2_reverseMovementDialogue
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   dialogueID: 2
   dialogueLines:

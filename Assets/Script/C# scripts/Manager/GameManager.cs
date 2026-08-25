@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] SnakeAbilities snakeAbilities;
     [SerializeField] LevelSummaryUI levelSummaryUI;
     [SerializeField] DialogueData reverseMovementDialogue;
-    [SerializeField] DialogueData skillTreeUnlockedDialogue; 
+    [SerializeField] DialogueData skillTreeUnlockedDialogue;
+    [SerializeField] DialogueData bossDialogue;
 
     [Header("Game State")]
     private bool isLost; 
@@ -85,16 +86,16 @@ public class GameManager : MonoBehaviour
         // Wait in real time because the game is paused.
         yield return new WaitForSecondsRealtime(readyDelay);
        
-        if (LevelData.isShowingOpeningDialogue)
-        {
+        if (LevelData.isShowingOpeningDialogue)        
             StartOpeningDialogue(); 
-        }
+        
+        else if (LevelData != null && LevelData.enableReverseMovement)
+            StartReverseMovementDialogue();
+
+        else if (LevelData != null && LevelData.isShowingBossDialogue)
+            StartBossDialogue(); 
         
 
-        else if (LevelData != null && LevelData.enableReverseMovement)
-        {
-            StartReverseMovementDialogue();
-        }
         else
         {
             snake.SetInputEnabled(true);
@@ -149,6 +150,7 @@ public class GameManager : MonoBehaviour
     //    }
     //}
 
+    #region Dialogue
     private void StartOpeningDialogue()
     {
         if (openingDialogue == null || DialogueManager.Instance == null)
@@ -191,6 +193,24 @@ public class GameManager : MonoBehaviour
         snake.SetInputEnabled(true);
         Time.timeScale = 1f;
     }
+
+    private void StartBossDialogue()
+    {
+        Time.timeScale = 0f;
+        snake.SetInputEnabled(false);
+        DialogueManager.Instance.StartDialogue(bossDialogue, () =>
+        {
+            StartCoroutine(FinishBossDialogue());
+        });
+    }
+
+    private IEnumerator FinishBossDialogue()
+    {
+        yield return new WaitForSecondsRealtime(readyDelay);
+        snake.SetInputEnabled(true);
+        Time.timeScale = 1f;
+    }
+    #endregion
 
     private void HandleFoodEaten(bool isEatenByPlayer)
     {
