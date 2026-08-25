@@ -6,7 +6,7 @@ public class Timer : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI timerText;
 
-    [SerializeField] float levelTimer;
+    private float levelTimer;
 
     private float remainingTimer; 
     private float elapsedTimer;
@@ -67,11 +67,11 @@ public class Timer : MonoBehaviour
     public void StartCountdown(float timeLimit)
     {
         countUp = false;
-        remainingTimer = levelTimer;
         levelTimer = timeLimit; 
+        remainingTimer = timeLimit;
         elapsedTimer = 0f;
         timeIsUp = false;
-        isRunning = false; 
+        isRunning = true; 
         UpdateUI(); 
     }
 
