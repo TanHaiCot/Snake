@@ -22,22 +22,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] Energy energy;
     [SerializeField] SnakeAbilities snakeAbilities;
     [SerializeField] LevelSummaryUI levelSummaryUI;
+
+    [Header("Dialogue")]
     [SerializeField] DialogueData reverseMovementDialogue;
     [SerializeField] DialogueData skillTreeUnlockedDialogue;
     [SerializeField] DialogueData bossDialogue;
+    [SerializeField] DialogueData openingDialogue;
+    [SerializeField] GameObject blackScreen;
 
     [Header("Game State")]
     private bool isLost; 
     private bool isExitOpen;
     private bool isPaused;
 
-    [Header("Game Opening")]
-    [SerializeField] GameObject blackScreen;
-    [SerializeField] DialogueData openingDialogue;
-
-
     [SerializeField] LevelData LevelData;
-    private float readyDelay = 0.75f;
+    private float readyDelay = 0.5f;
+    [SerializeField] ThemeIntroduction themeIntroduction;
 
     private SkillRuntimeApplier skillRuntimeApplier;
 
@@ -82,6 +82,11 @@ public class GameManager : MonoBehaviour
 
         // Wait one rendered frame so all instantiated body sprites appear.
         yield return null;
+
+        if(themeIntroduction != null)
+        {
+            yield return StartCoroutine(themeIntroduction.PlayIntroduction());
+        }
 
         // Wait in real time because the game is paused.
         yield return new WaitForSecondsRealtime(readyDelay);

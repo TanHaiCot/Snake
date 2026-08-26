@@ -35,10 +35,6 @@ public class ThemeIntroduction : MonoBehaviour
             HideImmediately(); 
             return; 
         }
-        
-        previousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
-        pausedByIntroduction = true;
 
         introductionPanel.SetActive(true);
 
@@ -55,10 +51,9 @@ public class ThemeIntroduction : MonoBehaviour
         themeTitleText.text = levelData.themeIntroductionTitle;
 
         Canvas.ForceUpdateCanvases();
-
     }
 
-    private IEnumerator Start()
+    public IEnumerator PlayIntroduction()
     {
         if (!ShouldShowIntroduction())
             yield break;
@@ -100,8 +95,6 @@ public class ThemeIntroduction : MonoBehaviour
         introductionPanel.SetActive(false);
 
         yield return new WaitForSecondsRealtime(waitingTimeBeforeStart);
-
-        ResumeGame();
     }
 
     private bool ShouldShowIntroduction()
@@ -112,6 +105,7 @@ public class ThemeIntroduction : MonoBehaviour
         //return !PlayerProgress.EnsureInstance().HasSeenThemeIntroduction(levelData.themeIntroductionId);
         return true; 
     }
+
     private IEnumerator FadeTheme(
     Color imageStartColor,
     Color imageEndColor,
@@ -161,18 +155,18 @@ public class ThemeIntroduction : MonoBehaviour
             introductionPanel.SetActive(false);
     }
 
-    private void ResumeGame()
-    {
-        if (!pausedByIntroduction)
-            return;
+    //private void ResumeGame()
+    //{
+    //    if (!pausedByIntroduction)
+    //        return;
 
-        Time.timeScale = previousTimeScale;
-        pausedByIntroduction = false;
-    }
+    //    Time.timeScale = previousTimeScale;
+    //    pausedByIntroduction = false;
+    //}
 
     private void OnDestroy()
     {
         // Prevent the game remaining paused if the scene changes mid-introduction.
-        ResumeGame();
+        //ResumeGame();
     }
 }
