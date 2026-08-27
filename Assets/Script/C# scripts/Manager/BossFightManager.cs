@@ -9,7 +9,10 @@ public class BossFightManager : MonoBehaviour
     [SerializeField] private SnakeAbilities snakeAbilities;
     [SerializeField] private Energy energy;
     [SerializeField] private FirstBoss firstBoss;
-    [SerializeField] private GameManager gameManager; 
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private BossPowerUp bossPowerUpPrefab;
+    private BossPowerUp activePowerUp;
+    
     [Header("Empower Settings")]
     private float empowerDuration = 6f;
     private float energyFilledOnEmpower = 999f;
@@ -47,7 +50,18 @@ public class BossFightManager : MonoBehaviour
             energy.AddEnergy(energyFilledOnEmpower * Time.deltaTime);
     }
 
-    public void OnBossPowerUpEaten()
+    public void CollectPowerUp(BossPowerUp collectedPowerUp)
+    {
+        if(collectedPowerUp ==  null) return;   
+
+        if(collectedPowerUp != activePowerUp) return;
+
+        activePowerUp = null;
+        StartEmpowerMode(); 
+        Destroy(collectedPowerUp.gameObject);
+    }
+
+    public void StartEmpowerMode()
     {
         isEmpowered = true;
         empowerEndTime = Time.time + empowerDuration;
@@ -100,9 +114,51 @@ public class BossFightManager : MonoBehaviour
     {
         bossHits++;
         if (bossHits >= bossHP)
+        {
             firstBoss?.Dead();
+            CleanupPowerUp();
+        }
     }
 
+    public void ResetBossFight()
+    {
+        CleanupPowerUp();
+
+        bossHits = 0;
+        isEmpowered = false;
+        collisionLocked = false;
+        empowerEndTime = 0f; 
+
+        if (snakeAbilities != null)
+            snakeAbilities.SetAbilitiesUnlocked(false);
+
+        firstBoss?.Restate();
+    }
+
+    public void SpawnPowerUp(Vector3 spawnPosition)
+    {
+        if (activePowerUp != null)
+            return;
+
+        if (bossPowerUpPrefab == null)
+            return;
+
+        activePowerUp = Instantiate(
+            bossPowerUpPrefab,
+            spawnPosition,
+            Quaternion.identity
+        );
+
+        activePowerUp.SetManager(this);
+    }
+
+    private void CleanupPowerUp()
+    {
+        if (activePowerUp != null)
+            Destroy(activePowerUp.gameObject);
+
+        activePowerUp = null;
+    }
 }
 
 

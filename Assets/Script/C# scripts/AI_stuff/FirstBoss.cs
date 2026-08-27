@@ -726,7 +726,7 @@ public class FirstBoss : MonoBehaviour
         }
     }
 
-    private void Restate()
+    public void Restate()
     {
         bossAnchor = startAnchor;
         transform.position = AnchorToWorld(bossAnchor);
@@ -791,18 +791,9 @@ public class FirstBoss : MonoBehaviour
         if (powerUpPrefab == null)
             return;
 
-        Vector3 spawnPos = AnchorToWorld(bossAnchor);
+        Vector3 spawnPos = new Vector3(bossAnchor.x, bossAnchor.y, 0);
 
-        GameObject powerup = Instantiate(
-            powerUpPrefab,
-            spawnPos,
-            Quaternion.identity
-        );
-
-        var dropItem = powerup.GetComponent<BossPowerUp>();
-
-        if (dropItem != null)
-            dropItem.SetManager(bossFightManager);
+        bossFightManager.SpawnPowerUp(spawnPos);
     }
 
     private bool CanDashAtPlayer(Vector2Int playerPos, out Vector2Int dashDir)

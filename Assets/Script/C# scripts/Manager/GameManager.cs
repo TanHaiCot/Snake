@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] MapManager mapManager;
     [SerializeField] DoorManager doorManager;
+    [SerializeField] BossFightManager bossFightManager;
 
     [Header("Game Components")]
     [SerializeField] Snake snake;
@@ -406,6 +407,9 @@ public class GameManager : MonoBehaviour
 
         if (ai_Snake != null)
             ai_Snake.Restate();
+
+        if (bossFightManager != null)
+            bossFightManager.ResetBossFight(); 
 
         isPaused = false;
         isLost = false; 
