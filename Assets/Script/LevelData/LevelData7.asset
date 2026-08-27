@@ -16,6 +16,13 @@ MonoBehaviour:
   timeLimit: 105
   backgroundMusic: {fileID: 8300000, guid: 45aef78547428b84eaa8b1803f49a2ff, type: 3}
   themeIntroductionId: Dungeon
-  themeIntroductionTitle: DUN DIN VL
+  themeIntroductionTitle: 'CHAPTER TWO: '
+  gradeSTime: 5
+  gradeATime: 10
+  gradeBTime: 12
+  gradeCTime: 15
+  isShowingLevelSummary: 0
   enableReverseMovement: 0
   isSkillTreeUnlocked: 1
+  isShowingOpeningDialogue: 0
+  isShowingBossDialogue: 0

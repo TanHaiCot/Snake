@@ -7,9 +7,9 @@ public class BlinkingEffect : MonoBehaviour
 {
     [SerializeField] private Image blackOutImage;
 
-    private float visibleDuration = 1f;
-    private float blackoutDuration = 2f;
-    private float fadeDuration = 1f;
+    private float visibleDuration = 2f;
+    private float blackoutDuration = 1.5f;
+    private float fadeDuration = 0.5f;
 
     private void Awake()
     {
