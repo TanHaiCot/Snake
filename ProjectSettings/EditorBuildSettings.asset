@@ -21,7 +21,7 @@ EditorBuildSettings:
     path: Assets/Scenes/GamePlay2_reversedAbitWalls.unity
     guid: b97c6674a5ad8ed41a03acc35fbcc3f7
   - enabled: 1
-    path: Assets/Scenes/GamePlay2_reversedLessWalls.unity
+    path: Assets/Scenes/GamePlay3_reversedLessWalls.unity
     guid: b3f4706c6073e3a4faf6c4018f90a08d
   - enabled: 1
     path: Assets/Scenes/GamePlay4_reversedMoreWalls.unity
