@@ -248,6 +248,83 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1001 &130511856
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 570612088}
+    m_Modifications:
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: snakeAbilities
+      value: 
+      objectReference: {fileID: 1707342483}
+    - target: {fileID: 8338659651289012162, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_Name
+      value: SlowEnemyController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+--- !u!4 &130511857 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+  m_PrefabInstance: {fileID: 130511856}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &130511858 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+  m_PrefabInstance: {fileID: 130511856}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30fe5fbad78d354194e0e641873de46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlowEnemyController
 --- !u!1 &220702244
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,9 +873,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 130511857}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+--- !u!4 &570612088 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+  m_PrefabInstance: {fileID: 570612087}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &602504148
 GameObject:
   m_ObjectHideFlags: 0
@@ -3538,6 +3623,8 @@ MonoBehaviour:
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
   doorManager: {fileID: 1741487610}
+  bossFightManager: {fileID: 0}
+  slowEnemyController: {fileID: 130511858}
   snake: {fileID: 914842887}
   timer: {fileID: 1390239444}
   food: {fileID: 620879146}
@@ -3548,9 +3635,10 @@ MonoBehaviour:
   reverseMovementDialogue: {fileID: 0}
   skillTreeUnlockedDialogue: {fileID: 0}
   bossDialogue: {fileID: 0}
-  blackScreen: {fileID: 882887649}
   openingDialogue: {fileID: 11400000, guid: fd4e0945aad50d84db1b82ed61b197b8, type: 2}
+  blackScreen: {fileID: 882887649}
   LevelData: {fileID: 11400000, guid: 8a1472684ca8f6d42b713f89d8c60de8, type: 2}
+  themeIntroduction: {fileID: 0}
 --- !u!1 &1741487609
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FirstBoss : MonoBehaviour
@@ -24,6 +25,8 @@ public class FirstBoss : MonoBehaviour
     private float chaseSpeed = 7.5f;          // steps/sec (1 step = a movement of 2 cells of the boss)
     private float fleeSpeed = 10f;
     private float dashSpeed = 22f;            // steps/sec during dash
+    private float slowMultiplier = 1f;
+    private float slowEndTime; 
 
     [Header("Dash")]
     private float dashTriggerRange = 10f;
@@ -728,6 +731,9 @@ public class FirstBoss : MonoBehaviour
 
     public void Restate()
     {
+        slowEndTime = 0f;
+        slowMultiplier = 1f;
+
         bossAnchor = startAnchor;
         transform.position = AnchorToWorld(bossAnchor);
 
@@ -982,16 +988,29 @@ public class FirstBoss : MonoBehaviour
     }
     private float GetCurrentSpeed()
     {
-        if (state == BossState.Dashing)
-            return dashSpeed;
-        if (state == BossState.Fleeing)
-            return fleeSpeed;
+        float currentSpeed; 
 
-        return chaseSpeed;
+        if (state == BossState.Dashing)
+            currentSpeed = dashSpeed;
+        else if (state == BossState.Fleeing)
+            currentSpeed = fleeSpeed;
+        else
+            currentSpeed = chaseSpeed;
+
+        if (Time.time >= slowEndTime)
+            slowMultiplier = 1f;
+
+        return currentSpeed * slowMultiplier;
     }
     #endregion
 
+    public void ApplySlowEffect(float slowPercentage, float duration)
+    {
+        float multiplier = 1 - Mathf.Clamp01(slowPercentage);
 
+        slowMultiplier = multiplier;
+        slowEndTime = Mathf.Max(slowEndTime, Time.time) + duration;
+    }
 
     private void OnDrawGizmos()
     {

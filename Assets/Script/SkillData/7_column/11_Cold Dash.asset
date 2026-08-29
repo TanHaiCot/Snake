@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
+  m_Name: 11_Cold Dash
+  m_EditorClassIdentifier: Assembly-CSharp::SkillData
+  skillId: 13
+  skillName: Cold Dash
+  description: 'Using Dash make reduce 25% moving speed of the enemies in 2 seconds '
+  icon: {fileID: 0}
+  skillType: 1
+  effectType: 8
+  value: 0.25
+  uiPosition: {x: 1425, y: 0}
+  requirementGroupMode: 0
+  requirementGroups:
+  - oneOfTheseSkills:
+    - {fileID: 11400000, guid: 20d0402fd4ba59742aeeda5309d86513, type: 2}
+    - {fileID: 11400000, guid: 6484c22a4d82d0f41b18453e3f6e5ca4, type: 2}
+  oppositeChoices: []

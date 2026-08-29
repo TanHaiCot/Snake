@@ -16,16 +16,18 @@ public class SkillRuntimeApplier
     private readonly SnakeAbilities snakeAbilities;
     private readonly Energy energy;
     private readonly Timer timer;
+    private readonly SlowEnemyController slowEnemyController;
 
     private float foodEnergyGain = BaseFoodEnergyGain;
 
-    public SkillRuntimeApplier(SnakeAbilities snakeAbilities, Energy energy, Timer timer)
+    public SkillRuntimeApplier(SnakeAbilities snakeAbilities, Energy energy, Timer timer, SlowEnemyController slowEnemyController)
     {
         database = LoadSkillDatabase();
         progress = PlayerProgress.EnsureInstance();
         this.snakeAbilities = snakeAbilities;
         this.energy = energy;
         this.timer = timer;
+        this.slowEnemyController = slowEnemyController;
     }
 
     public void ApplyLearnedSkills()
@@ -81,22 +83,13 @@ public class SkillRuntimeApplier
     {
         switch (skill.effectType)
         {
+            //tier1
             case SkillEffectType.UnlockDash:
                 snakeAbilities?.SetDashUnlocked(true);
                 break;
 
-            case SkillEffectType.UnlockGhost:
-                snakeAbilities?.SetGhostModeUnlocked(true);
-                break;
 
-            case SkillEffectType.IncreaseMaxEnergy:
-                energy?.IncreaseMaxEnergy(skill.value);
-                break;
-
-            case SkillEffectType.AddStartEnergy:
-                energy?.IncreaseStartEnergy(skill.value);
-                break;
-
+            //tier2,5
             case SkillEffectType.ReduceDashCost:
                 snakeAbilities?.ReduceDashCost(skill.value);
                 break;
@@ -105,14 +98,8 @@ public class SkillRuntimeApplier
                 snakeAbilities?.ReduceDashCooldown(skill.value);
                 break;
 
-            case SkillEffectType.ReduceGhostDrain:
-                snakeAbilities?.ReduceGhostDrain(skill.value);
-                break;
 
-            case SkillEffectType.ReduceGhostCooldown:
-                snakeAbilities?.ReduceGhostCooldown(skill.value);
-                break;
-
+            //tier3, 5
             case SkillEffectType.IncreaseFoodEnergyGain:
                 foodEnergyGain += skill.value;
                 break;
@@ -121,6 +108,14 @@ public class SkillRuntimeApplier
                 snakeAbilities?.EnableEarlyFoodTimerBonus(skill.value, DefaultFoodPerkWindow);
                 break;
 
+
+            //tier4
+            case SkillEffectType.UnlockGhost:
+                snakeAbilities?.SetGhostModeUnlocked(true);
+                break;
+
+
+            //tier6
             case SkillEffectType.MultiplyLateFoodEnergyGain:
                 snakeAbilities?.EnableLateFoodEnergyBonus(skill.value, DefaultFoodPerkWindow);
                 break;
@@ -128,6 +123,30 @@ public class SkillRuntimeApplier
             case SkillEffectType.MaintainGhostModeAfterToggleOff:
                 snakeAbilities?.MaintainGhostModeAfterToggleOff(skill.value);
                 break;
+
+
+            //tier7
+            case SkillEffectType.SlowEnemiesUsingDash:
+                slowEnemyController.EnableUpgrade(skill.value);
+                break; 
+
+
+
+            case SkillEffectType.IncreaseMaxEnergy:
+                energy?.IncreaseMaxEnergy(skill.value);
+                break;
+
+            case SkillEffectType.AddStartEnergy:
+                energy?.IncreaseStartEnergy(skill.value);
+                break;
+            case SkillEffectType.ReduceGhostDrain:
+                snakeAbilities?.ReduceGhostDrain(skill.value);
+                break;
+
+            case SkillEffectType.ReduceGhostCooldown:
+                snakeAbilities?.ReduceGhostCooldown(skill.value);
+                break;
+
         }
     }
 

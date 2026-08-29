@@ -24,6 +24,8 @@ public class AI_Snake : MonoBehaviour
     [Header("AI Statistics")]
     private float speed = 8f;
     private int initialBodyPart = 4;
+    private float slowMultiplier = 1f;
+    private float slowEndTime;
 
     [Header("AI Vision")]
     private int sideAwarenessRange = 10;
@@ -86,10 +88,12 @@ public class AI_Snake : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        float currentSpeed = GetCurrentSpped();
+
         if (Time.time < nextMoveTime)
             return;
 
-        nextMoveTime = Time.time + (1.0f / speed);
+        nextMoveTime = Time.time + (1.0f / currentSpeed);
 
         Vector2Int currentPos = pathfinding.WorldToGrid(transform.position);
         Vector2Int playerPos = playerSnake != null ? pathfinding.WorldToGrid(playerSnake.position) : default;
@@ -114,6 +118,18 @@ public class AI_Snake : MonoBehaviour
         UpdateHeadRotation();
         MoveNextStep();
     }
+
+    private float GetCurrentSpped()
+    {
+        if (Time.time < slowEndTime)
+            return speed * slowMultiplier;
+        
+        else
+          slowMultiplier = 1f;
+
+        return speed; 
+    }
+
 
     private void MoveNextStep()
     {
@@ -187,7 +203,7 @@ public class AI_Snake : MonoBehaviour
         if (currentState != AI_snakeState.Chase)
             return;
 
-        chaseTimer += 1f / speed;
+        chaseTimer += 1f / GetCurrentSpped();
 
         if (chaseTimer >= ChasingDelay)
             SwitchToPatrol();
@@ -456,6 +472,14 @@ public class AI_Snake : MonoBehaviour
         return true;
     }
 
+    public void ApplySlowEffect(float slowPercentage, float duration)
+    {
+        float multiplier = 1 - Mathf.Clamp01(slowPercentage);
+
+        slowMultiplier = multiplier;
+        slowEndTime = Mathf.Max(slowEndTime, Time.time) + duration;
+    }
+
     private static int ManhattanDistance(Vector2Int a, Vector2Int b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
@@ -619,6 +643,9 @@ public class AI_Snake : MonoBehaviour
 
     public void Restate()
     {
+        slowMultiplier = 1f;
+        slowEndTime = 0f;
+
         direction = Vector2Int.right;
         Vector2Int startCell = pathfinding.WorldToGrid(startPosition);
         transform.position = pathfinding.GridToWorld(startCell);

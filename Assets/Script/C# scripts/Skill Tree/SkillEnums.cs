@@ -15,24 +15,32 @@ public enum SkillType
 
 public enum SkillEffectType
 {
-    //None,
 
-    //UnlockAbilities,
+    //tier1
     UnlockDash,
+
+    //tier2, 5
+    ReduceDashCost,
+    ReduceDashCooldown,
+
+    //tier3, 5
+    IncreaseFoodEnergyGain,
+    ExtendLevelTimerOnEarlyFood,
+
+    //tier4
     UnlockGhost,
+
+    //tier6
+    MultiplyLateFoodEnergyGain,
+    MaintainGhostModeAfterToggleOff,
+    
+    //tier7
+    SlowEnemiesUsingDash,
 
     IncreaseMaxEnergy,
     AddStartEnergy,
 
-    ReduceDashCost,
-    ReduceDashCooldown,
-    //IncreaseDashSpeed,
-
     ReduceGhostDrain,
     ReduceGhostCooldown,
-
-    IncreaseFoodEnergyGain,
-    ExtendLevelTimerOnEarlyFood,
-    MultiplyLateFoodEnergyGain,
-    MaintainGhostModeAfterToggleOff
+    
 }

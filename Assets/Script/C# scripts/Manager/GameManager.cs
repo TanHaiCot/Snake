@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] MapManager mapManager;
     [SerializeField] DoorManager doorManager;
     [SerializeField] BossFightManager bossFightManager;
+    [SerializeField] SlowEnemyController slowEnemyController;
 
     [Header("Game Components")]
     [SerializeField] Snake snake;
@@ -469,7 +470,7 @@ public class GameManager : MonoBehaviour
         if (snakeAbilities != null)
             snakeAbilities.ResetAbilities(CanPlayerNormallyUseAbilities());
 
-        skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer);
+        skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer, slowEnemyController);
         skillRuntimeApplier.ApplyLearnedSkills();
 
         if (energy != null)
@@ -486,7 +487,7 @@ public class GameManager : MonoBehaviour
         if (skillRuntimeApplier != null)
             return;
 
-        skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer);
+        skillRuntimeApplier = new SkillRuntimeApplier(snakeAbilities, energy, timer, slowEnemyController);
         skillRuntimeApplier.ApplyLearnedSkills();
     }
 
