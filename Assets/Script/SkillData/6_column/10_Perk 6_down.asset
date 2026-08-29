@@ -23,10 +23,10 @@ MonoBehaviour:
   requirementGroupMode: 1
   requirementGroups:
   - oneOfTheseSkills:
-    - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}
+    - {fileID: 11400000, guid: 9869afab74ed92c4d9efde9e642e1de9, type: 2}
     - {fileID: 11400000, guid: 23ba554c8a60d3e48a4e55f598ba1dbd, type: 2}
   - oneOfTheseSkills:
-    - {fileID: 11400000, guid: 605ecff27c6b9d243b0eaa43ae5d953f, type: 2}
+    - {fileID: 11400000, guid: 9869afab74ed92c4d9efde9e642e1de9, type: 2}
     - {fileID: 11400000, guid: e85e08e00c81eb2419f88ae95806ed90, type: 2}
   - oneOfTheseSkills:
     - {fileID: 11400000, guid: 3d2d98a0e4d975e45a9c9f7acba5e668, type: 2}
