@@ -32,3 +32,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6bbc52edd0b195c468b2e73b395e7fc8, type: 2}
   - {fileID: 11400000, guid: 7914bc16f8605bf4cb8d78ff0919f7de, type: 2}
   - {fileID: 11400000, guid: ba55fa43e57644143892fb3ad1b4db91, type: 2}
+  allColumns:
+  - {fileID: 11400000, guid: e18d4c974b508684d8f27cfe11da9558, type: 2}
+  - {fileID: 11400000, guid: ff890dc9a88ce684daafe9993b7f65e8, type: 2}
+  - {fileID: 11400000, guid: b6d46a6427faee04383fa87392dbc883, type: 2}
+  - {fileID: 11400000, guid: 18f5fe1caf553db498538efad6817fe6, type: 2}
+  - {fileID: 11400000, guid: 36986ba064528194e9371cabb41f12f4, type: 2}

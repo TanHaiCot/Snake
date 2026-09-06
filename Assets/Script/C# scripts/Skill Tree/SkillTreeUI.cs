@@ -11,111 +11,65 @@ public class SkillTreeUI : MonoBehaviour
 
     private class SkillSlot
     {
-        public Vector2 position;
-        public List<SkillData> skills = new();
-        public SkillNodeButton node;
-        public SkillData currentSkill;
+        public SkillColumnData column;
+        public int optionIndex;
+        public SkillNodeButton node; 
     }
 
-    private List<SkillSlot> slots = new();
+    private readonly List<SkillSlot> slots = new();
 
-    public void BuildTree(SkillTreeManager newManager, SkillData[] skills)
+    public void BuildTree(SkillTreeManager newManager, SkillColumnData[] columns)
     {
         manager = newManager;
         slots.Clear();
 
-        foreach (SkillData skill in skills)
+        foreach (SkillColumnData column in columns)
         {
-            SkillSlot slot = FindSlot(skill.uiPosition);
+            if(column == null || column.options == null)
+                continue;
 
-            if (slot == null)
+            for(int i = 0; i < column.options.Length; i++)
             {
-                slot = new SkillSlot();
-                slot.position = skill.uiPosition;
-                slots.Add(slot);
-
                 SkillNodeButton node = Instantiate(nodePrefab, nodeParent);
-                node.GetComponent<RectTransform>().anchoredPosition = skill.uiPosition;
-                slot.node = node;
-            }
+                node.GetComponent<RectTransform>().anchoredPosition = column.options[i].uiPosition;
 
-            slot.skills.Add(skill);
+                slots.Add(new SkillSlot
+                {
+                    column = column,
+                    optionIndex = i,
+                    node = node
+                });
+            }
         }
 
         RefreshAllNodes();
     }
 
-    private SkillSlot FindSlot(Vector2 position)
+    public void SelectSkill(SkillOption option)
     {
-        foreach (SkillSlot slot in slots)
-        {
-            if (slot.position == position)
-                return slot;
-        }
+        if (option == null)
+            return; 
 
-        return null;
-    }
-
-    private SkillData GetBestSkillForSlot(SkillSlot slot)
-    {
-        SkillData bestSkill = slot.skills[0];
-        int bestPriority = -1;
-
-        foreach (SkillData skill in slot.skills)
-        {
-            SkillNodeVisualState state = manager.GetVisualState(skill);
-            int priority = GetStatePriority(state);
-
-            if (priority > bestPriority)
-            {
-                bestPriority = priority;
-                bestSkill = skill;
-            }
-        }
-
-        return bestSkill;
-    }
-
-    private int GetStatePriority(SkillNodeVisualState state)
-    {
-        switch (state)
-        {
-            case SkillNodeVisualState.Learned:
-                return 4;
-
-            case SkillNodeVisualState.Available:
-                return 3;
-
-            case SkillNodeVisualState.Blocked:
-                return 2;
-
-            case SkillNodeVisualState.Blank:
-            default:
-                return 1;
-        }
-    }
-
-    public void SelectSkill(SkillData skill)
-    {
-        if (manager.GetVisualState(skill) == SkillNodeVisualState.Blank)
+        if (manager.GetVisualState(option) == SkillNodeVisualState.Blank)
             return;
 
-        descriptionPanel.Show(skill, this, manager);
+        descriptionPanel.Show(option, this, manager);
     }
 
-    public void LearnSkill(SkillData skill)
+    public void LearnSkill(SkillOption option)
     {
-        manager.TryLearnSkill(skill);
-        RefreshAllNodes();
+        if(option == null)
+            return;
+
+        manager.TrySelect(option.column, option.optionIndex);
     }
 
     public void RefreshAllNodes()
     {
         foreach (SkillSlot slot in slots)
         {
-            SkillData skillToShow = GetBestSkillForSlot(slot);
-            slot.currentSkill = skillToShow;
-            slot.node.Setup(skillToShow, this, manager);
+            SkillOption option = manager.DetermineOption(slot.column, slot.optionIndex);
+            slot.node.Setup(option, this, manager);
         }
     }
 }

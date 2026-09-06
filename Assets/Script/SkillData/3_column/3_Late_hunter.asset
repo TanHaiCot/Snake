@@ -10,12 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
-  m_Name: 1_Dash
+  m_Name: 3_Late_hunter
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  rootId: dash_unlock
-  skillName: Dash
-  effectType: 0
+  rootId: late_hunter
+  skillName: 'Late Hunter '
+  effectType: 6
   ranks:
-  - skillNameWithRank: 'Express '
-    description: Player go fast as f*ck
+  - skillNameWithRank: 'Late Hunter 1 '
+    description: Food eaten in last 10 seconds of the level give 1.3x energy gain
+    value: 1.3
+  - skillNameWithRank: Late Hunter 2
+    description: Food eaten in last 10 seconds of the level give 1.5x energy gain
+    value: 1.5
+  - skillNameWithRank: 
+    description: 
     value: 0

@@ -4,17 +4,42 @@ using UnityEngine;
 public class SkillTreeData : ScriptableObject
 {
     [SerializeField] private SkillData[] allSkills;
+    [SerializeField] private SkillColumnData[] allColumns;
 
     public SkillData[] AllSkills => allSkills;
+    public SkillColumnData[] AllColumns => allColumns;
 
-    public SkillData GetSkillById(string id)
+    public SkillData GetSkillByRootId(string rootId)
     {
+        if(string.IsNullOrWhiteSpace(rootId) || allSkills == null)
+            return null;
+
         foreach (SkillData skill in allSkills)
         {
-            if (skill.skillId == id)
+            if (skill != null && skill.rootId == rootId)
                 return skill;
         }
 
         return null;
     }
+    public SkillColumnData GetColumnById(string columnId)
+    {
+        if (string.IsNullOrWhiteSpace(columnId) ||
+            allColumns == null)
+        {
+            return null;
+        }
+
+        foreach (SkillColumnData column in allColumns)
+        {
+            if (column != null &&
+                column.columnId == columnId)
+            {
+                return column;
+            }
+        }
+
+        return null;
+    }
+
 }

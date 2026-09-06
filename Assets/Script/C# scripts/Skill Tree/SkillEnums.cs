@@ -7,40 +7,26 @@ public enum SkillNodeVisualState
     Blocked
 }
 
-public enum SkillType
-{
-    TriggerSkill,
-    Perk
-}
-
 public enum SkillEffectType
 {
-
-    //tier1
-    UnlockDash,
-
-    //tier2, 5
-    ReduceDashCost,
-    ReduceDashCooldown,
-
-    //tier3, 5
-    IncreaseFoodEnergyGain,
-    ExtendLevelTimerOnEarlyFood,
-
-    //tier4
-    UnlockGhost,
-
-    //tier6
-    MultiplyLateFoodEnergyGain,
-    MaintainGhostModeAfterToggleOff,
+    UnlockDash = 0,
+  
+    ReduceDashCost = 1,
+    ReduceDashCooldown = 2,
     
-    //tier7
-    SlowEnemiesUsingDash,
-
-    IncreaseMaxEnergy,
-    AddStartEnergy,
-
-    ReduceGhostDrain,
-    ReduceGhostCooldown,
+    IncreaseFoodEnergyGain = 3,
+    ExtendLevelTimerOnEarlyFood = 4,
     
+    UnlockGhost = 5,
+    
+    MultiplyLateFoodEnergyGain = 6,
+    MaintainGhostModeAfterToggleOff = 7,
+    
+    SlowEnemiesUsingDash = 8,
+
+    IncreaseMaxEnergy = 9,
+    AddStartEnergy = 10,
+
+    ReduceGhostDrain = 11,
+    ReduceGhostCooldown = 12,
 }

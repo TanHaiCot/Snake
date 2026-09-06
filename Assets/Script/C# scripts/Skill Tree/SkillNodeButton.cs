@@ -14,11 +14,11 @@ public class SkillNodeButton : MonoBehaviour
     [SerializeField] private Color learnedColor = new Color(1f, 1f, 0.7f);
     [SerializeField] private Color blockedColor = new Color(0.15f, 0.15f, 0.15f);
 
-    private SkillData skill;
+    private SkillOption skill;
     private SkillTreeUI ui;
     private SkillTreeManager manager;
 
-    public void Setup(SkillData newSkill, SkillTreeUI newUI, SkillTreeManager newManager)
+    public void Setup(SkillOption newSkill, SkillTreeUI newUI, SkillTreeManager newManager)
     {
         skill = newSkill;
         ui = newUI;
@@ -46,19 +46,19 @@ public class SkillNodeButton : MonoBehaviour
                 break;
 
             case SkillNodeVisualState.Available:
-                skillText.text = skill.skillName;
+                skillText.text = skill.DisplayName;
                 buttonImage.color = availableColor;
                 button.interactable = true;
                 break;
 
             case SkillNodeVisualState.Learned:
-                skillText.text = skill.skillName;
+                skillText.text = skill.DisplayName;
                 buttonImage.color = learnedColor;
                 button.interactable = true;
                 break;
 
             case SkillNodeVisualState.Blocked:
-                skillText.text = skill.skillName;
+                skillText.text = skill.DisplayName;
                 buttonImage.color = blockedColor;
                 button.interactable = true;
                 break;

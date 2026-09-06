@@ -1,6 +1,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class OwnedSkillProgress
+{
+    public string rootId;
+    public int rank;
+}
+
+[System.Serializable]
+public class ColumnSelectionProgress
+{
+    public string columnId;
+
+    public string firstGivenRootId;
+    public int firstGivenRank;
+
+    public string secondGivenRootId;
+    public int secondGivenRank;
+
+    public int chosenOptionIndex;
+    public string chosenRootId;
+    public int chosenRank;
+
+    public string GetUnchosenRootId()
+    {
+        return chosenOptionIndex == 0 ? secondGivenRootId : firstGivenRootId;   
+    }
+
+    public int GetUnchosenRank()
+    {
+        return chosenOptionIndex == 0 ? secondGivenRank : firstGivenRank;
+    }
+}
+
 public class PlayerProgress : MonoBehaviour
 {
     public static PlayerProgress Instance;
@@ -14,18 +47,13 @@ public class PlayerProgress : MonoBehaviour
     public bool hasSavedEnergy;
     public float savedEnergy;
     
-    public List<string> chosenSkillIds = new List<string>();
-    public List<string> seenThemeIntroductionIds = new List<string>();
+    public List<OwnedSkillProgress> ownedSkills = new();
+    public List<ColumnSelectionProgress> columnSelections = new();
+
+    public List<string> seenThemeIntroductionIds = new();
 
     public int ContinueLevelBuildIndex => Mathf.Max(highestCompletedLevelBuildIndex + 1, SaveSystem.FirstGameplayLevelBuildIndex);
 
-    public bool HasSkill(string skillId)
-    {
-        if (chosenSkillIds == null)
-            return false;
-
-        return chosenSkillIds.Contains(skillId);
-    }
 
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -50,6 +78,13 @@ public class PlayerProgress : MonoBehaviour
         return progressObject.AddComponent<PlayerProgress>();
     }
 
+    public void EnsureLists()
+    {
+        ownedSkills ??= new List<OwnedSkillProgress>();
+        columnSelections ??= new List<ColumnSelectionProgress>();
+        seenThemeIntroductionIds ??= new List<string>();    
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -67,13 +102,96 @@ public class PlayerProgress : MonoBehaviour
         transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
 
-        if (chosenSkillIds == null)
-            chosenSkillIds = new List<string>();
-
-        if (seenThemeIntroductionIds == null)
-            seenThemeIntroductionIds = new List<string>();
-
+        EnsureLists(); 
         LoadSavedProgress();
+        EnsureLists(); 
+    }
+
+    public OwnedSkillProgress GetOwnedSkill(string rootId)
+    {
+        if(ownedSkills == null)
+            ownedSkills = new List<OwnedSkillProgress>();
+
+        return ownedSkills.Find(skill => skill.rootId == rootId);
+    }
+
+    public int GetSkillRank(string rootId)
+    {
+        OwnedSkillProgress ownedSkill = GetOwnedSkill(rootId);
+        return ownedSkill != null ? ownedSkill.rank : 0;
+    }
+
+    public bool CanUpgradeSkill(SkillData skill)
+    {
+        return skill != null && GetSkillRank(skill.rootId) < skill.MaxRank;
+    }
+
+    public bool UpgradeSkill(SkillData skill)
+    {
+        if (!CanUpgradeSkill(skill))
+            return false;
+
+        OwnedSkillProgress ownedSkillProgress = GetOwnedSkill(skill.rootId);
+
+        if (ownedSkillProgress == null)
+        {
+            ownedSkillProgress = new OwnedSkillProgress
+            {
+                rootId = skill.rootId,
+                rank = 1
+            };
+            ownedSkills.Add(ownedSkillProgress);
+        }
+        else
+        {
+            ownedSkillProgress.rank = Mathf.Min(ownedSkillProgress.rank + 1, skill.MaxRank);
+        }
+
+        return true; 
+    }
+
+    public ColumnSelectionProgress GetColumnSelection(string columnId)
+    {
+        if (columnSelections == null)
+            columnSelections = new List<ColumnSelectionProgress>();
+     
+        return columnSelections.Find(selection => selection.columnId == columnId);
+    }
+
+    public bool HasColumnSelection(string columnId)
+    {
+        return GetColumnSelection(columnId) != null;
+    }
+
+    public bool HasSkillRoot(string rootId)
+    {
+        return GetSkillRank(rootId) > 0;
+    }
+
+    public void RecordColumnSelection(
+        string columnId, 
+        string firstGivenRootId, int firstGivenRank, 
+        string secondGivenRootId, int secondGivenRank, 
+        int chosenOptionIndex, string chosenRootId, int chosenRank)
+    {
+
+        if (HasColumnSelection(columnId))
+            return;
+        
+        columnSelections.Add(new ColumnSelectionProgress
+        {
+            columnId = columnId,
+
+            firstGivenRootId = firstGivenRootId,
+            firstGivenRank = firstGivenRank,
+
+            secondGivenRootId = secondGivenRootId,
+            secondGivenRank = secondGivenRank,
+
+            chosenOptionIndex = chosenOptionIndex,
+            chosenRootId = chosenRootId,
+            chosenRank = chosenRank
+        });
     }
 
     public void AddUpgradePoint()
@@ -128,13 +246,10 @@ public class PlayerProgress : MonoBehaviour
         hasSavedEnergy = false;
         savedEnergy = 0f;
 
-        if (chosenSkillIds == null)
-            chosenSkillIds = new List<string>();
+        EnsureLists(); 
 
-        if (seenThemeIntroductionIds == null)
-            seenThemeIntroductionIds = new List<string>();
-
-        chosenSkillIds.Clear();
+        ownedSkills.Clear();
+        columnSelections.Clear();
         seenThemeIntroductionIds.Clear();
     }
 

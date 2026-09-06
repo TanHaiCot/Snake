@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
+  m_Name: 3_Buy_time
+  m_EditorClassIdentifier: Assembly-CSharp::SkillData
+  rootId: buy_time
+  skillName: 'Buy Time  '
+  effectType: 4
+  ranks:
+  - skillNameWithRank: Buy Time 1
+    description: 'Extend the Timer by 5 seconds for each food eaten in the first
+      10 seconds of the level '
+    value: 5
+  - skillNameWithRank: Buy Time 2
+    description: Extend the Timer by 7 seconds for each food eaten in the first 10
+      seconds of the level
+    value: 7
+  - skillNameWithRank: 
+    description: 
+    value: 0

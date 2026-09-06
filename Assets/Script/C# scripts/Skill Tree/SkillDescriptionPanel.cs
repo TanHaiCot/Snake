@@ -9,21 +9,24 @@ public class SkillDescriptionPanel : MonoBehaviour
     [SerializeField] private Button learnButton;
     [SerializeField] private TMP_Text learnButtonText;
 
-    private SkillData currentSkill;
+    private SkillOption currentSkill;
     private SkillTreeUI ui;
     private SkillTreeManager manager;
 
-    public void Show(SkillData skill, SkillTreeUI newUI, SkillTreeManager newManager)
+    public void Show(SkillOption skill, SkillTreeUI newUI, SkillTreeManager newManager)
     {
         currentSkill = skill;
         ui = newUI;
         manager = newManager;
 
-        skillNameText.text = skill.skillName;
-        descriptionText.text = skill.description;
+        skillNameText.text = skill.DisplayName;
+        descriptionText.text = skill.Description;
 
-        bool learned = manager.IsLearned(skill);
-        bool canLearn = manager.CanLearn(skill);
+        SkillNodeVisualState state = manager.GetVisualState(skill);
+
+        bool learned = state == SkillNodeVisualState.Learned;
+
+        bool canLearn = manager.CanSelect(skill);
 
         learnButton.interactable = canLearn;
 

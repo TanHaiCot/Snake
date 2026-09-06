@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a213d31a4a744a42b04438f74808a84, type: 3}
+  m_Name: 3_Column
+  m_EditorClassIdentifier: Assembly-CSharp::SkillColumnData
+  columnId: column_3
+  columnNumber: 3
+  prerequisiteColumns:
+  - {fileID: 11400000, guid: ff890dc9a88ce684daafe9993b7f65e8, type: 2}
+  options:
+  - optionType: 0
+    newSkill: {fileID: 11400000, guid: 27231ee43d6750b488e83c191242ad29, type: 2}
+    sourceColumn: {fileID: 0}
+    uiPosition: {x: 585, y: 130}
+  - optionType: 0
+    newSkill: {fileID: 11400000, guid: ef6db69a98b35fe40b3948e1b9c46c75, type: 2}
+    sourceColumn: {fileID: 0}
+    uiPosition: {x: 585, y: -130}

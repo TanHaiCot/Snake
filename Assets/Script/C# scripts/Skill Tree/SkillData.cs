@@ -1,36 +1,43 @@
 using UnityEngine;
 
-
 [System.Serializable]
-public class SkillRequirementGroup
+public class SkillRank
 {
-    public SkillData[] oneOfTheseSkills;
-}
+    public string skillNameWithRank;
 
-public enum RequirementGroupMode
-{
-    AllGroups,
-    AnyGroup
+    [TextArea]
+    public string description;
+
+    public float value;
 }
 
 [CreateAssetMenu(fileName = "SkillData", menuName = "Scriptable Objects/SkillData")]
 public class SkillData : ScriptableObject
 {
-    public string skillId;
+    [Header("Skill Info")]
+    public string rootId;
     public string skillName;
-    [TextArea] public string description;
-    public Sprite icon;
 
-    public SkillType skillType;
+    [Header("Effect")]
     public SkillEffectType effectType;
-    public float value;
 
-    public Vector2 uiPosition;
+    [Header("Ranks")]
+    public SkillRank[] ranks;
 
-    [Header("Unlock Rules")]
-    [Tooltip("All Groups = every group must pass (AND). Any Group = at least one group must pass (OR). Skills inside each group are always OR choices.")]
-    public RequirementGroupMode requirementGroupMode = RequirementGroupMode.AllGroups;
-    public SkillRequirementGroup[] requirementGroups;
-    public SkillData[] oppositeChoices;
+    public int MaxRank
+    {
+        get
+        {
+            return ranks != null ? ranks.Length : 0;
+        }
+    }
+
+    public SkillRank GetRank(int rank)
+    {
+        if (rank < 1 || rank > MaxRank)
+            return null;
+
+        return ranks[rank - 1];
+    }
 }
 

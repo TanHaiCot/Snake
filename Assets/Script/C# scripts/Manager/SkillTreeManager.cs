@@ -15,7 +15,7 @@ public class SkillTreeManager : MonoBehaviour
         PlayerProgress progress = PlayerProgress.EnsureInstance();
         progress.LoadSavedProgress();
 
-        skillTreeUI.BuildTree(this, database.AllSkills);
+        skillTreeUI.BuildTree(this, database.AllColumns);
 
         bool fromLevel = progress.openedSkillTreeFromLevel;
 
@@ -23,125 +23,254 @@ public class SkillTreeManager : MonoBehaviour
             continueButton.SetActive(fromLevel);
     }
 
-    public bool IsLearned(SkillData skill)
+    public bool IsColumnComplete(SkillColumnData column)
     {
-        return PlayerProgress.EnsureInstance().chosenSkillIds.Contains(skill.skillId);
+        return column != null && PlayerProgress.EnsureInstance().HasColumnSelection(column.columnId);
     }
 
-    public bool CanLearn(SkillData skill)
+    public bool ArePrerequisitesMet(SkillColumnData column)
     {
-        if (PlayerProgress.EnsureInstance().upgradePoints <= 0)
+        if (column == null)
             return false;
 
-        if (IsLearned(skill))
-            return false;
+        if (column.prerequisiteColumns == null || column.prerequisiteColumns.Length == 0)
+            return true; 
 
-        if (IsOppositeAlreadyLearned(skill))
-            return false;
-
-        return RequirementsMet(skill);
-    }
-
-    public bool IsVisible(SkillData skill)
-    {
-        if (IsLearned(skill))
-            return true;
-
-        return RequirementsMet(skill);
-    }
-
-    private bool RequirementsMet(SkillData skill)
-    {
-        if (skill.requirementGroups == null || skill.requirementGroups.Length == 0)
-            return true;
-
-        bool requireAllGroups = skill.requirementGroupMode == RequirementGroupMode.AllGroups;
-
-        foreach (SkillRequirementGroup group in skill.requirementGroups)
+        foreach(SkillColumnData prerequisite in column.prerequisiteColumns)
         {
-            bool groupPassed = RequirementGroupMet(group);
-
-            if (requireAllGroups && !groupPassed)
-                return false;
-
-            if (!requireAllGroups && groupPassed)
-                return true;
-        }
-
-        return requireAllGroups;
-    }
-
-    private bool RequirementGroupMet(SkillRequirementGroup group)
-    {
-        if (group == null || group.oneOfTheseSkills == null)
-            return false;
-
-        foreach (SkillData requiredSkill in group.oneOfTheseSkills)
-        {
-            if (requiredSkill != null && IsLearned(requiredSkill))
-                return true;
-        }
-
-        return false;
-    }
-
-    private bool IsOppositeAlreadyLearned(SkillData skill)
-    {
-        if (skill.oppositeChoices == null || skill.oppositeChoices.Length == 0)
-            return false;
-
-        foreach (SkillData opposite in skill.oppositeChoices)
-        {
-            if (opposite != null && IsLearned(opposite))
+            if(!IsColumnComplete(prerequisite))
             {
-                Debug.Log(skill.skillName + " blocked by learned opposite: " + opposite.skillName);
-                return true;
+                return false;
+            }   
+        }
+
+        return true; 
+    }
+
+    public SkillOption DetermineOption(SkillColumnData column, int optionIndex)
+    {
+        if(column == null || column.options == null || optionIndex < 0 || optionIndex >= column.options.Length)
+            return null;
+
+        PlayerProgress progress = PlayerProgress.EnsureInstance();
+
+        ColumnSelectionProgress selected = progress.GetColumnSelection(column.columnId);
+
+        if (selected != null)
+        {
+            string savedRootId = optionIndex == 0 ? selected.firstGivenRootId : selected.secondGivenRootId;
+            int savedRank = optionIndex == 0 ? selected.firstGivenRank : selected.secondGivenRank;
+
+            SkillData savedSkill = database.GetSkillByRootId(savedRootId);
+
+            if (savedSkill != null && savedRank > 0)
+            {
+                return new SkillOption
+                {
+                    column = column,
+                    baseInfo = column.options[optionIndex],
+                    optionIndex = optionIndex,
+                    skill = savedSkill,
+                    offeredRank = savedRank,
+                    uiPosition = column.options[optionIndex].uiPosition
+                };
             }
         }
 
-        return false; 
+        SkillOptionBaseInfo baseInfo = column.options[optionIndex];
+        SkillData skill = DetermineSkillFromBaseInfo(baseInfo);
+
+        if(skill == null)
+            return null;
+
+        int currentRank = progress.GetSkillRank(skill.rootId);
+
+        int offeredRank = baseInfo.optionType == SkillOptionType.NewSkill ? 1 : currentRank + 1;
+
+        if(baseInfo.optionType == SkillOptionType.NewSkill && currentRank > 0)
+            return null;
+
+        if (offeredRank < 1 || offeredRank > skill.MaxRank)
+        {
+            return null;
+        }
+
+        return new SkillOption
+        {
+            column = column,
+            baseInfo = baseInfo,
+            optionIndex = optionIndex,
+            skill = skill,
+            offeredRank = offeredRank,
+            uiPosition = baseInfo.uiPosition
+        };
     }
 
-    public void TryLearnSkill(SkillData skill)
+    private SkillData DetermineSkillFromBaseInfo(SkillOptionBaseInfo baseInfo)
     {
-        if (!CanLearn(skill))
-            return;
+        if (baseInfo == null)
+            return null;
+
+        switch (baseInfo.optionType)
+        {
+            case SkillOptionType.NewSkill:
+                return baseInfo.newSkill;
+
+            case SkillOptionType.SkillUpgradeChosen:
+                return GetChosenSkill(baseInfo.sourceColumn);
+
+            case SkillOptionType.SkillUpgradeSkipped:
+                return GetSkippedSkill(baseInfo.sourceColumn);
+
+            default:
+                return null;
+        }
+    }
+
+    private SkillData GetChosenSkill(SkillColumnData sourceColumn)
+    {
+        if (sourceColumn == null)
+            return null;
+
+        PlayerProgress progress =
+            PlayerProgress.EnsureInstance();
+
+        ColumnSelectionProgress selection =
+            progress.GetColumnSelection(sourceColumn.columnId);
+
+        if (selection == null)
+            return null;
+
+        return database.GetSkillByRootId(
+            selection.chosenRootId);
+    }
+
+    private SkillData GetSkippedSkill(SkillColumnData sourceColumn)
+    {
+        if (sourceColumn == null)
+            return null;
 
         PlayerProgress progress = PlayerProgress.EnsureInstance();
-        progress.chosenSkillIds.Add(skill.skillId);
+
+        ColumnSelectionProgress selection = progress.GetColumnSelection(sourceColumn.columnId);
+
+        if (selection == null)
+            return null;
+
+        string skippedRootId = selection.GetUnchosenRootId(); 
+        
+        if(!progress.HasSkillRoot(skippedRootId))
+            return null;
+
+        return database.GetSkillByRootId(skippedRootId);
+    }
+
+    public bool CanSelect(SkillOption option)
+    {
+        if (option == null ||
+            option.column == null ||
+            option.skill == null)
+        {
+            return false;
+        }
+
+        PlayerProgress progress =
+            PlayerProgress.EnsureInstance();
+
+        if (progress.upgradePoints <= 0)
+            return false;
+
+        if (progress.HasColumnSelection(
+            option.column.columnId))
+        {
+            return false;
+        }
+
+        if (!ArePrerequisitesMet(option.column))
+            return false;
+
+        int currentRank =
+            progress.GetSkillRank(option.skill.rootId);
+
+        if (option.baseInfo.optionType == SkillOptionType.NewSkill)
+        {
+            return currentRank == 0 &&
+                   option.offeredRank == 1;
+        }
+
+        return currentRank > 0 &&
+               option.offeredRank == currentRank + 1 &&
+               progress.CanUpgradeSkill(option.skill);
+    }
+
+    public bool TrySelect(
+    SkillColumnData column,
+    int optionIndex)
+    {
+        SkillOption selected =
+            DetermineOption(column, optionIndex);
+
+        if (!CanSelect(selected))
+            return false;
+
+        SkillOption first =
+            DetermineOption(column, 0);
+
+        SkillOption second =
+            DetermineOption(column, 1);
+
+        PlayerProgress progress =
+            PlayerProgress.EnsureInstance();
+
+        if (!progress.UpgradeSkill(selected.skill))
+            return false;
+
+        progress.RecordColumnSelection(
+            column.columnId,
+
+            first?.skill.rootId,
+            first?.offeredRank ?? 0,
+
+            second?.skill.rootId,
+            second?.offeredRank ?? 0,
+
+            optionIndex,
+            selected.skill.rootId,
+            selected.offeredRank);
+
         progress.upgradePoints--;
         progress.SaveProgress();
 
         skillTreeUI.RefreshAllNodes();
+        return true;
     }
 
-    public SkillNodeVisualState GetVisualState(SkillData skill)
+    public SkillNodeVisualState GetVisualState(SkillOption option)
     {
-        if (IsLearned(skill))
-            return SkillNodeVisualState.Learned;
+        if (option == null)
+            return SkillNodeVisualState.Blank;
 
-        if (IsOppositeAlreadyLearned(skill))
+        PlayerProgress progress =
+            PlayerProgress.EnsureInstance();
+
+        ColumnSelectionProgress selection =
+            progress.GetColumnSelection(
+                option.column.columnId);
+
+        if (selection != null)
         {
-            //Debug.Log(skill.skillName + " is blocked because opposite is learned.");
-            return SkillNodeVisualState.Blocked;
+            return selection.chosenOptionIndex ==
+                   option.optionIndex
+                ? SkillNodeVisualState.Learned
+                : SkillNodeVisualState.Blocked;
         }
 
-        if (CanReveal(skill))
-        {
-            if (CanLearn(skill))
-                return SkillNodeVisualState.Available;
+        if (!ArePrerequisitesMet(option.column))
+            return SkillNodeVisualState.Blank;
 
-           // Debug.Log(skill.skillName + " revealed but cannot learn. Points: "
-           //+ PlayerProgress.EnsureInstance().upgradePoints);
-            return SkillNodeVisualState.Blocked;
-        }
-        //Debug.Log(skill.skillName + " is blank because requirements are not met.");
-        return SkillNodeVisualState.Blank;
-    }
-
-    public bool CanReveal(SkillData skill)
-    {
-        return RequirementsMet(skill);
+        return CanSelect(option)
+            ? SkillNodeVisualState.Available
+            : SkillNodeVisualState.Blocked;
     }
 
     public void ContinueToNextLevel()
