@@ -22,6 +22,6 @@ MonoBehaviour:
   - skillNameWithRank: Enduring Breath 2
     description: 'Reduce the cost per dash by 3 energy  '
     value: 3
-  - skillNameWithRank: Enduring Breath 1
+  - skillNameWithRank: Enduring Breath 3
     description: 'Reduce the cost per dash by 2 energy  '
     value: 2

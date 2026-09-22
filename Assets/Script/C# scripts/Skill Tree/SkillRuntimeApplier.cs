@@ -135,8 +135,8 @@ public class SkillRuntimeApplier
                 energy?.IncreaseMaxEnergy(value);
                 break;
 
-            case SkillEffectType.AddStartEnergy:
-                energy?.IncreaseStartEnergy(value);
+            case SkillEffectType.BonusEnergyAtStart:
+                energy?.BonusEnergyAtStart(value);
                 break;
             case SkillEffectType.ReduceGhostDrain:
                 snakeAbilities?.ReduceGhostDrain(value);

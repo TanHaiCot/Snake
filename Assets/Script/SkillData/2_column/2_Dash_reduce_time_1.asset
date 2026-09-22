@@ -22,6 +22,6 @@ MonoBehaviour:
   - skillNameWithRank: Cooling Break 2
     description: 'Reduce the cooldown time by 0.4 seconds '
     value: 0.4
-  - skillNameWithRank: Cooling Break 1
+  - skillNameWithRank: Cooling Break 3
     description: 'Reduce the cooldown time by 0.2 seconds '
     value: 0.2

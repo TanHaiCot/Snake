@@ -10,20 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10a7ec9f8d607064582e34909716610e, type: 3}
-  m_Name: 3_Buy_time
+  m_Name: 6_Ghost_maintain
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
-  rootId: buy_time
-  skillName: 'Buy Time  '
-  effectType: 4
+  rootId: ghost_maintain
+  skillName: Lingering
+  effectType: 7
   ranks:
-  - skillNameWithRank: Buy Time 1
-    description: 'Extend the Timer by 5 seconds for each food eaten in the first
-      10 seconds of the level '
+  - skillNameWithRank: 'Lingering 1 '
+    description: Remain the ghost mode for 3 seconds after toggling off
+    value: 3
+  - skillNameWithRank: Lingering 2
+    description: Remain the ghost mode for 5 seconds after toggling off
     value: 5
-  - skillNameWithRank: Buy Time 2
-    description: Extend the Timer by 7 seconds for each food eaten in the first 10
-      seconds of the level
-    value: 7
-  - skillNameWithRank: 'Buy Time 3 '
+  - skillNameWithRank: 
     description: 
     value: 0

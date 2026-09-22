@@ -25,7 +25,7 @@ public enum SkillEffectType
     SlowEnemiesUsingDash = 8,
 
     IncreaseMaxEnergy = 9,
-    AddStartEnergy = 10,
+    BonusEnergyAtStart = 10,
 
     ReduceGhostDrain = 11,
     ReduceGhostCooldown = 12,

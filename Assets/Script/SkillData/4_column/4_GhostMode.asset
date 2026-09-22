@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 4_GhostMode
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   rootId: ghost_mode
-  skillName: GhostMode
+  skillName: Soul Extraction
   effectType: 5
   ranks:
   - skillNameWithRank: Soul Extraction

@@ -137,12 +137,12 @@ public class Energy : MonoBehaviour
     public void IncreaseMaxEnergy(float amount)
     {
         maxEnergy += amount;
-        currentEnergy = Mathf.Min(currentEnergy + amount, maxEnergy);
+        //currentEnergy = Mathf.Min(currentEnergy + amount, maxEnergy);
     }
 
-    public void IncreaseStartEnergy(float amount)
+    public void BonusEnergyAtStart(float amount)
     {
-        startEnergy += amount;
+        //startEnergy += amount;
         currentEnergy += amount;
 
         if (currentEnergy > maxEnergy)
