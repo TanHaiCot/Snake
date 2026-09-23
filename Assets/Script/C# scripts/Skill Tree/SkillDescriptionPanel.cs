@@ -15,6 +15,8 @@ public class SkillDescriptionPanel : MonoBehaviour
 
     public void Show(SkillOption skill, SkillTreeUI newUI, SkillTreeManager newManager)
     {
+        gameObject.SetActive(true);
+
         currentSkill = skill;
         ui = newUI;
         manager = newManager;
@@ -26,7 +28,7 @@ public class SkillDescriptionPanel : MonoBehaviour
 
         bool learned = state == SkillNodeVisualState.Learned;
 
-        bool canLearn = manager.CanSelect(skill);
+        bool canLearn = manager.CanLearn(skill);
 
         learnButton.interactable = canLearn;
 
@@ -42,9 +44,24 @@ public class SkillDescriptionPanel : MonoBehaviour
 
     }
 
+    public void Hide()
+    {
+        currentSkill = null; 
+        learnButton.interactable = false;
+        gameObject.SetActive(false);
+    }
+
     private void HandleLearnButtonClick()
     {
-        ui.LearnSkill(currentSkill);
-        AudioManager.Instance?.playSFX(AudioManager.Instance.updateSkill);
+        if (currentSkill == null || ui == null)
+            return;
+
+        if (ui.LearnSkill(currentSkill))
+        {
+            AudioManager audio = AudioManager.Instance;
+
+            if (audio != null)
+                audio.playSFX(audio.updateSkill);
+        }
     }
 }

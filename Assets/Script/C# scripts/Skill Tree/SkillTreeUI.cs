@@ -21,6 +21,7 @@ public class SkillTreeUI : MonoBehaviour
     public void BuildTree(SkillTreeManager newManager, SkillColumnData[] columns)
     {
         manager = newManager;
+        descriptionPanel.Hide(); 
         slots.Clear();
 
         foreach (SkillColumnData column in columns)
@@ -56,19 +57,23 @@ public class SkillTreeUI : MonoBehaviour
         descriptionPanel.Show(option, this, manager);
     }
 
-    public void LearnSkill(SkillOption option)
+    public bool LearnSkill(SkillOption option)
     {
         if(option == null)
-            return;
+            return false;
 
-        manager.TrySelect(option.column, option.optionIndex);
+        bool learned = manager.TryLearn(option.column, option.optionIndex);
+        
+        descriptionPanel.Show(option, this, manager); 
+
+        return learned; 
     }
 
     public void RefreshAllNodes()
     {
         foreach (SkillSlot slot in slots)
         {
-            SkillOption option = manager.DetermineOption(slot.column, slot.optionIndex);
+            SkillOption option = manager.GetOfferedOption(slot.column, slot.optionIndex);
             slot.node.Setup(option, this, manager);
         }
     }

@@ -47,7 +47,7 @@ public class SkillTreeManager : MonoBehaviour
         return true; 
     }
 
-    public SkillOption DetermineOption(SkillColumnData column, int optionIndex)
+    public SkillOption GetOfferedOption(SkillColumnData column, int optionIndex)
     {
         if(column == null || column.options == null || optionIndex < 0 || optionIndex >= column.options.Length)
             return null;
@@ -165,7 +165,7 @@ public class SkillTreeManager : MonoBehaviour
         return database.GetSkillByRootId(skippedRootId);
     }
 
-    public bool CanSelect(SkillOption option)
+    public bool CanLearn(SkillOption option)
     {
         if (option == null ||
             option.column == null ||
@@ -203,21 +203,19 @@ public class SkillTreeManager : MonoBehaviour
                progress.CanUpgradeSkill(option.skill);
     }
 
-    public bool TrySelect(
-    SkillColumnData column,
-    int optionIndex)
+    public bool TryLearn(SkillColumnData column, int optionIndex)
     {
         SkillOption selected =
-            DetermineOption(column, optionIndex);
+            GetOfferedOption(column, optionIndex);
 
-        if (!CanSelect(selected))
+        if (!CanLearn(selected))
             return false;
 
         SkillOption first =
-            DetermineOption(column, 0);
+            GetOfferedOption(column, 0);
 
         SkillOption second =
-            DetermineOption(column, 1);
+            GetOfferedOption(column, 1);
 
         PlayerProgress progress =
             PlayerProgress.EnsureInstance();
@@ -268,7 +266,7 @@ public class SkillTreeManager : MonoBehaviour
         if (!ArePrerequisitesMet(option.column))
             return SkillNodeVisualState.Blank;
 
-        return CanSelect(option)
+        return CanLearn(option)
             ? SkillNodeVisualState.Available
             : SkillNodeVisualState.Blocked;
     }
