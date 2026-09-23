@@ -76,6 +76,15 @@ public class SnakeAbilities : MonoBehaviour
     {
         CacheBaseSettings();
         ResetAbilities(SceneManager.GetActiveScene().name != "Boss1Fight");
+
+        if (OnDashUsed != null)
+        {
+            for (int i = 0; i < OnDashUsed.GetPersistentEventCount(); i++)
+            {
+                if (OnDashUsed.GetPersistentMethodName(i) == nameof(AudioManager.playSFX))
+                    OnDashUsed.SetPersistentListenerState(i, UnityEngine.Events.UnityEventCallState.Off);
+            }
+        }
     }
 
     private void Update()
@@ -201,6 +210,11 @@ public class SnakeAbilities : MonoBehaviour
 
         dashActiveTime = Time.time + dashDuration;
         dashReadyTime = Time.time + dashCooldown;
+
+        AudioManager audioManager = AudioManager.Instance;
+        if (audioManager != null && audioManager.dashing != null)
+            audioManager.playSFX(audioManager.dashing);
+
         OnDashUsed?.Invoke();
         UpdateCooldownFill(dashCooldownImage, dashReadyTime, dashCooldown);
         return true;

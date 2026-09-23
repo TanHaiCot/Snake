@@ -57,7 +57,8 @@ public class SkillRuntimeApplier
 
     public void ApplyFoodEatenEffects()
     {
-        if (energy != null)
+        if (energy != null && snakeAbilities != null &&
+            (snakeAbilities.IsDashUnlocked || snakeAbilities.IsGhostModeUnlocked))
         {
             float energyGain = snakeAbilities != null
                 ? snakeAbilities.GetTotalFoodEnergyGain(foodEnergyGain, timer)

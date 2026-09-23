@@ -86,8 +86,8 @@ public class ThemeIntroduction : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(finalBlackDuration);
 
-        //PlayerProgress progress = PlayerProgress.EnsureInstance();
-        //progress.MarkThemeIntroductionSeen(levelData.themeIntroductionId);
+        PlayerProgress progress = PlayerProgress.EnsureInstance();
+        progress.MarkThemeIntroductionSeen(levelData.themeIntroductionId);
 
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
@@ -102,8 +102,7 @@ public class ThemeIntroduction : MonoBehaviour
         if (levelData == null || introductionPanel == null || canvasGroup == null || themeTitleText == null)
             return false;
 
-        //return !PlayerProgress.EnsureInstance().HasSeenThemeIntroduction(levelData.themeIntroductionId);
-        return true; 
+        return !PlayerProgress.EnsureInstance().HasSeenThemeIntroduction(levelData.themeIntroductionId);
     }
 
     private IEnumerator FadeTheme(
