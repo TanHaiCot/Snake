@@ -79,10 +79,7 @@ public class AI_Snake : MonoBehaviour
         {
             if(scoreManager != null) 
             {
-                scoreManager.OnTargetReached.AddListener(() =>
-                {
-                    this.gameObject.SetActive(false);
-                });
+                scoreManager.OnTargetReached.AddListener(Die);
             }
         }
     }
@@ -643,6 +640,8 @@ public class AI_Snake : MonoBehaviour
 
     public void Restate()
     {
+        this.gameObject.SetActive(true);
+
         slowMultiplier = 1f;
         slowEndTime = 0f;
 
@@ -686,6 +685,17 @@ public class AI_Snake : MonoBehaviour
         Transform bodyPart = Instantiate(bodyPrefab);
         bodyPart.position = bodies[bodies.Count - 1].position;
         bodies.Add(bodyPart);
+    }
+
+    private void Die()
+    {
+        for (int i = 1; i < bodies.Count; i++)
+        {
+            Destroy(bodies[i].gameObject);
+        }
+
+        bodies.Clear();
+        this.gameObject.SetActive(false);   
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
