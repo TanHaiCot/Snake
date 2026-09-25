@@ -74,15 +74,20 @@ public class AI_Snake : MonoBehaviour
     private void Start()
     {
         Restate();
-
-        if(aiMode == AI_Mode.FoodIsTarget)
-        {
-            if(scoreManager != null) 
-            {
-                scoreManager.OnTargetReached.AddListener(Die);
-            }
-        }
     }
+
+    private void OnEnable()
+    {
+        if (aiMode == AI_Mode.FoodIsTarget && scoreManager != null)
+            scoreManager.OnTargetReached.AddListener(Die);
+    }
+
+    private void OnDisable()
+    {
+        if (scoreManager != null)
+            scoreManager.OnTargetReached.RemoveListener(Die);
+    }
+
     private void FixedUpdate()
     {
         float currentSpeed = GetCurrentSpped();

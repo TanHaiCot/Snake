@@ -25623,7 +25623,7 @@ MonoBehaviour:
   playerSnake: {fileID: 998597398}
   bodyPrefab: {fileID: 6874129864492939515, guid: b8f58de286ac8504bad4eddf212087cc, type: 3}
   foodTarget: {fileID: 620879145}
-  scoreManager: {fileID: 0}
+  scoreManager: {fileID: 616454441}
   startPosition: {x: 23, y: -2, z: 0}
   currentState: 0
   chaseRepathInterval: 0.25
