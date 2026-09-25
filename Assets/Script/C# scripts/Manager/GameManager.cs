@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     private bool isLost; 
     private bool isExitOpen;
     private bool isPaused;
+    private static bool isRestart;
 
     [SerializeField] LevelData LevelData;
     private float readyDelay = 0.5f;
@@ -66,8 +67,9 @@ public class GameManager : MonoBehaviour
             AudioManager.Instance?.PlayMusic(LevelData.backgroundMusic);    
         }
 
-        ResetAndApplySkillRuntime(true);
-        
+        ResetAndApplySkillRuntime(!isRestart);
+        isRestart = false;
+
         mapManager.InitAndBuildMap();
 
         if(food.FoodSpawnedAfterEat)
@@ -394,47 +396,49 @@ public class GameManager : MonoBehaviour
 
     public void Restart()
     {
+        isRestart = true; 
         Time.timeScale = 1f;
+        SceneManagement.Instance.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
-        mapManager.InitAndBuildMap(); 
+        //mapManager.InitAndBuildMap(); 
 
-        snake.Restate();
+        //snake.Restate();
 
-        if (food.FoodSpawnedAfterEat)
-            food.RandomizedSpawn();
+        //if (food.FoodSpawnedAfterEat)
+        //    food.RandomizedSpawn();
 
         //if (secondSnake != null)
         //    secondSnake.Restate();
 
-        if (ai_Snake != null)
-            ai_Snake.Restate();
+        //if (ai_Snake != null)
+        //    ai_Snake.Restate();
 
-        if (bossFightManager != null)
-            bossFightManager.ResetBossFight(); 
+        //if (bossFightManager != null)
+        //    bossFightManager.ResetBossFight(); 
 
-        isPaused = false;
-        isLost = false; 
-        isExitOpen = false;
+        //isPaused = false;
+        //isLost = false; 
+        //isExitOpen = false;
 
-        uiManager.HideLostMenu();
+        //uiManager.HideLostMenu();
 
-        scoreManager.ResetScore();
-        scoreManager.SetTargetScore(LevelData.targetScore);
+        //scoreManager.ResetScore();
+        //scoreManager.SetTargetScore(LevelData.targetScore);
 
-        if (LevelData.isShowingLevelSummary)
-            timer.StartStopwatch();
+        //if (LevelData.isShowingLevelSummary)
+        //    timer.StartStopwatch();
 
-        else
-            timer.StartCountdown(LevelData.timeLimit);
+        //else
+        //    timer.StartCountdown(LevelData.timeLimit);
 
-        ResetAndApplySkillRuntime(false);
+        //ResetAndApplySkillRuntime(false);
 
-        snake.SetReverseMovement(false);
+        //snake.SetReverseMovement(false);
 
-        if (LevelData != null && LevelData.enableReverseMovement)
-        {
-            StartReverseMovementDialogue();
-        }
+        //if (LevelData != null && LevelData.enableReverseMovement)
+        //{
+        //    StartReverseMovementDialogue();
+        //}
     }
 
     public void MainMenu()
