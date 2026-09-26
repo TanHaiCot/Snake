@@ -84,6 +84,9 @@ public class MapManager : MonoBehaviour
 
     public bool IsAntiSnakeWall(Vector2Int cell)
     {
+        if (wallTilemap == null || antiSnakeWallTile == null)
+            return false;
+
         Vector3Int tilePos = new Vector3Int(cell.x, cell.y, 0);
         return wallTilemap != null && wallTilemap.GetTile(tilePos) == antiSnakeWallTile;
     }
