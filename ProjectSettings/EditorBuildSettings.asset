@@ -42,6 +42,9 @@ EditorBuildSettings:
     path: Assets/Scenes/GamePlay9_DarkDungeon.unity
     guid: 0f2f66409b7c79f49ab3374a18d815ee
   - enabled: 1
+    path: Assets/Scenes/GamePlay10_PatrolAI.unity
+    guid: bf6daa8bf352d6e41a7f9ad5bed9cdec
+  - enabled: 1
     path: Assets/Scenes/SkillTree.unity
     guid: 74ee29413474e3140a72b5f99fb26afc
   m_configObjects:

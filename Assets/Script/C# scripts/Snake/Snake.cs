@@ -141,6 +141,9 @@ public class Snake : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (gameManager != null && gameManager.isChangingScene)
+            return;
+
         float effectiveSpeed = snakeAbilities != null ? snakeAbilities.ModifySpeed(speed) : speed;
 
         float intervalForA_Move = 1.0f / effectiveSpeed;   //time waiting for a move
@@ -179,14 +182,15 @@ public class Snake : MonoBehaviour
 
         if (nextIsAntiSnakeWall)
         {
-            //gameManager.GameOver();
-            //AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
-            //return; 
+            gameManager.GameOver();
+            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
+            return;
         }
 
         bool nextIsWall = false;
 
         bool nextIsClosedDoor = false;
+        bool nextIsOpenExit = false;
 
         //check all the collision on the world space to see which one is overlap with the next position
         Collider2D[] hits = Physics2D.OverlapBoxAll(new Vector2(nextX, nextY), new Vector2(0.8f, 0.8f), 0f);
@@ -201,6 +205,10 @@ public class Snake : MonoBehaviour
                     Debug.Log("Hit door");
                     break; 
                 }
+
+                // Exit triggers are enabled only after the door opens.
+                if (hit.CompareTag("Next Level Trigger"))
+                    nextIsOpenExit = true;
 
                 if (hit.CompareTag("Opponent Snake"))
                 {
@@ -228,17 +236,17 @@ public class Snake : MonoBehaviour
             return;
         }
 
-        if (mapManager != null && !mapManager.IsWalkable(nextCell))
+        if (mapManager != null && !mapManager.IsWalkable(nextCell) && !nextIsOpenExit)
         {
             nextIsWall = true;
         }
 
         if (nextIsWall && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
-            //Debug.Log("Hit wall/door");
-            //gameManager.GameOver();
-            //AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
-            //return;
+            Debug.Log("Hit wall/door");
+            gameManager.GameOver();
+            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
+            return;
         }
 
         // let player finish the move thru wall if the ghost mode is off but the bodies still not yet thru wall

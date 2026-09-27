@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     private bool isExitOpen;
     private bool isPaused;
     private static bool isRestart;
+    public bool isChangingScene;
 
     [SerializeField] LevelData LevelData;
     private float readyDelay = 0.5f;
@@ -316,6 +317,12 @@ public class GameManager : MonoBehaviour
 
     public void MoveToSkillTree()
     {
+        if (isChangingScene || isLost)
+            return;
+
+        isChangingScene = true;
+        snake.SetInputEnabled(false);
+
         if (energy != null)
             energy.StoreCurrentEnergy();
 
@@ -455,6 +462,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (isChangingScene || isLost)
+            return;
+
         Time.timeScale = 0f;
         isLost = true;
         if (isLost == true)

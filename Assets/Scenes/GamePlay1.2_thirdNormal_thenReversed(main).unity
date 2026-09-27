@@ -1134,52 +1134,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
   m_PrefabInstance: {fileID: 6037067301012278269}
   m_PrefabAsset: {fileID: 0}
---- !u!61 &1602164147
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602164143}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!4 &1602164150 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7747100054550736282, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
@@ -1265,6 +1219,8 @@ MonoBehaviour:
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 1239357050}
   doorManager: {fileID: 1745404496}
+  bossFightManager: {fileID: 0}
+  slowEnemyController: {fileID: 0}
   snake: {fileID: 914842887}
   timer: {fileID: 1014432981}
   food: {fileID: 620879146}
@@ -1275,9 +1231,10 @@ MonoBehaviour:
   reverseMovementDialogue: {fileID: 11400000, guid: 107c3cf305d6ca5409fd231fd6196dc6, type: 2}
   skillTreeUnlockedDialogue: {fileID: 11400000, guid: 4cdd2c1eafd2e2440aeff1723b157188, type: 2}
   bossDialogue: {fileID: 0}
-  blackScreen: {fileID: 0}
   openingDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
   LevelData: {fileID: 11400000, guid: 375d2035d42692444a29f68949abb154, type: 2}
+  themeIntroduction: {fileID: 0}
 --- !u!1 &1745404495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1816,10 +1773,7 @@ PrefabInstance:
     - {fileID: -4936591472972147697, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3271711616549066752, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1602164147}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb7a67207df19f74ab29d7c73771352f, type: 3}
 --- !u!1001 &7852819120062008130
 PrefabInstance:
