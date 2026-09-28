@@ -1,14 +1,30 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
-    
+
+    // Remember which dialogues started in each level during this visit.
+    private static readonly HashSet<(string level, DialogueData dialogue)>
+        playedDialogues = new HashSet<(string, DialogueData)>();
+
+    public static void ResetDialogueHistory()
+    {
+        playedDialogues.Clear();
+    }
+
+    // Also clear when starting a fresh Play session in the Editor.
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetSession()
+    {
+        ResetDialogueHistory();
+    }
+
+
     [Header("UI")]
     //public Image characterIcon;
     public TextMeshProUGUI characterName;
@@ -56,6 +72,23 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue(DialogueData dialogue, Action onFinished = null)
     {
+        if (dialogue == null)
+        {
+            onFinished?.Invoke();
+            return;
+        }
+
+        string level = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path;
+
+        // Add returns false if this dialogue already started in this level.
+        if (!playedDialogues.Add((level, dialogue)))
+        {
+            // Still run the normal completion logic:
+            // enable movement, resume time, apply reverse movement, etc.
+            onFinished?.Invoke();
+            return;
+        }
+
         isDialogueActive = true;
         onDialogueFinished = onFinished;
 

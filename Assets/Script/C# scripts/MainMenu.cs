@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
+        DialogueManager.ResetDialogueHistory();
+
         PlayerProgress progress = PlayerProgress.EnsureInstance();
         progress.LoadSavedProgress();
 
