@@ -188,7 +188,6 @@ public class Snake : MonoBehaviour
         }
 
         bool nextIsWall = false;
-
         bool nextIsClosedDoor = false;
         bool nextIsOpenExit = false;
 
@@ -236,7 +235,9 @@ public class Snake : MonoBehaviour
             return;
         }
 
-        if (mapManager != null && !mapManager.IsWalkable(nextCell) && !nextIsOpenExit)
+        bool nextIsTeleportGate = teleportGateManager != null && teleportGateManager.IsTeleportCell(nextCell);
+
+        if (mapManager != null && !mapManager.IsWalkable(nextCell) && !nextIsOpenExit && !nextIsTeleportGate)
         {
             nextIsWall = true;
         }
