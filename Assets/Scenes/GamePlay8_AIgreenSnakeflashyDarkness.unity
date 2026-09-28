@@ -25599,6 +25599,7 @@ MonoBehaviour:
   bossDialogue: {fileID: 0}
   openingDialogue: {fileID: 0}
   blackScreen: {fileID: 0}
+  isChangingScene: 0
   LevelData: {fileID: 11400000, guid: 307f18f7299b19249af86ac05b153584, type: 2}
   themeIntroduction: {fileID: 0}
 --- !u!1 &1748671258 stripped

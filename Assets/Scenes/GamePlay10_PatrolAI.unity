@@ -2169,7 +2169,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 811703816}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
 --- !u!1001 &384613649
@@ -4492,6 +4495,87 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
   m_PrefabInstance: {fileID: 811265130}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &811703815
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1522169289}
+    m_Modifications:
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: snakeAbilities
+      value: 
+      objectReference: {fileID: 1846229853}
+    - target: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: 'normalEnemies.Array.data[0]'
+      value: 
+      objectReference: {fileID: 95846454}
+    - target: {fileID: 8338659651289012162, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_Name
+      value: SlowEnemyController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+--- !u!4 &811703816 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+  m_PrefabInstance: {fileID: 811703815}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &811703817 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+  m_PrefabInstance: {fileID: 811703815}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30fe5fbad78d354194e0e641873de46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlowEnemyController
 --- !u!4 &813182349 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5488775744087843715, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
@@ -55588,15 +55672,23 @@ MonoBehaviour:
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 160291026}
   doorManager: {fileID: 216758360}
+  bossFightManager: {fileID: 0}
+  slowEnemyController: {fileID: 811703817}
   snake: {fileID: 1522169290}
   timer: {fileID: 384613658}
   food: {fileID: 620879146}
   ai_Snake: {fileID: 95846454}
   energy: {fileID: 384613657}
   snakeAbilities: {fileID: 1846229853}
-  reverseMovementDialogue:
-    dialogueLines: []
+  levelSummaryUI: {fileID: 0}
+  reverseMovementDialogue: {fileID: 0}
+  skillTreeUnlockedDialogue: {fileID: 0}
+  bossDialogue: {fileID: 0}
+  openingDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
+  isChangingScene: 0
   LevelData: {fileID: 11400000, guid: df003a0a729d61445a262b8af4236d24, type: 2}
+  themeIntroduction: {fileID: 0}
 --- !u!1001 &1744022881
 PrefabInstance:
   m_ObjectHideFlags: 0

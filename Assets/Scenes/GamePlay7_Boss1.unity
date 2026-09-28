@@ -83942,6 +83942,91 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8edacc649beb6cb4c898398257b9ab30, type: 3}
+--- !u!1001 &1659248947
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 624845951}
+    m_Modifications:
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: firstBoss
+      value: 
+      objectReference: {fileID: 562724364}
+    - target: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: snakeAbilities
+      value: 
+      objectReference: {fileID: 1940870283}
+    - target: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: normalEnemies.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8338659651289012162, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+      propertyPath: m_Name
+      value: SlowEnemyController
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+--- !u!4 &1659248948 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1265566125721864291, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+  m_PrefabInstance: {fileID: 1659248947}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1659248949 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1626050418033256938, guid: 5904d964882b1fb4db02d0d9e89e7a95, type: 3}
+  m_PrefabInstance: {fileID: 1659248947}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f30fe5fbad78d354194e0e641873de46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlowEnemyController
 --- !u!1001 &1676196505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84186,6 +84271,7 @@ MonoBehaviour:
   mapManager: {fileID: 1239357050}
   doorManager: {fileID: 1054517724}
   bossFightManager: {fileID: 456882115}
+  slowEnemyController: {fileID: 1659248949}
   snake: {fileID: 624845952}
   timer: {fileID: 1084494088}
   food: {fileID: 620879146}
@@ -84198,6 +84284,7 @@ MonoBehaviour:
   bossDialogue: {fileID: 11400000, guid: 75b9a38031b5ec04caa0287a5cecef89, type: 2}
   openingDialogue: {fileID: 0}
   blackScreen: {fileID: 0}
+  isChangingScene: 0
   LevelData: {fileID: 11400000, guid: 73e68d783bbb2ed4f864f509d81e98a2, type: 2}
   themeIntroduction: {fileID: 0}
 --- !u!1001 &1743946232
@@ -86063,7 +86150,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1659248948}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
 --- !u!1001 &7852819120062008130

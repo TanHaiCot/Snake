@@ -22,7 +22,7 @@ public class AI_Snake : MonoBehaviour
 
 
     [Header("AI Statistics")]
-    private float speed = 8f;
+    private float speed = 8.5f;
     private int initialBodyPart = 4;
     private float slowMultiplier = 1f;
     private float slowEndTime;

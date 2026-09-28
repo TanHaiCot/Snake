@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayableDarkGreen
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: 7482667652216324306, guid: c3e352fb86fb30a48ad2b1ca4d1f1215, type: 3}
-  m_Color: {r: 0, g: 0.64705884, b: 0.023529412, a: 1}
+  m_Color: {r: 0.18095396, g: 0.83396226, b: 0.20316507, a: 1}
   m_Transform:
     e00: 1
     e01: 0

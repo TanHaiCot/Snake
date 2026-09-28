@@ -22,7 +22,7 @@ public class FirstBoss : MonoBehaviour
     [SerializeField] GameObject powerUpPrefab;
 
     [Header("Speed Stats")]
-    private float chaseSpeed = 7.5f;          // steps/sec (1 step = a movement of 2 cells of the boss)
+    private float chaseSpeed = 6.5f;          // steps/sec (1 step = a movement of 2 cells of the boss)
     private float fleeSpeed = 10f;
     private float dashSpeed = 22f;            // steps/sec during dash
     private float slowMultiplier = 1f;
@@ -31,11 +31,11 @@ public class FirstBoss : MonoBehaviour
     [Header("Dash")]
     private float dashTriggerRange = 10f;
     private int maxDashSteps = 8;
-    private float waitingTimeToDash = 0.2f;
+    private float waitingTimeToDash = 0.5f;
     private int currentDashSteps;
 
     [Header("Stun")]
-    private float stunByWallsDuration = 3f;
+    private float stunByWallsDuration = 2f;
     private float stunByPlayerHitDuration = 5f;     // stun time when player hits boss (e.g. with empowered bite)
 
     [Header("Flee")]

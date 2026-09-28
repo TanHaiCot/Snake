@@ -14,7 +14,7 @@ public class BossFightManager : MonoBehaviour
     private BossPowerUp activePowerUp;
     
     [Header("Empower Settings")]
-    private float empowerDuration = 6f;
+    private float empowerDuration = 10f;
     private float energyFilledOnEmpower = 999f;
 
     [Header("Boss HP")]
