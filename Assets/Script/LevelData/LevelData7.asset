@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LevelData7
   m_EditorClassIdentifier: 
   targetScore: 8
-  timeLimit: 105
+  timeLimit: 120
   backgroundMusic: {fileID: 8300000, guid: 45aef78547428b84eaa8b1803f49a2ff, type: 3}
   themeIntroductionId: Dungeon
   themeIntroductionTitle: 'CHAPTER TWO: '

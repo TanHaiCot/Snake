@@ -22,11 +22,18 @@ public class FirstBoss : MonoBehaviour
     [SerializeField] GameObject powerUpPrefab;
 
     [Header("Speed Stats")]
-    private float chaseSpeed = 6.5f;          // steps/sec (1 step = a movement of 2 cells of the boss)
+    private float chaseSpeed = 7.0f;          // steps/sec (1 step = a movement of 2 cells of the boss)
     private float fleeSpeed = 10f;
     private float dashSpeed = 22f;            // steps/sec during dash
     private float slowMultiplier = 1f;
     private float slowEndTime; 
+
+    [Header("Empowered Player Flash")]
+    [SerializeField] private Color empoweredFlashColor = Color.white;
+    [SerializeField, Min(0.1f)] private float empoweredFlashCyclesPerSecond = 2f;
+    private readonly Dictionary<SpriteRenderer, Color> normalSpriteColors = new();
+    private bool isFlashing;
+    private float flashElapsed;
 
     [Header("Dash")]
     private float dashTriggerRange = 10f;
@@ -102,6 +109,71 @@ public class FirstBoss : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
             SpawnPowerPickup();
+    }
+
+    private void LateUpdate()
+    {
+        bool shouldFlash = state != BossState.Dead &&
+            bossFightManager != null && bossFightManager.IsEmpowered;
+
+        if (!shouldFlash)
+        {
+            if (isFlashing)
+                RestoreSpriteColors();
+            return;
+        }
+
+        if (!isFlashing)
+        {
+            CacheSpriteColors();
+            isFlashing = true;
+            flashElapsed = 0f;
+        }
+
+        // Use game time so the visual pauses along with the fight.
+        flashElapsed += Time.deltaTime;
+        float blend = (1f - Mathf.Cos(flashElapsed *
+            empoweredFlashCyclesPerSecond * Mathf.PI * 2f)) * 0.5f;
+
+        foreach (var pair in normalSpriteColors)
+        {
+            if (pair.Key == null)
+                continue;
+
+            Color color = Color.Lerp(pair.Value, empoweredFlashColor, blend);
+            color.a = pair.Value.a;
+            pair.Key.color = color;
+        }
+    }
+
+    private void CacheSpriteColors()
+    {
+        normalSpriteColors.Clear();
+        // Body segments are separate objects, not necessarily head children.
+        foreach (Transform part in bossBodies)
+        {
+            if (part == null)
+                continue;
+
+            foreach (SpriteRenderer sprite in part.GetComponentsInChildren<SpriteRenderer>(true))
+                normalSpriteColors[sprite] = sprite.color;
+        }
+    }
+
+    private void RestoreSpriteColors()
+    {
+        foreach (var pair in normalSpriteColors)
+            if (pair.Key != null)
+                pair.Key.color = pair.Value;
+
+        normalSpriteColors.Clear();
+        isFlashing = false;
+        flashElapsed = 0f;
+    }
+
+    private void OnDisable()
+    {
+        RestoreSpriteColors();
     }
 
     private void FixedUpdate()
@@ -731,6 +803,7 @@ public class FirstBoss : MonoBehaviour
 
     public void Restate()
     {
+        RestoreSpriteColors();
         slowEndTime = 0f;
         slowMultiplier = 1f;
 
@@ -794,11 +867,13 @@ public class FirstBoss : MonoBehaviour
 
     private void SpawnPowerPickup()
     {
-        if (powerUpPrefab == null)
+        if (bossFightManager == null)
+        {
+            Debug.LogWarning("BossFightManager is not assigned.", this);
             return;
+        }
 
         Vector3 spawnPos = new Vector3(bossAnchor.x, bossAnchor.y, 0);
-
         bossFightManager.SpawnPowerUp(spawnPos);
     }
 
