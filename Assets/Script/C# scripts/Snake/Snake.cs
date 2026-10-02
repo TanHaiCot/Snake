@@ -245,9 +245,9 @@ public class Snake : MonoBehaviour
         if (nextIsWall && (snakeAbilities == null || !snakeAbilities.GhostActive))
         {
             Debug.Log("Hit wall/door");
-            gameManager.GameOver();
-            AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
-            return;
+            //gameManager.GameOver();
+            //AudioManager.Instance?.playSFX(AudioManager.Instance.gameOver);
+            //return;
         }
 
         // let player finish the move thru wall if the ghost mode is off but the bodies still not yet thru wall

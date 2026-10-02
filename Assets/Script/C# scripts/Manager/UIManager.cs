@@ -28,8 +28,8 @@ public class UIManager : MonoBehaviour
         PlayerProgress progress = PlayerProgress.Instance;
 
         bool timerUnlocked = progress != null && progress.completedLevels >= timerUnlockAfterCompletedLevels;
-        bool dashUnlocked = SkillRuntimeApplier.HasLearnedEffect(SkillEffectType.UnlockDash);
-        bool ghostUnlocked = SkillRuntimeApplier.HasLearnedEffect(SkillEffectType.UnlockGhost);
+        bool dashUnlocked = SkillRuntimeApplier.HasLearnedSkill(SkillEffectType.UnlockDash);
+        bool ghostUnlocked = SkillRuntimeApplier.HasLearnedSkill(SkillEffectType.UnlockGhost);
 
         //if (countdownTimerUI != null)
         //    countdownTimerUI.SetActive(timerUnlocked);

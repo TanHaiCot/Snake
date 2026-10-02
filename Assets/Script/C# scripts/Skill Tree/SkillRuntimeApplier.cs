@@ -71,7 +71,7 @@ public class SkillRuntimeApplier
             snakeAbilities.ApplyFoodTimerPerks(timer);
     }
 
-    public static bool HasLearnedEffect(SkillEffectType effectType)
+    public static bool HasLearnedSkill(SkillEffectType effectType)
     {
         SkillTreeData loadedDatabase = LoadSkillDatabase();
         PlayerProgress loadedProgress = PlayerProgress.EnsureInstance();

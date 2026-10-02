@@ -113,6 +113,13 @@ public class Energy : MonoBehaviour
         PlayerProgress.EnsureInstance().SetSavedEnergy(currentEnergy);
     }
 
+    public void SetCurrentEnergy(float amount)
+    {
+        currentEnergy = Mathf.Clamp(amount, 0f, maxEnergy);
+        StoreCurrentEnergy();
+        UpdateEnergyUI();
+    }
+
     public void ResetSkillAdjustedStats()
     {
         CacheBaseSettings();

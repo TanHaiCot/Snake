@@ -36,8 +36,11 @@ public class GameManager : MonoBehaviour
     private bool isLost; 
     private bool isExitOpen;
     private bool isPaused;
-    private static bool isRestart;
     public bool isChangingScene;
+    private static bool isRestart;
+
+    private static float levelEntryEnergy;
+    private static int energySavedAtSceneIndex = -1;
 
     [SerializeField] LevelData LevelData;
     private float readyDelay = 0.5f;
@@ -68,7 +71,25 @@ public class GameManager : MonoBehaviour
             AudioManager.Instance?.PlayMusic(LevelData.backgroundMusic);    
         }
 
-        ResetAndApplySkillRuntime(!isRestart);
+        int levelIndex = SceneManager.GetActiveScene().buildIndex;
+
+        bool restoreLevelEntryEnergy = isRestart && energySavedAtSceneIndex == levelIndex;
+
+        ResetAndApplySkillRuntime(true);
+
+        if(energy != null)
+        {
+            if(restoreLevelEntryEnergy)
+            {
+                energy.SetCurrentEnergy(levelEntryEnergy);
+            }
+            else
+            {
+                levelEntryEnergy = energy.CurrentEnergy; 
+                energySavedAtSceneIndex = levelIndex;
+            }
+        }
+
         isRestart = false;
 
         mapManager.InitAndBuildMap();

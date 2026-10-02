@@ -23,26 +23,27 @@ public class MenuSnakeAnimation : MonoBehaviour
 
     private static Vector2[] CreateGentlePath() => new Vector2[]
     {
-        // A shallow lower arc, travelling left to right.
-        new Vector2(-0.45f, 0.25f),
-        new Vector2( 0.00f, 0.30f),
-        new Vector2( 0.50f, 0.40f),
-        new Vector2( 1.00f, 0.30f),
-        new Vector2( 1.45f, 0.25f),
-        // Turn around well beyond the right edge.
-        new Vector2( 1.85f, 0.25f),
-        new Vector2( 2.00f, 0.50f),
-        new Vector2( 1.85f, 0.80f),
-        // A shallow upper arc, travelling right to left.
-        new Vector2( 1.45f, 0.80f),
-        new Vector2( 1.00f, 0.75f),
-        new Vector2( 0.50f, 0.65f),
-        new Vector2( 0.00f, 0.75f),
-        new Vector2(-0.45f, 0.80f),
-        // Turn around well beyond the left edge.
-        new Vector2(-0.85f, 0.80f),
+        // Gently bowed diagonal from bottom-left to top-right.
+        new Vector2(-0.30f, -0.45f),
+        new Vector2(0.10f, 0.00f),
+        new Vector2(0.60f, 0.50f),
+        new Vector2(0.95f, 1.00f),
+        new Vector2(1.30f, 1.50f),
+        // Offscreen route to the bottom-right entrance.
+        new Vector2(1.60f, 1.70f),
+        new Vector2(1.80f, 0.50f),
+        new Vector2(1.60f, -0.70f),
+        // Diagonal pass from bottom-right to top-left.
+        new Vector2(1.25f, -0.63f),
+        new Vector2(0.95f, -0.18f),
+        new Vector2(0.40f, 0.32f),
+        new Vector2(0.00f, 0.77f),
+        new Vector2(-0.50f, 1.22f),
+        // Offscreen return to the bottom-left entrance.
+        new Vector2(-0.85f, 1.60f),
         new Vector2(-1.00f, 0.50f),
-        new Vector2(-0.85f, 0.25f)
+        new Vector2(-0.85f, -0.70f),
+        new Vector2(-0.65f, -0.85f)
     };
 
     [ContextMenu("Apply Gentle Menu Path")]
@@ -105,7 +106,7 @@ public class MenuSnakeAnimation : MonoBehaviour
 
             // Scale the template and its triangle together.
             float templateWidth = Mathf.Max(1f, template.rect.width);
-            float sizeMultiplier = i == 0 ? 1f : 0.8f;
+            float sizeMultiplier = i == 0 ? 1f : 0.75f;
             part.localScale = Vector3.one *
                 (partSize * sizeMultiplier / templateWidth);
 
@@ -148,15 +149,7 @@ public class MenuSnakeAnimation : MonoBehaviour
             for (int step = 0; step < stepsPerCurve; step++)
             {
                 float t = step / (float)stepsPerCurve;
-                float t2 = t * t;
-                float t3 = t2 * t;
-
-                // Smooth curve through b and c.
-                Vector2 position = 0.5f * (
-                    2f * b +
-                    (-a + c) * t +
-                    (2f * a - 5f * b + 4f * c - d) * t2 +
-                    (-a + 3f * b - 3f * c + d) * t3);
+                Vector2 position = EvaluateCurve(a, b, c, d, t);
 
                 AddSample(position);
             }
@@ -165,6 +158,59 @@ public class MenuSnakeAnimation : MonoBehaviour
         // Close the loop.
         AddSample(samples[0]);
     }
+
+    private static Vector2 EvaluateCurve(Vector2 a, Vector2 b, Vector2 c, Vector2 d, float t)  // Catmull-Rom spline interpolation
+    {
+        float t2 = t * t;
+        float t3 = t2 * t;
+        return 0.5f * (2f * b + (-a + c) * t +
+            (2f * a - 5f * b + 4f * c - d) * t2 +
+            (-a + 3f * b - 3f * c + d) * t3);
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        // Keep this overlay in Scene view, even if Game-view Gizmos are enabled.
+        if (Camera.current == null || Camera.current.cameraType != CameraType.SceneView ||
+            points == null || points.Length < 4)
+            return;
+
+        RectTransform previewArea = GetComponent<RectTransform>();
+        Rect rect = previewArea.rect;
+        Vector3 ToWorld(Vector2 point) => previewArea.TransformPoint(
+            (Vector3)(rect.center + Vector2.Scale(point - Vector2.one * 0.5f, rect.size)));
+
+        Color previousColor = UnityEditor.Handles.color;
+        try
+        {
+            int count = points.Length;
+            var curve = new Vector3[81];
+            for (int i = 0; i < count; i++)
+            {
+                UnityEditor.Handles.color = Color.cyan;
+                for (int step = 0; step <= 80; step++)
+                    curve[step] = ToWorld(EvaluateCurve(
+                        points[(i + count - 1) % count], points[i],
+                        points[(i + 1) % count], points[(i + 2) % count], step / 80f));
+
+                UnityEditor.Handles.DrawAAPolyLine(3f, curve);
+                Vector3 position = ToWorld(points[i]);
+                float size = UnityEditor.HandleUtility.GetHandleSize(position) * 0.06f;
+                UnityEditor.Handles.color = Color.yellow;
+                UnityEditor.Handles.SphereHandleCap(0, position, Quaternion.identity,
+                    size, EventType.Repaint);
+                UnityEditor.Handles.Label(position + previewArea.up * size,
+                    $"Point {i} ({points[i].x:0.00}, {points[i].y:0.00})",
+                    UnityEditor.EditorStyles.whiteLabel);
+            }
+        }
+        finally
+        {
+            UnityEditor.Handles.color = previousColor;
+        }
+    }
+#endif
 
     private void AddSample(Vector2 position)
     {

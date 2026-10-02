@@ -346,7 +346,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.27
+      value: -0.22
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalPosition.z
@@ -354,7 +354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalRotation.x
@@ -366,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -378,7 +378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1884194131358521319, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 4240970108620732445, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: m_Name
@@ -406,7 +406,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: playerStartPos.y
-      value: -7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5811956722144084693, guid: 2e8aba2d27bb0854a9e240e7f1fd29ce, type: 3}
       propertyPath: startDirection.y
@@ -26961,6 +26961,8 @@ MonoBehaviour:
   scoreManager: {fileID: 616454441}
   mapManager: {fileID: 121651849}
   doorManager: {fileID: 163634997}
+  bossFightManager: {fileID: 0}
+  slowEnemyController: {fileID: 0}
   snake: {fileID: 77481037}
   timer: {fileID: 955658672}
   food: {fileID: 620879146}
@@ -26971,9 +26973,11 @@ MonoBehaviour:
   reverseMovementDialogue: {fileID: 0}
   skillTreeUnlockedDialogue: {fileID: 0}
   bossDialogue: {fileID: 0}
-  blackScreen: {fileID: 0}
   openingDialogue: {fileID: 0}
+  blackScreen: {fileID: 0}
+  isChangingScene: 0
   LevelData: {fileID: 11400000, guid: 6df1487a9cf948d4ba78500bd8321947, type: 2}
+  themeIntroduction: {fileID: 0}
 --- !u!114 &1781208155 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1199734251739213556, guid: a9708a9ed34fb544ea33bc9b1122f67e, type: 3}
